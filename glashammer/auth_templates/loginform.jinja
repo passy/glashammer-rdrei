@@ -1,0 +1,15 @@
+
+<form action="{{ map_adapter.build('auth/login') }}" method="post">
+
+
+<input type="hidden" name="login_redirect_back_to" value="{{ redirect_back_to }}"/>
+
+<label for="login_username_entry">Email Address</label>
+<input id="login_username_entry" type="text" name="username" />
+<label for="login_password_entry">Password</label>
+<input id="login_password_entry" type="password" name="password" />
+
+<input type="submit" name="submit" value="Login" />
+
+
+</form>
