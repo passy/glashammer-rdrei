@@ -1,0 +1,10 @@
+
+Brainstorm 28.11.07
+
+* Plugabble database setup
+* Authservice more abstract, with AuthBackend
+* Migrations
+* Mail support
+* Page layout support: sidebars, navigation
+* widget code
+
