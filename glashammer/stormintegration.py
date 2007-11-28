@@ -50,7 +50,6 @@ def create_store(uri):
     return Store(create_database(uri))
 
 
-
 class ThreadSafeStorePool(object):
 
     def __init__(self, local, uri):
