@@ -4,7 +4,10 @@ import os
 from glashammer.service import Service
 from glashammer.controller import Controller
 
-TEMPLATE_PATH = os.path.join(os.path.dirname(__file__), 'layout_templates')
+package_dir = os.path.dirname(__file__)
+
+TEMPLATE_PATH = os.path.join(package_dir, 'layout_templates')
+STATIC_PATH = os.path.join(package_dir, 'layout_public')
 
 NAVITEM = 'nav1-link'
 
@@ -15,3 +18,4 @@ class LayoutService(Service):
 
     def lifecycle(self):
         self.register_template_directory(TEMPLATE_PATH)
+        self.register_static_directory('/layout', STATIC_PATH)

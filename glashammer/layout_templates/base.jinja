@@ -2,6 +2,12 @@
 <html>
     <head>
         <title>{{ page_title }}</title>
+        {% block reset_style %}
+        {% endblock %}
+        {% block main_style %}
+        {% endblock %}
+        {% block js_style %}
+        {% endblock %}
         {% block head_extra %}
         {% endblock %}
     </head>

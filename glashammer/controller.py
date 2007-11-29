@@ -1,5 +1,7 @@
 
 from glashammer.service import Service
+from glashammer.utils import TemplateResponse
+
 
 class ControllerService(Service):
 

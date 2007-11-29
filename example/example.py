@@ -20,7 +20,8 @@ class HelloController(Controller):
 
     def sess(self, req):
         self.session['foo'] = self.session.get('foo', 0) + 1
-        return Response('You Clicked me: %s' % self.session['foo'])
+        return self.create_template_response('sitebase.jinja',
+            content='You Clicked me: %s times' % self.session['foo'])
 
 # Service
 class HelloService(Service):
@@ -41,7 +42,7 @@ class HelloService(Service):
         self.register_feature_provider('navigation-item',
                 EndpointLink('Session', 'default/sess'))
         self.register_feature_provider('navigation-item',
-                EndpointLink('Session', 'auth/logout'))
+                EndpointLink('Logout', 'auth/logout'))
     
 
 from glashammer.testing import TestController

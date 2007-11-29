@@ -1,4 +1,13 @@
 {% extends "base.jinja" %}
+
+{% block reset_style %}
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.3.1/build/reset/reset-min.css"> 
+{% endblock %}
+
+{% block main_style %}
+    <link rel="stylesheet" type="text/css" charset="utf-8" media="all" href="/layout/css/site.css" />
+{% endblock %}
+
 {% block body %}
 
     <div id="header">
