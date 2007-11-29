@@ -3,7 +3,7 @@
 from glashammer.service import Service
 from glashammer.plugins import Registry
 from glashammer.controller import Controller
-from glashammer.routing import Rule
+from werkzeug.routing import Rule
 from glashammer.ui import EndpointLink
 from glashammer.application import GlashammerSite
 from glashammer.utils import Request, Response, TemplateResponse
