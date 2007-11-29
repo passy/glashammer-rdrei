@@ -15,7 +15,7 @@ config = {
 class HelloController(Controller):
 
     def hello(self, req):
-        return self.create_template_response('hello.jinja')
+        return self.create_template_response(req, 'hello.jinja')
 
     def byebye(self, req):
         UserPermission(self.site, self.user_id)
@@ -23,7 +23,7 @@ class HelloController(Controller):
 
     def sess(self, req):
         self.session['foo'] = self.session.get('foo', 0) + 1
-        return self.create_template_response('sitebase.jinja',
+        return self.create_template_response(req, 'sitebase.jinja',
             content='You Clicked me: %s' % self.session['foo'])
 
 # Service

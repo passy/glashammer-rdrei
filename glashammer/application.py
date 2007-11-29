@@ -45,7 +45,8 @@ class GlashammerApplication(object):
         try:
             controller = self.controller_cache[endpoint_name]
         except KeyError:
-            controller = self._create_controller(endpoint)
+            controller = self._create_controller(endpoint_name)
+            self.controller_cache[endpoint_name] = controller
         if controller is None:
             resp = NotFoundResponse()
         else:
@@ -58,7 +59,7 @@ class GlashammerApplication(object):
                 controller.__after__(req, *args)
         return resp
             
-    def _create_controller(self, endpoint):
+    def _create_controller(self, endpoint_name):
         controller_type = self._get_controller(endpoint_name)
         if controller_type is not None:
             controller = controller_type(self.site)
