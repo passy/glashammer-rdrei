@@ -50,7 +50,7 @@ class StormBase(Storm):
     id = Int(primary=True)
 
 
-class StormCreatorBase(Storm, StormCreator):
+class StormCreatorBase(StormBase, StormCreator):
 
     """Self creating"""
 

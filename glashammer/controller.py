@@ -17,14 +17,12 @@ class ControllerService(Service):
 
 class Controller(object):
 
-    def __init__(self, site, req, environ):
+    def __init__(self, site,):
         self.site = site
-        self.req = req
-        self.environ = environ
         self.jinja = self.site.jinja_service.env
-        self.session = self.environ['werkzeug.session']
-        self.user_id = self.environ.get('glashammer.user_id')
-        self.map_adapter = self.site.routing_service.bind_to_environ(environ)
+        #self.session = self.environ['werkzeug.session']
+        #self.user_id = self.environ.get('glashammer.user_id')
+        #self.map_adapter = self.site.routing_service.bind_to_environ(environ)
 
     def __before__(self, req, *args):
         pass

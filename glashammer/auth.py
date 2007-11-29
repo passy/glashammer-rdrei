@@ -9,7 +9,7 @@ import os
 from glashammer.controller import Controller
 from glashammer.service import Service
 from glashammer.utils import Response, RedirectResponse, Request
-from glashammer.stormintegration import StormBase, Unicode
+from glashammer.stormintegration import StormBase, StormCreatorBase, Unicode
 
 from werkzeug.routing import RequestRedirect, Rule
 

@@ -26,6 +26,7 @@ class GlashammerApplication(object):
 
     def __init__(self, site):
         self.site = site
+        self.controller_cache = {}
 
     def __call__(self, environ, start_response):
         url_adapter = self.site.routing_service.bind_to_environ(environ)
@@ -39,16 +40,15 @@ class GlashammerApplication(object):
             resp = RedirectResponse(e.new_url)
         return resp(environ, start_response)
 
-    def _get_controller(self, endpoint_name):
-        return self.site.controller_service.get(endpoint_name)
-
     def _get_response(self, environ, endpoint, args, req):
         endpoint_name, endpoint_method = endpoint.split('/', 1)
-        controller_type = self._get_controller(endpoint_name)
-        if controller_type is None:
+        try:
+            controller = self.controller_cache[endpoint_name]
+        except KeyError:
+            controller = self._create_controller(endpoint)
+        if controller is None:
             resp = NotFoundResponse()
         else:
-            controller = controller_type(self.site, req, environ)
             method = getattr(controller, endpoint_method, None)
             if method is None:
                 resp = NotFoundResponse()
@@ -57,6 +57,15 @@ class GlashammerApplication(object):
                 resp = method(req, *args)
                 controller.__after__(req, *args)
         return resp
+            
+    def _create_controller(self, endpoint):
+        controller_type = self._get_controller(endpoint_name)
+        if controller_type is not None:
+            controller = controller_type(self.site)
+            return controller
+
+    def _get_controller(self, endpoint_name):
+        return self.site.controller_service.get(endpoint_name)
 
 
 
