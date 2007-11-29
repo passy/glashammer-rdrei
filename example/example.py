@@ -7,6 +7,9 @@ import os
 from glashammer import GlashammerSite, Response, Service, Controller, \
     Rule, UserPermission, EndpointLink
 
+config = {
+    'DB_URI': 'sqlite:test.sqlite',
+}
 
 # Controller
 class HelloController(Controller):
@@ -67,13 +70,13 @@ class TestHelloController(TestController):
         assert r2 - r1 == 1
 
     def create_site(self):
-        site = GlashammerSite()
+        site = GlashammerSite(config)
         site.register_service(HelloService)
         return site
 
 
 if __name__ == '__main__':
-    site = GlashammerSite()
+    site = GlashammerSite(config)
     # Register the service
     site.register_service(HelloService)
     # Start the debug server

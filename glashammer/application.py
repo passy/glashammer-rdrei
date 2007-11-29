@@ -5,7 +5,7 @@ from werkzeug.routing import NotFound, RequestRedirect, Map
 from werkzeug.utils import SharedDataMiddleware
 
 from glashammer.utils import Request, NotFoundResponse, RedirectResponse
-from glashammer.config import SiteConfig
+from glashammer.config import create_base_config
 from glashammer.auth import AuthService
 from glashammer.stormintegration import StormService
 from glashammer.layout import LayoutService
@@ -67,9 +67,9 @@ class GlashammerSite(object):
     WSGI application
     """
 
-    def __init__(self):
-        self.config = SiteConfig()
-        self.storm_uri = 'sqlite:test.sqlite'
+    def __init__(self, config={}):
+        self.config = create_base_config()
+        self.config.update(config)
 
         self.services = []
         # core services
