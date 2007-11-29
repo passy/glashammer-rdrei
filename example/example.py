@@ -21,7 +21,7 @@ class HelloController(Controller):
     def sess(self, req):
         self.session['foo'] = self.session.get('foo', 0) + 1
         return self.create_template_response('sitebase.jinja',
-            content='You Clicked me: %s times' % self.session['foo'])
+            content='You Clicked me: %s' % self.session['foo'])
 
 # Service
 class HelloService(Service):

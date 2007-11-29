@@ -31,7 +31,7 @@ class AuthController(Controller):
             password = req.form.get('password')
             if not (username and password):
                 return self._login_failure(redirect)
-            user = self.site.store.find(User, username=username,
+            user = self.site.storm_service.store.find(User, username=username,
                                         password=password).any()
             if user is None:
                 return self._login_failure(redirect)
@@ -67,7 +67,7 @@ class AuthMiddleware(object):
         try:
             return self.app(environ, start_response)
         except NotAuthenticatedError:
-            map_adapter = self.site.url_map.bind_to_environ(environ)
+            map_adapter = self.site.routing_service.bind_to_environ(environ)
             req = Request(environ, map_adapter)
             resp = RedirectResponse(
                 map_adapter.build('auth/login',
@@ -129,6 +129,7 @@ class AuthService(Service):
         self.register_template_directory(TEMPLATE_PATH)
 
     def finalise(self):
+        # XXX Move this out into a setupt thing
         store = self.store
         try:
             User.create_table(store)
