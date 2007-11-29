@@ -1,5 +1,5 @@
 
-from werkzeug.routing import Map, Rule
+from werkzeug.routing import Map
 from glashammer.service import Service
 
 class RoutingService(Service):
