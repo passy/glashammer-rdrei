@@ -73,9 +73,11 @@ class StormService(Service):
     def lifecycle(self):
         self.local = Local()
         self.local_manager = LocalManager([self.local])
+        self.register_config('DB_URI')
 
     def finalise(self):
-        self.store_pool = ThreadSafeStorePool(self.local, self.site.config['DB_URI'])
+        self.store_pool = ThreadSafeStorePool(self.local,
+                            self.site.config_service.get('DB_URI'))
 
     def get_store(self):
         return self.store_pool.get()

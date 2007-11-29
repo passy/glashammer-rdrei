@@ -12,6 +12,14 @@ class Service(object):
     def finalise(self):
         pass
 
+    def setup_application(self):
+        """
+        This is called when you first want to set up your application.
+
+        Use it to create database tables and initial data.
+        """
+        pass
+
     def create_middleware(self, app):
         raise NotImplementedError
 
@@ -31,6 +39,9 @@ class Service(object):
 
     def register_template_directory(self, path):
         self.site.jinja_service.register(path)
+
+    def register_config(self, name, default=None):
+        self.site.config_service.register(name, default)
 
     def register_feature_provider(self, feature, provider):
         self.site.feature_service.register(feature, provider)

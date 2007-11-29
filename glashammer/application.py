@@ -5,7 +5,7 @@ from werkzeug.routing import NotFound, RequestRedirect, Map
 from werkzeug.utils import SharedDataMiddleware
 
 from glashammer.utils import Request, NotFoundResponse, RedirectResponse
-from glashammer.config import create_base_config
+from glashammer.config import ConfigService
 from glashammer.auth import AuthService
 from glashammer.stormintegration import StormService
 from glashammer.layout import LayoutService
@@ -26,7 +26,6 @@ class GlashammerApplication(object):
 
     def __init__(self, site):
         self.site = site
-        self.config = site.config
 
     def __call__(self, environ, start_response):
         url_adapter = self.site.routing_service.bind_to_environ(environ)
@@ -67,12 +66,11 @@ class GlashammerSite(object):
     WSGI application
     """
 
-    def __init__(self, config={}):
-        self.config = create_base_config()
-        self.config.update(config)
-
+    def __init__(self, site_config):
         self.services = []
+        self.site_config = site_config
         # core services
+        self.config_service = self.register_service(ConfigService)
         self.storm_service = self.register_service(StormService)
         self.controller_service = self.register_service(ControllerService)
         self.static_service = self.register_service(StaticService)
@@ -86,6 +84,11 @@ class GlashammerSite(object):
     def finalise(self):
         for svc in self.services:
             svc.finalise()
+
+    def setup_site(self):
+        self.finalise()
+        for svc in self.services:
+            svc.setup()
 
     def make_app(self):
         self.finalise()
