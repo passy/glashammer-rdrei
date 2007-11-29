@@ -1,7 +1,8 @@
 
 import os
 
-from glashammer.utils import Service, Controller
+from glashammer.service import Service
+from glashammer.controller import Controller
 
 TEMPLATE_PATH = os.path.join(os.path.dirname(__file__), 'layout_templates')
 

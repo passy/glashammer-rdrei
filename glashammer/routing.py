@@ -1,10 +1,6 @@
 
 from werkzeug.routing import Map, Rule
-
-def create_map(*rules, **kw):
-    return Map(rules, **kw)
-
-from glashammer.utils import Service
+from glashammer.service import Service
 
 class RoutingService(Service):
 

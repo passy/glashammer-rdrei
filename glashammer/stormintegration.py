@@ -6,7 +6,7 @@ from storm.locals import Storm, Store, Int, Unicode, create_database
 
 from werkzeug.local import Local, LocalManager
 
-from glashammer.utils import Service
+from glashammer.service import Service
 
 
 class StormCreator(Storm):

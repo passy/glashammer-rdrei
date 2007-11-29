@@ -1,7 +1,7 @@
 
 
 from werkzeug.utils import SharedDataMiddleware
-from glashammer.utils import Service
+from glashammer.service import Service
 
 
 

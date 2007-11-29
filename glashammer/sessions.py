@@ -1,5 +1,5 @@
 
-from glashammer.utils import Service
+from glashammer.service import Service
 
 from werkzeug.contrib.sessions import SessionMiddleware, FilesystemSessionStore
 

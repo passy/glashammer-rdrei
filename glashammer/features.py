@@ -1,6 +1,6 @@
 
 
-from glashammer.utils import Service
+from glashammer.service import Service
 from glashammer.plugins import Registry
 
 class FeatureService(Service):

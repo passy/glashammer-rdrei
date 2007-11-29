@@ -2,7 +2,7 @@
 
 from jinja import ChoiceLoader, FileSystemLoader, Environment
 
-from glashammer.utils import Service
+from glashammer.service import Service
 
 def create_jinja_environment(paths):
     return Environment(loader=ChoiceLoader(

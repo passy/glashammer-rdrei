@@ -4,11 +4,8 @@ Hello World in Glashammer
 
 import os
 
-from glashammer.application import GlashammerSite
-from glashammer.utils import Controller, Response, Service
-from glashammer.routing import Rule
-from glashammer.auth import UserPermission
-from glashammer.ui import EndpointLink
+from glashammer import GlashammerSite, Response, Service, Controller, \
+    Rule, UserPermission, EndpointLink
 
 
 # Controller
