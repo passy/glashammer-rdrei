@@ -1,5 +1,6 @@
 
 from werkzeug.wrappers import BaseRequest, BaseResponse
+from glashammer.plugins import Registry
 
 
 class Request(BaseRequest):
@@ -57,12 +58,12 @@ class TemplateResponse(Response):
         self.site = site
         self.request = req
         self.controller = controller
-        self.template = self.site.jinja_environment.get_template(template_name)
+        self.template = self.site.jinja_service.env.get_template(template_name)
         self.template_kw = template_kw
         Response.__init__(self, status=status, mimetype=mimetype, *args, **kw)
 
     def __call__(self, environ, start_response):
-        self.map_adapter = self.site.url_map.bind_to_environ(environ)
+        self.map_adapter = self.site.routing_service.bind_to_environ(environ)
         self._update_template_kw()
         self.response = self.template.render(**self.template_kw)
         return Response.__call__(self, environ, start_response)
@@ -84,10 +85,10 @@ class Controller(object):
         self.site = site
         self.req = req
         self.environ = environ
-        self.jinja = self.site.jinja_environment
+        self.jinja = self.site.jinja_service.env
         self.session = self.environ['werkzeug.session']
         self.user_id = self.environ.get('glashammer.user_id')
-        self.map_adapter = self.site.url_map.bind_to_environ(environ)
+        self.map_adapter = self.site.routing_service.bind_to_environ(environ)
 
     def __before__(self, req, *args):
         pass
@@ -98,11 +99,15 @@ class Controller(object):
     def create_template_response(self, name, **kw):
         return TemplateResponse(self.site, name, kw, req=self.req, controller=self)
 
+    def list_feature_providers(self, feature):
+        return self.site.feature_service.list(feature)
+
 
 class Service(object):
 
     def __init__(self, site):
         self.site = site
+        self.registry = Registry()
         self.lifecycle()
 
     def lifecycle(self):
@@ -114,23 +119,29 @@ class Service(object):
     def create_middleware(self, app):
         raise NotImplementedError
 
+    def get_store(self):
+        return self.site.storm_service.store
+
+    store = property(get_store)
+
     def register_static_directory(self, name, path):
-        self.site.register_static_directory(name, path)
+        self.site.static_service.register(name, path)
 
     def register_url_rules(self, *rules):
-        self.site.register_url_rules(*rules)
+        self.site.routing_service.register(*rules)
 
     def register_controller(self, name, controller):
-        self.site.register_controller(name, controller)
+        self.site.controller_service.register(name, controller)
 
     def register_template_directory(self, path):
-        self.site.register_template_directory(path)
+        self.site.jinja_service.register(path)
+
+    def register_feature_provider(self, feature, provider):
+        self.site.feature_service.register(feature, provider)
+
+    def list_feature_providers(self, feature):
+        return self.site.feature_service.list(feature)
 
 
-
-class Utility(object):
-
-    def __init__(self, site):
-        self.site = site
 
 

@@ -8,6 +8,7 @@ from glashammer.application import GlashammerSite
 from glashammer.utils import Controller, Response, Service
 from glashammer.routing import Rule
 from glashammer.auth import UserPermission
+from glashammer.ui import EndpointLink
 
 
 # Controller
@@ -40,6 +41,10 @@ class HelloService(Service):
             Rule('/bye', endpoint='default/byebye'),
             Rule('/session', endpoint='default/sess'),
         )
+        self.register_feature_provider('navigation-item',
+                EndpointLink('Session', 'default/sess'))
+        self.register_feature_provider('navigation-item',
+                EndpointLink('Session', 'auth/logout'))
     
 
 from glashammer.testing import TestController

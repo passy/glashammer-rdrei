@@ -7,4 +7,5 @@ Brainstorm 28.11.07
 * Mail support
 * Page layout support: sidebars, navigation
 * widget code
+* Configuration framework
 

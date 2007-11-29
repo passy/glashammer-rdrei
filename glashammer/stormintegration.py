@@ -4,6 +4,10 @@ from cgi import escape
 
 from storm.locals import Storm, Store, Int, Unicode, create_database
 
+from werkzeug.local import Local, LocalManager
+
+from glashammer.utils import Service
+
 
 class StormCreator(Storm):
 
@@ -64,3 +68,19 @@ class ThreadSafeStorePool(object):
             return self._local.store
 
 
+class StormService(Service):
+
+    def lifecycle(self):
+        self.local = Local()
+        self.local_manager = LocalManager([self.local])
+
+    def finalise(self):
+        self.store_pool = ThreadSafeStorePool(self.local, self.site.storm_uri)
+
+    def get_store(self):
+        return self.store_pool.get()
+
+    def create_middleware(self, app):
+        return self.local_manager.make_middleware(app)
+
+    store = property(get_store)

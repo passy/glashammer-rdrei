@@ -3,15 +3,22 @@
 from werkzeug.serving import run_simple
 from werkzeug.routing import NotFound, RequestRedirect, Map
 from werkzeug.utils import SharedDataMiddleware
-from werkzeug.contrib.sessions import SessionMiddleware, FilesystemSessionStore
-from werkzeug.local import Local, LocalManager
 
 from glashammer.utils import Request, NotFoundResponse, RedirectResponse
 from glashammer.config import SiteConfig
 from glashammer.auth import AuthService
-from glashammer.stormintegration import ThreadSafeStorePool
+from glashammer.stormintegration import StormService
 from glashammer.layout import LayoutService
 from glashammer.jinjaintegration import create_jinja_environment
+from glashammer.plugins import Registry
+from glashammer.statics import StaticService
+from glashammer.jinjaintegration import JinjaService
+from glashammer.controller import ControllerService
+from glashammer.routing import RoutingService
+from glashammer.sessions import SessionService
+from glashammer.features import FeatureService
+
+import warnings
 
 
 class GlashammerApplication(object):
@@ -22,7 +29,7 @@ class GlashammerApplication(object):
         self.config = site.config
 
     def __call__(self, environ, start_response):
-        url_adapter = self.site.url_map.bind_to_environ(environ)
+        url_adapter = self.site.routing_service.bind_to_environ(environ)
         req = Request(environ, url_adapter)
         try:
             endpoint, args = url_adapter.match(req.path)
@@ -34,7 +41,7 @@ class GlashammerApplication(object):
         return resp(environ, start_response)
 
     def _get_controller(self, endpoint_name):
-        return self.site.controllers.get(endpoint_name, None)
+        return self.site.controller_service.get(endpoint_name)
 
     def _get_response(self, environ, endpoint, args, req):
         endpoint_name, endpoint_method = endpoint.split('/', 1)
@@ -62,82 +69,43 @@ class GlashammerSite(object):
 
     def __init__(self):
         self.config = SiteConfig()
-        self.controllers = {}
-        self.url_map = Map()
-        self.services = []
-        self.static_directories = {}
-        self.template_directories = []
         self.storm_uri = 'sqlite:test.sqlite'
-        self.tables = []
-        # Thread local stuff
-        self._local = Local()
-        self._localmanager = LocalManager([self._local])
 
-        # services
-        self.layout_service = self.register_service(LayoutService)
+        self.services = []
+        # core services
+        self.storm_service = self.register_service(StormService)
+        self.controller_service = self.register_service(ControllerService)
+        self.static_service = self.register_service(StaticService)
+        self.jinja_service = self.register_service(JinjaService)
+        self.routing_service = self.register_service(RoutingService)
         self.auth_service = self.register_service(AuthService)
+        self.layout_service = self.register_service(LayoutService)
+        self.session_service = self.register_service(SessionService)
+        self.feature_service = self.register_service(FeatureService)
 
-    def finalise_config(self):
-        # Last thing before app is created
-        self.jinja_environment = create_jinja_environment(
-            self.template_directories)
-        self.store_pool = ThreadSafeStorePool(self._local, self.storm_uri)
+    def finalise(self):
         for svc in self.services:
             svc.finalise()
 
-    def get_store(self):
-        return self.store_pool.get()
-
-    store = property(get_store)
-
     def make_app(self):
-        self.finalise_config()
+        self.finalise()
         app = GlashammerApplication(self)
-        app = self._make_static_app(app)
-        app = self._make_authed_app(app)
-        app = self._make_sessioned_app(app)
-        app = self._make_localed_app(app)
+        return self.make_service_app(app)
+
+    def make_service_app(self, app):
+        for svc in self.services:
+            try:
+                app = svc.create_middleware(app)
+            except NotImplementedError:
+                pass
         return app
-
-    def _make_static_app(self, app):
-        static_map = dict(self.static_directories)
-        app = SharedDataMiddleware(app, static_map)
-        app.site = self
-        return app
-
-    def _make_sessioned_app(self, app):
-        app = SessionMiddleware(app, FilesystemSessionStore('.'))
-        app.site = self
-        return app
-
-    def _make_authed_app(self, app):
-        return self.auth_service.create_middleware(app)
-
-    def _make_localed_app(self, app):
-        return self._localmanager.make_middleware(app)
-
-    def register_controller(self, name, controller):
-        self.controllers[name] = controller
-    
-    def register_static_directory(self, name, path):
-        self.static_directories[name] = path
-
-    def register_template_directory(self, path):
-        self.template_directories.insert(0, path)
-
-    def register_url_rules(self, *rules):
-        for rule in rules:
-            self.url_map.add(rule)
-
-    def register_database_table(self, table):
-        self.tables.append(table)
-        table.create_table(self.store)
 
     def register_service(self, service_class):
         svc = service_class(self)
         self.services.append(svc)
         return svc
-
+        
     def run_debug_server(self, host='localhost', port=8080, autoreload=True):
         run_simple(host, port, self.make_app(), autoreload)
+
 

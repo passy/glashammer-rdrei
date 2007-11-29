@@ -69,7 +69,7 @@ class Registry(object):
         except KeyError:
             raise PluginLookupError('No plugin exists for %r' % token)
 
-    def get_feature_providers(self, token):
+    def list_feature_providers(self, token):
         try:
             return list(self._features[token])
         except KeyError:

@@ -1,0 +1,29 @@
+{% extends "base.jinja" %}
+{% block body %}
+
+    <div id="header">
+        {% for link in controller.list_feature_providers('navigation-item') %}
+            <a href="{{ link.get_url(map_adapter) }}">{{ link.label }}</a>
+        {% endfor %}
+    </div>
+
+    <div id="middle">
+
+        <div id="leftbar">
+        </div>
+
+        <div id="content">
+            {% block content %}
+                {{ content }}
+            {% endblock %}
+        </div>
+
+        <div id="rightbar">
+        </div>
+
+    </div>
+
+    <div id="footer">
+    </div>
+
+{% endblock %}

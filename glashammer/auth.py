@@ -128,7 +128,7 @@ class AuthService(Service):
         self.register_template_directory(TEMPLATE_PATH)
 
     def finalise(self):
-        store = self.site.store
+        store = self.store
         try:
             User.create_table(store)
         except:
