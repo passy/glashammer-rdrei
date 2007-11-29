@@ -23,10 +23,10 @@ class Bundle(object):
         pass
 
     def process_request(self, req):
-        pass
+        return req
 
-    def process_response(self, resp):
-        pass
+    def process_response(self, resp, req):
+        return resp
 
     def get_priority(self):
         return 100
