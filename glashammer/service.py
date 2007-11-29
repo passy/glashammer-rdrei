@@ -12,7 +12,7 @@ class Service(object):
     def finalise(self):
         pass
 
-    def setup_application(self):
+    def setup(self):
         """
         This is called when you first want to set up your application.
 

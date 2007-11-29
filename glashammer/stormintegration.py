@@ -9,7 +9,7 @@ from werkzeug.local import Local, LocalManager
 from glashammer.service import Service
 
 
-class StormCreator(Storm):
+class StormCreator(object):
 
     @classmethod
     def _get_type_for_var(cls, col):
@@ -45,9 +45,14 @@ class StormCreator(Storm):
         print 'create', cls
 
 
-class StormBase(StormCreator):
+class StormBase(Storm):
 
     id = Int(primary=True)
+
+
+class StormCreatorBase(Storm, StormCreator):
+
+    """Self creating"""
 
 
 def create_store(uri):

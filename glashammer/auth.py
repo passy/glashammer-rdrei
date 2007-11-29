@@ -110,7 +110,7 @@ class AdminPermission(UserPermission):
 
 
 
-class User(StormBase):
+class User(StormCreatorBase):
 
     __storm_table__ = 'user'
 
@@ -121,6 +121,8 @@ class User(StormBase):
 class AuthService(Service):
 
     def lifecycle(self):
+        self.set_user_class(User, User.create_table)
+        self.user_class_setup = User.create_table
         self.register_controller('auth', AuthController)
         self.register_url_rules(
             Rule('/login', endpoint='auth/login'),
@@ -145,3 +147,10 @@ class AuthService(Service):
 
     def create_middleware(self, app):
         return AuthMiddleware(app, self.site)
+
+    def setup(self):
+        pass
+
+    def set_user_class(self, user_class, setup_callable):
+        self.user_class = user_class
+        self.user_class_setup = setup_callable
