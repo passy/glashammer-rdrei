@@ -5,7 +5,7 @@ Hello World in Glashammer
 import os
 
 from glashammer import GlashammerSite, Response, Bundle, Controller, \
-    Rule, UserPermission, EndpointLink
+    Rule, UserPermission, EndpointLink, ResponseProcessor
 
 config = {
     'DB_URI': 'sqlite:test.sqlite',
@@ -25,6 +25,13 @@ class HelloController(Controller):
         self.session['foo'] = self.session.get('foo', 0) + 1
         return self.create_template_response(req, 'sitebase.jinja',
             content='You Clicked me: %s' % self.session['foo'])
+
+
+class HelloProcessor(ResponseProcessor):
+
+    def process_response(self, req, resp):
+        print req, resp
+        return resp
 
 # Bundle
 class HelloWorld(Bundle):
@@ -46,6 +53,8 @@ class HelloWorld(Bundle):
                 EndpointLink('Session', 'default/sess'))
         self.register_feature_provider('navigation-item',
                 EndpointLink('Logout', 'auth/logout'))
+
+        self.register_response_processor(HelloProcessor())
     
 
 from glashammer.testing import TestController
