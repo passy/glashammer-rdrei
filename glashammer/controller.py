@@ -29,7 +29,8 @@ class Controller(object):
     def create_template_response(self, req, name, **kw):
         return TemplateResponse(self.site, name, kw, req=req, controller=self)
 
+    # XXX May not be the right place for this
     def list_feature_providers(self, feature):
-        return self.site.feature_service.list(feature)
+        return self.site.feature.list(feature)
 
 

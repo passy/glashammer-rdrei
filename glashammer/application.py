@@ -17,6 +17,7 @@ from glashammer.controller import ControllerBundle
 from glashammer.routing import RoutingBundle
 from glashammer.sessions import SessionBundle
 from glashammer.features import FeatureBundle
+from glashammer.processors import ProcessorBundle
 
 import warnings
 
@@ -31,6 +32,10 @@ class GlashammerApplication(object):
     def __call__(self, environ, start_response):
         url_adapter = self.site.routing.bind_to_environ(environ)
         req = Request(environ, url_adapter)
+
+        # Request processors
+        for proc in self.site.processors.list_request_processors():
+            req = proc.process_request(req)
         try:
             endpoint, args = url_adapter.match(req.path)
             resp = self._get_response(environ, endpoint, args, req)
@@ -38,6 +43,11 @@ class GlashammerApplication(object):
             resp = NotFoundResponse()
         except RequestRedirect, e:
             resp = RedirectResponse(e.new_url)
+
+        # Response processors
+        for proc in self.site.processors.list_response_processors():
+            req = proc.process_response(req, resp)
+
         return resp(environ, start_response)
 
     def _get_response(self, environ, endpoint, args, req):
@@ -57,6 +67,7 @@ class GlashammerApplication(object):
                 controller.__before__(req, *args)
                 resp = method(req, *args)
                 controller.__after__(req, *args)
+
         return resp
             
     def _create_controller(self, endpoint_name):
@@ -80,6 +91,7 @@ class GlashammerSite(object):
         self.bundles = []
         self.site_config = site_config
         # core bundles
+        self.processors = self.register_bundle(ProcessorBundle)
         self.config = self.register_bundle(ConfigBundle)
         self.storm = self.register_bundle(StormBundle)
         self.controller = self.register_bundle(ControllerBundle)

@@ -58,12 +58,12 @@ class TemplateResponse(Response):
         self.site = site
         self.request = req
         self.controller = controller
-        self.template = self.site.jinja_service.env.get_template(template_name)
+        self.template = self.site.jinja.env.get_template(template_name)
         self.template_kw = template_kw
         Response.__init__(self, status=status, mimetype=mimetype, *args, **kw)
 
     def __call__(self, environ, start_response):
-        self.map_adapter = self.site.routing_service.bind_to_environ(environ)
+        self.map_adapter = self.site.routing.bind_to_environ(environ)
         self._update_template_kw()
         self.response = self.template.render(**self.template_kw)
         return Response.__call__(self, environ, start_response)
@@ -77,4 +77,8 @@ class TemplateResponse(Response):
         ))
 
 
+class Prioritisable(object):
+
+    def get_priority(self):
+        return 100
 

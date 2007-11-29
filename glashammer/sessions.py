@@ -1,4 +1,6 @@
-
+"""
+Glashammer Session handling.
+"""
 from glashammer.bundle import Bundle
 
 from werkzeug.contrib.sessions import SessionMiddleware, FilesystemSessionStore
