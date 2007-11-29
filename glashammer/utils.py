@@ -107,7 +107,6 @@ class Service(object):
 
     def __init__(self, site):
         self.site = site
-        self.registry = Registry()
         self.lifecycle()
 
     def lifecycle(self):
