@@ -8,7 +8,7 @@ from glashammer import GlashammerSite, Response, Service, Controller, \
     Rule, UserPermission, EndpointLink
 
 config = {
-    'DB_URII': 'sqlite:test.sqlite',
+    'DB_URI': 'sqlite:test.sqlite',
 }
 
 # Controller
