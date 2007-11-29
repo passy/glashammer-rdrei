@@ -1,14 +1,14 @@
 
 
 from werkzeug.utils import SharedDataMiddleware
-from glashammer.service import Service
+from glashammer.bundle import Bundle
 
 
 
-class StaticService(Service):
+class StaticBundle(Bundle):
     """A core service for handling static files"""
-    def __init__(self, site):
-        Service.__init__(self, site)
+
+    def lifecycle(self):
         self.static_directories = {}
 
     def register(self, name, path):

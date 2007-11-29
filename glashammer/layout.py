@@ -1,7 +1,7 @@
 
 import os
 
-from glashammer.service import Service
+from glashammer.bundle import Bundle
 from glashammer.controller import Controller
 
 package_dir = os.path.dirname(__file__)
@@ -14,7 +14,7 @@ NAVITEM = 'nav1-link'
 from glashammer.ui import EndpointLink
 
 
-class LayoutService(Service):
+class LayoutBundle(Bundle):
 
     def lifecycle(self):
         self.register_template_directory(TEMPLATE_PATH)

@@ -1,7 +1,7 @@
 
 
 
-from glashammer.service import Service
+from glashammer.bundle import Bundle
 
 class MissingRequiredConfigOption(KeyError):
     """Raised when a required config option is missing"""
@@ -14,7 +14,7 @@ class ConfigOption(object):
         self.default = default
 
 
-class ConfigService(Service):
+class ConfigBundle(Bundle):
 
     def lifecycle(self):
         self.options = {}

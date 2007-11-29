@@ -6,8 +6,8 @@ Really simple auth.
 
 import os
 
+from glashammer.bundle import Bundle
 from glashammer.controller import Controller
-from glashammer.service import Service
 from glashammer.utils import Response, RedirectResponse, Request
 from glashammer.stormintegration import StormBase, StormCreatorBase, Unicode
 
@@ -118,7 +118,7 @@ class User(StormCreatorBase):
     password = Unicode()
 
 
-class AuthService(Service):
+class AuthBundle(Bundle):
 
     def lifecycle(self):
         self.set_user_class(User, User.create_table)

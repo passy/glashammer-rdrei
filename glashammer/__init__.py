@@ -1,6 +1,6 @@
 
 
-from glashammer.service import Service
+from glashammer.bundle import Bundle
 from glashammer.plugins import Registry
 from glashammer.controller import Controller
 from werkzeug.routing import Rule

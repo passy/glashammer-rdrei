@@ -4,7 +4,7 @@ Hello World in Glashammer
 
 import os
 
-from glashammer import GlashammerSite, Response, Service, Controller, \
+from glashammer import GlashammerSite, Response, Bundle, Controller, \
     Rule, UserPermission, EndpointLink
 
 config = {
@@ -26,8 +26,8 @@ class HelloController(Controller):
         return self.create_template_response(req, 'sitebase.jinja',
             content='You Clicked me: %s' % self.session['foo'])
 
-# Service
-class HelloService(Service):
+# Bundle
+class HelloWorld(Bundle):
 
     def lifecycle(self):
         # Register the controller explicitly
@@ -71,14 +71,14 @@ class TestHelloController(TestController):
 
     def create_site(self):
         site = GlashammerSite(config)
-        site.register_service(HelloService)
+        site.register_bundle(HelloService)
         return site
 
 
 if __name__ == '__main__':
     site = GlashammerSite(config)
     # Register the service
-    site.register_service(HelloService)
+    site.register_bundle(HelloWorld)
     # Start the debug server
     site.run_debug_server()
 

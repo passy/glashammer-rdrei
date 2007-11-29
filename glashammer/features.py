@@ -1,9 +1,9 @@
 
 
-from glashammer.service import Service
+from glashammer.bundle import Bundle
 from glashammer.plugins import Registry
 
-class FeatureService(Service):
+class FeatureBundle(Bundle):
 
     def lifecycle(self):
         self.registry = Registry()

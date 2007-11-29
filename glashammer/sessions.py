@@ -1,9 +1,9 @@
 
-from glashammer.service import Service
+from glashammer.bundle import Bundle
 
 from werkzeug.contrib.sessions import SessionMiddleware, FilesystemSessionStore
 
-class SessionService(Service):
+class SessionBundle(Bundle):
 
     def create_middleware(self, app):
         return SessionMiddleware(app, FilesystemSessionStore('.'))

@@ -6,7 +6,7 @@ from storm.locals import Storm, Store, Int, Unicode, create_database
 
 from werkzeug.local import Local, LocalManager
 
-from glashammer.service import Service
+from glashammer.bundle import Bundle
 
 
 class StormCreator(object):
@@ -73,7 +73,7 @@ class ThreadSafeStorePool(object):
             return self._local.store
 
 
-class StormService(Service):
+class StormBundle(Bundle):
 
     def lifecycle(self):
         self.local = Local()
@@ -82,7 +82,7 @@ class StormService(Service):
 
     def finalise(self):
         self.store_pool = ThreadSafeStorePool(self.local,
-                            self.site.config_service.get('DB_URI'))
+                            self.site.config.get('DB_URI'))
 
     def get_store(self):
         return self.store_pool.get()

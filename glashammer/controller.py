@@ -1,9 +1,9 @@
 
-from glashammer.service import Service
+from glashammer.bundle import Bundle
 from glashammer.utils import TemplateResponse
 
 
-class ControllerService(Service):
+class ControllerBundle(Bundle):
 
     def lifecycle(self):
         self.controllers = {}
@@ -19,7 +19,6 @@ class Controller(object):
 
     def __init__(self, site,):
         self.site = site
-        self.jinja = self.site.jinja_service.env
 
     def __before__(self, req, *args):
         pass

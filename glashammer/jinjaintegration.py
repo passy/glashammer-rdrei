@@ -2,7 +2,7 @@
 
 from jinja import ChoiceLoader, FileSystemLoader, Environment
 
-from glashammer.service import Service
+from glashammer.bundle import Bundle
 
 def create_jinja_environment(paths):
     return Environment(loader=ChoiceLoader(
@@ -10,7 +10,7 @@ def create_jinja_environment(paths):
     ))
 
 
-class JinjaService(Service):
+class JinjaBundle(Bundle):
 
     def lifecycle(self):
         self.directories = []

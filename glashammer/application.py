@@ -5,18 +5,18 @@ from werkzeug.routing import NotFound, RequestRedirect, Map
 from werkzeug.utils import SharedDataMiddleware
 
 from glashammer.utils import Request, NotFoundResponse, RedirectResponse
-from glashammer.config import ConfigService
-from glashammer.auth import AuthService
-from glashammer.stormintegration import StormService
-from glashammer.layout import LayoutService
+from glashammer.config import ConfigBundle
+from glashammer.auth import AuthBundle
+from glashammer.stormintegration import StormBundle
+from glashammer.layout import LayoutBundle
 from glashammer.jinjaintegration import create_jinja_environment
 from glashammer.plugins import Registry
-from glashammer.statics import StaticService
-from glashammer.jinjaintegration import JinjaService
-from glashammer.controller import ControllerService
-from glashammer.routing import RoutingService
-from glashammer.sessions import SessionService
-from glashammer.features import FeatureService
+from glashammer.statics import StaticBundle
+from glashammer.jinjaintegration import JinjaBundle
+from glashammer.controller import ControllerBundle
+from glashammer.routing import RoutingBundle
+from glashammer.sessions import SessionBundle
+from glashammer.features import FeatureBundle
 
 import warnings
 
@@ -29,7 +29,7 @@ class GlashammerApplication(object):
         self.controller_cache = {}
 
     def __call__(self, environ, start_response):
-        url_adapter = self.site.routing_service.bind_to_environ(environ)
+        url_adapter = self.site.routing.bind_to_environ(environ)
         req = Request(environ, url_adapter)
         try:
             endpoint, args = url_adapter.match(req.path)
@@ -66,7 +66,7 @@ class GlashammerApplication(object):
             return controller
 
     def _get_controller(self, endpoint_name):
-        return self.site.controller_service.get(endpoint_name)
+        return self.site.controller.get(endpoint_name)
 
 
 
@@ -77,28 +77,28 @@ class GlashammerSite(object):
     """
 
     def __init__(self, site_config):
-        self.services = []
+        self.bundles = []
         self.site_config = site_config
-        # core services
-        self.config_service = self.register_service(ConfigService)
-        self.storm_service = self.register_service(StormService)
-        self.controller_service = self.register_service(ControllerService)
-        self.static_service = self.register_service(StaticService)
-        self.jinja_service = self.register_service(JinjaService)
-        self.routing_service = self.register_service(RoutingService)
-        self.auth_service = self.register_service(AuthService)
-        self.layout_service = self.register_service(LayoutService)
-        self.session_service = self.register_service(SessionService)
-        self.feature_service = self.register_service(FeatureService)
+        # core bundles
+        self.config = self.register_bundle(ConfigBundle)
+        self.storm = self.register_bundle(StormBundle)
+        self.controller = self.register_bundle(ControllerBundle)
+        self.static = self.register_bundle(StaticBundle)
+        self.jinja = self.register_bundle(JinjaBundle)
+        self.routing = self.register_bundle(RoutingBundle)
+        self.auth = self.register_bundle(AuthBundle)
+        self.layout = self.register_bundle(LayoutBundle)
+        self.session = self.register_bundle(SessionBundle)
+        self.feature = self.register_bundle(FeatureBundle)
 
     def finalise(self):
-        for svc in self.services:
-            svc.finalise()
+        for bdl in self.bundles:
+            bdl.finalise()
 
     def setup_site(self):
         self.finalise()
-        for svc in self.services:
-            svc.setup()
+        for bdl in self.bundles:
+            bdl.setup()
 
     def make_app(self):
         self.finalise()
@@ -106,17 +106,17 @@ class GlashammerSite(object):
         return self.make_service_app(app)
 
     def make_service_app(self, app):
-        for svc in self.services:
+        for svc in self.bundles:
             try:
                 app = svc.create_middleware(app)
             except NotImplementedError:
                 pass
         return app
 
-    def register_service(self, service_class):
-        svc = service_class(self)
-        self.services.append(svc)
-        return svc
+    def register_bundle(self, bundle_class):
+        bdl = bundle_class(self)
+        self.bundles.append(bdl)
+        return bdl
         
     def run_debug_server(self, host='localhost', port=8080, autoreload=True):
         run_simple(host, port, self.make_app(), autoreload)

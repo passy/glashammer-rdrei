@@ -1,8 +1,8 @@
 
 from werkzeug.routing import Map
-from glashammer.service import Service
+from glashammer.bundle import Bundle
 
-class RoutingService(Service):
+class RoutingBundle(Bundle):
 
     def lifecycle(self):
         self.map = Map()
