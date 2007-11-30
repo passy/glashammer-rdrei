@@ -30,7 +30,18 @@ from werkzeug.wrappers import BaseRequest, BaseResponse
 from glashammer.plugins import Registry
 
 
-class Request(BaseRequest):
+class SessionRequestMixin(object):
+
+    def __init__(self, environ):
+        self.session = environ['werkzeug.session']
+
+
+class UserRequestMixin(object):
+
+    def __init__(self, environ):
+        self.user_id = self.session.get('user_id')
+
+class Request(BaseRequest, SessionRequestMixin, UserRequestMixin):
     """
     The concrete request object used in the WSGI application.
     It has some helper functions that can be used to build URLs.
@@ -39,6 +50,8 @@ class Request(BaseRequest):
 
     def __init__(self, environ, url_adapter):
         BaseRequest.__init__(self, environ)
+        SessionRequestMixin.__init__(self, environ)
+        UserRequestMixin.__init__(self, environ)
         self.url_adapter = url_adapter
 
     def url_for(self, endpoint, **values):

@@ -18,19 +18,19 @@ class HelloController(Controller):
         return self.create_template_response(req, 'hello.jinja')
 
     def byebye(self, req):
-        UserPermission(self.site, self.user_id)
+        UserPermission(self.site, req.user_id)
         return Response('bye bye')
 
     def sess(self, req):
-        self.session['foo'] = self.session.get('foo', 0) + 1
+        req.session['foo'] = req.session.get('foo', 0) + 1
         return self.create_template_response(req, 'sitebase.jinja',
-            content='You Clicked me: %s' % self.session['foo'])
+            content='You Clicked me: %s' % req.session['foo'])
 
 
 class HelloResponseProcessor(ResponseProcessor):
 
     def process_response(self, req, resp):
-        resp.template_kw['injected'] = 'Injected!'
+        req.injected = 'Injected!'
         return resp
 
 # Bundle

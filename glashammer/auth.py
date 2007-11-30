@@ -55,31 +55,31 @@ class AuthController(Controller):
             username = req.form.get('username')
             password = req.form.get('password')
             if not (username and password):
-                return self._login_failure(redirect)
-            user = self.site.storm_service.store.find(User, username=username,
+                return self._login_failure(req, redirect)
+            user = self.site.storm.store.find(User, username=username,
                                         password=password).any()
             if user is None:
-                return self._login_failure(redirect)
+                return self._login_failure(req, redirect)
             else:
-                self.session['user_id'] = username
+                req.session['user_id'] = username
                 return RedirectResponse(redirect)
         else:
             redirect_back_to = req.args.get('attempted_page', '')
-            return self.create_template_response('loginform.jinja',
+            return self.create_template_response(req, 'loginform.jinja',
                 redirect_back_to = redirect_back_to,
             )
 
-    def _login_failure(self, redirect):
-        return RedirectResponse(self.map_adapter.build('auth/login',
-                                dict(attempted_page=redirect)))
+    def _login_failure(self, req, redirect):
+        return RedirectResponse(req.url_for('auth/login',
+                                attempted_page=redirect))
 
 
     def logout(self, req):
         redirect = req.args.get('logout_redirect_back_to', '/')
-        self.session['user_id'] = 0
+        req.session['user_id'] = 0
         return RedirectResponse(redirect)
 
-
+#XXX Try to replace with pre-processing
 class AuthMiddleware(object):
 
     def __init__(self, app, site):
@@ -92,7 +92,7 @@ class AuthMiddleware(object):
         try:
             return self.app(environ, start_response)
         except NotAuthenticatedError:
-            map_adapter = self.site.routing_service.bind_to_environ(environ)
+            map_adapter = self.site.routing.bind_to_environ(environ)
             req = Request(environ, map_adapter)
             resp = RedirectResponse(
                 map_adapter.build('auth/login',
