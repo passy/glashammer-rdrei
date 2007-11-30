@@ -3,6 +3,10 @@
     <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.3.1/build/reset/reset-min.css">
 {% endmacro %}
 
+{% macro yui_conn_includes %}
+<script src="http://yui.yahooapis.com/2.3.1/build/connection/connection-min.js"></script>
+{% endmacro %}
+
 {% macro yui_rte_includes %}
 <!-- Skin CSS file -->
 <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.3.1/build/assets/skins/sam/skin.css">
@@ -54,8 +58,11 @@
     </script>
 {% endmacro %}
 
-{% macro yui_submit_button(id) %}
+{% macro yui_submit_button(id, callback=None) %}
     <script type="text/javascript">
-    var oSubmitButton1 = new YAHOO.widget.Button("{{ id }}", { value: "submitbutton1value" });
+    var {{ id }}_yui_button = new YAHOO.widget.Button("{{ id }}", { value: "submitbutton1value" });
+    {% if callback %}
+        {{ id }}_yui_button.addListener("click", {{ callback }});
+    {% endif %}
     </script>
 {% endmacro %}
