@@ -1,0 +1,26 @@
+
+
+{% macro input_label(name, label) %}
+    <label for="{{ name }}_field">{{ label }}</label>
+{% endmacro %}
+
+{% macro input(name, type='text') %}
+    <input type="{{ type }}" name="{{ name }}" id="{{ name }}_field"
+           value="
+            {%- if item -%}
+                {{- item|getattribute(name) -}}
+            {%- else -%}
+                {{- prefill[name] -}}
+            {%- endif -%}" />
+    <span class="form_error">{{ errors[name] }}</span>
+{% endmacro %}
+
+{% macro textarea(name) %}
+<textarea name="{{ name }}">
+    {%- if item -%}
+        {{- item|getattribute(name) -}}
+    {%- else -%}
+        {{- prefill[name] -}}
+    {%- endif -%}
+</textarea>
+{% endmacro %}
