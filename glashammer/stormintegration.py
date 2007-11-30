@@ -42,7 +42,7 @@ class StormCreator(object):
         vtype = col._variable_class.__name__
         if vtype == 'IntVariable':
             if col._primary:
-                vname = 'INTEGER PRIMARY KEY'
+                vname = "SERIAL PRIMARY KEY"
             else:
                 vname = 'INTEGER'
         elif vtype == 'DateVariable':
@@ -65,7 +65,7 @@ class StormCreator(object):
         cols = []
         for col, prop in cls._storm_columns.items():
             cols.append(cls._get_type_for_var(col))
-        q = 'CREATE TABLE %s (%s)' % (cls.__storm_table__, ', '.join(cols))
+        q = 'CREATE TABLE "%s" (%s)' % (cls.__storm_table__, ', '.join(cols))
         store.execute(q)
         print 'create', cls
 
@@ -88,15 +88,15 @@ class ThreadSafeStorePool(object):
 
     def __init__(self, local, uri):
         self.uri = uri
+        self.db = create_database(self.uri)
+        self.local = threading.local()
 
     def get(self):
-        local = threading.local()
         try:
-            return local.store
+            return self.local.store
         except AttributeError:
-            db = create_database(self.uri)
-            local.store = Store(db)
-            return local.store
+            self.local.store = Store(self.db)
+            return self.local.store
 
 
 class StormBundle(Bundle):

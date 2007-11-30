@@ -155,20 +155,21 @@ class AuthBundle(Bundle):
         )
         self.register_template_directory(TEMPLATE_PATH)
 
-    def finalise(self):
+    def setup(self):
         # XXX Move this out into a setupt thing
         store = self.store
         try:
             User.create_table(store)
+            store.commit()
         except:
+            raise
             pass
         if store.find(User).any() is None:
             u = User()
             u.username = u'ali'
             u.password = u'ali'
             store.add(u)
-        store.flush()
-        store.commit()
+            store.commit()
 
     def create_middleware(self, app):
         return AuthMiddleware(app, self.site)

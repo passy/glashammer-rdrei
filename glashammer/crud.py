@@ -32,7 +32,8 @@ class CrudController(Controller):
                                              item=item)
 
     def edit(self, req, id):
-        item = self._get_item_for_id(id)
+        store = self.site.storm.store
+        item = self._get_item_for_id(store, id)
         if item is None:
             return NotFoundResponse()
         else:
@@ -51,16 +52,15 @@ class CrudController(Controller):
             id = values.get('id')
             del values['id']
             if id:
-                item = self._get_item_for_id(id)
+                item = self._get_item_for_id(store, id)
                 for k in values:
                     setattr(item, k, values[k])
             else:
                 item = self.model_type()
                 for k in values:
-                    print item, k, values[k]
                     setattr(item, k, values[k])
                 store.add(item)
-            #store.flush()
+            store.flush()
             store.commit()
             return RedirectResponse(self.base_url + '/%s' % item.id)
         except Invalid, e:
@@ -74,8 +74,8 @@ class CrudController(Controller):
         values = schema.to_python(req.form)
         return values
 
-    def _get_item_for_id(self, id):
-        item = self.site.storm.store.find(self.model_type, id=id).one()
+    def _get_item_for_id(self, store, id):
+        item = store.find(self.model_type, id=id).one()
         return item
 
     @classmethod
