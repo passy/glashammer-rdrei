@@ -25,7 +25,7 @@
 # THE SOFTWARE.
 
 
-from cgi import escape
+import threading
 
 from storm.locals import Storm, Store, Int, Unicode, create_database
 
@@ -87,15 +87,16 @@ def create_store(uri):
 class ThreadSafeStorePool(object):
 
     def __init__(self, local, uri):
-        self._db = create_database(uri)
-        self._local = local
+        self.uri = uri
 
     def get(self):
+        local = threading.local()
         try:
-            return self._local.store
+            return local.store
         except AttributeError:
-            self._local.store = Store(self._db)
-            return self._local.store
+            db = create_database(self.uri)
+            local.store = Store(db)
+            return local.store
 
 
 class StormBundle(Bundle):

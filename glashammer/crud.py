@@ -3,6 +3,7 @@ from formencode import Schema, Invalid
 
 from glashammer.controller import Controller
 from werkzeug.routing import Rule
+from glashammer.utils import RedirectResponse
 
 
 class CrudController(Controller):
