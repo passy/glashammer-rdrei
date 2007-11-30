@@ -80,7 +80,7 @@ class TestHelloController(TestController):
 
     def create_site(self):
         site = GlashammerSite(config)
-        site.register_bundle(HelloService)
+        site.register_bundle(HelloWorld)
         return site
 
 

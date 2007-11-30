@@ -37,7 +37,7 @@ class TestController(TestCase):
         self.real_app = self.site.make_app()
         self.app = TestApp(self.real_app)
         self.dummy_environ = create_environ()
-        self.map_adapter = self.site.routing_service.bind_to_environ(self.dummy_environ)
+        self.map_adapter = self.site.routing.bind_to_environ(self.dummy_environ)
         TestCase.__init__(self, *args, **kw)
 
     def create_site(self):
