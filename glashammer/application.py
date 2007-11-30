@@ -27,6 +27,7 @@
 """
 Glashammer site and wsgi application.
 """
+import threading
 
 from werkzeug.serving import run_simple
 from werkzeug.routing import NotFound, RequestRedirect, Map
@@ -189,6 +190,15 @@ class GlashammerSite(object):
         app = GlashammerApplication(self)
         return self.make_service_app(app)
 
+    def thread_local_app(self, environ, start_response):
+        local = threading.local()
+        try:
+            app = local.app
+        except AttributeError:
+            app = self.make_app()
+            local.app = app
+        return app(environ, start_response)
+
     def make_service_app(self, app):
         """
         Wrap the WSGI application in applications created by the bundles.
@@ -216,6 +226,8 @@ class GlashammerSite(object):
         """
         Run a debug server.
         """
-        run_simple(host, port, self.make_app(), autoreload)
+        run_simple(host, port, self.thread_local_app, autoreload)
+
+
 
 
