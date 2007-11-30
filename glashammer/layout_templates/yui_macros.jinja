@@ -1,4 +1,36 @@
 
 {% macro yui_css_reset %}
-    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.3.1/build/reset/reset-min.css"> 
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.3.1/build/reset/reset-min.css">
+{% endmacro %}
+
+{% macro yui_rte_includes %}
+<!-- Skin CSS file -->
+<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.3.1/build/assets/skins/sam/skin.css">
+
+<!-- Utility Dependencies -->
+<script type="text/javascript" src="http://yui.yahooapis.com/2.3.1/build/yahoo-dom-event/yahoo-dom-event.js"></script> 
+<script type="text/javascript" src="http://yui.yahooapis.com/2.3.1/build/element/element-beta-min.js"></script> 
+
+<!-- Needed for Menus, Buttons and Overlays used in the Toolbar -->
+<script src="http://yui.yahooapis.com/2.3.1/build/container/container_core-min.js"></script>
+<script src="http://yui.yahooapis.com/2.3.1/build/menu/menu-min.js"></script>
+<script src="http://yui.yahooapis.com/2.3.1/build/button/button-beta-min.js"></script>
+
+<!-- Source file for Rich Text Editor-->
+<script src="http://yui.yahooapis.com/2.3.1/build/editor/editor-beta-min.js"></script>
+
+
+{% endmacro %}
+
+{% macro yui_rte(id) %}
+    <script type="text/javascript">
+    var myEditor = new YAHOO.widget.Editor('{{ id }}', {
+    handleSubmit: true,
+    height: '300px',
+    width: '522px',
+    dompath: true, //Turns on the bar at the bottom
+    animate: true //Animates the opening, closing and moving of Editor windows
+    });
+    myEditor.render();
+    </script>
 {% endmacro %}

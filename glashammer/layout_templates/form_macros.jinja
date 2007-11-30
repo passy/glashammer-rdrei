@@ -16,7 +16,7 @@
 {% endmacro %}
 
 {% macro textarea(name) %}
-<textarea name="{{ name }}">
+<textarea name="{{ name }}" id="{{ name }}_field">
     {%- if item -%}
         {{- item|getattribute(name) -}}
     {%- else -%}
