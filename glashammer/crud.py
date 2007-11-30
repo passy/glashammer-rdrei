@@ -2,6 +2,7 @@
 from formencode import Schema, Invalid
 
 from glashammer.controller import Controller
+from werkzeug.routing import Rule
 
 
 class CrudController(Controller):
