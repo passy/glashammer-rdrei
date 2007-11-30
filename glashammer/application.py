@@ -90,7 +90,7 @@ class GlashammerApplication(object):
                 resp = NotFoundResponse()
             else:
                 controller.__before__(req, *args)
-                resp = method(req, *args)
+                resp = method(req, **args)
                 controller.__after__(req, *args)
 
         return resp
