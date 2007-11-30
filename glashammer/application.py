@@ -24,6 +24,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+"""
+Glashammer site and wsgi application.
+"""
 
 from werkzeug.serving import run_simple
 from werkzeug.routing import NotFound, RequestRedirect, Map
@@ -48,13 +51,26 @@ import warnings
 
 
 class GlashammerApplication(object):
-    """WSGI Application"""
+    """
+    WSGI Application
+    """
 
     def __init__(self, site):
         self.site = site
         self.controller_cache = {}
 
     def __call__(self, environ, start_response):
+        """
+        WSGI application call.
+
+        * Create a request
+        * Find the endpoint required for the url
+        * Run the request pre-processors
+        * Find the controller and method associated with the endpoint
+        * Get the response object (which is a wsgi app)
+        * Run the response post-processors
+        * Return the called response object.
+        """
         url_adapter = self.site.routing.bind_to_environ(environ)
         req = Request(environ, url_adapter)
 
@@ -76,6 +92,9 @@ class GlashammerApplication(object):
         return resp(environ, start_response)
 
     def _get_response(self, environ, endpoint, args, req):
+        """
+        Get a response object for an endpoint.
+        """
         endpoint_name, endpoint_method = endpoint.split('/', 1)
         try:
             controller = self.controller_cache[endpoint_name]
@@ -92,16 +111,23 @@ class GlashammerApplication(object):
                 controller.__before__(req, *args)
                 resp = method(req, **args)
                 controller.__after__(req, *args)
-
         return resp
-            
+
     def _create_controller(self, endpoint_name):
+        """
+        Create and return a controller for the end point name.
+
+        This name is the same name that controllers are registered with.
+        """
         controller_type = self._get_controller(endpoint_name)
         if controller_type is not None:
             controller = controller_type(self.site)
             return controller
 
     def _get_controller(self, endpoint_name):
+        """
+        Look up the controller type from the site.
+        """
         return self.site.controller.get(endpoint_name)
 
 
@@ -129,20 +155,44 @@ class GlashammerSite(object):
         self.feature = self.register_bundle(FeatureBundle)
 
     def finalise(self):
+        """
+        Finalise the site configuration.
+
+        This is called as the last thing before making the wsgi-application or
+        running the setup scripts. It is responsible for reading the
+        information that was registered between instantiation of the site and
+        then.
+
+        It delegates this job to the loaded bundles.
+        """
         for bdl in self.bundles:
             bdl.finalise()
 
     def setup_site(self):
+        """
+        Called to set up the site application.
+
+        This should be called once per site installation and is responsible
+        for one-off installation tasks such as database table creation.
+
+        It delegates this job to the loaded bundles.
+        """
         self.finalise()
         for bdl in self.bundles:
             bdl.setup()
 
     def make_app(self):
+        """
+        Create a WSGI application for this site.
+        """
         self.finalise()
         app = GlashammerApplication(self)
         return self.make_service_app(app)
 
     def make_service_app(self, app):
+        """
+        Wrap the WSGI application in applications created by the bundles.
+        """
         for svc in self.bundles:
             try:
                 app = svc.create_middleware(app)
@@ -151,11 +201,21 @@ class GlashammerSite(object):
         return app
 
     def register_bundle(self, bundle_class):
+        """
+        Register a bundle with the site.
+
+        The bundle will be registered and instantiated. When instantiated, it
+        will run through its lifecycle, and register the required activities
+        with the site.
+        """
         bdl = bundle_class(self)
         self.bundles.append(bdl)
         return bdl
-        
+
     def run_debug_server(self, host='localhost', port=8080, autoreload=True):
+        """
+        Run a debug server.
+        """
         run_simple(host, port, self.make_app(), autoreload)
 
 

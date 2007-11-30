@@ -55,7 +55,7 @@ class HelloWorld(Bundle):
                 EndpointLink('Logout', 'auth/logout'))
 
         self.register_response_processor(HelloResponseProcessor())
-    
+
 
 from glashammer.testing import TestController
 
