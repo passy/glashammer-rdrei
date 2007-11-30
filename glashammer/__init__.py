@@ -35,3 +35,4 @@ from glashammer.utils import Request, Response, TemplateResponse, sibpath
 from glashammer.testing import TestController
 from glashammer.auth import UserPermission
 from glashammer.processors import ResponseProcessor, RequestProcessor
+from glashammer.stormintegration import StormCreatorBase, StormBase
