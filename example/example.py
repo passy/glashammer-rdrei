@@ -27,10 +27,10 @@ class HelloController(Controller):
             content='You Clicked me: %s' % self.session['foo'])
 
 
-class HelloProcessor(ResponseProcessor):
+class HelloResponseProcessor(ResponseProcessor):
 
     def process_response(self, req, resp):
-        print req, resp
+        resp.template_kw['injected'] = 'Injected!'
         return resp
 
 # Bundle
@@ -54,7 +54,7 @@ class HelloWorld(Bundle):
         self.register_feature_provider('navigation-item',
                 EndpointLink('Logout', 'auth/logout'))
 
-        self.register_response_processor(HelloProcessor())
+        self.register_response_processor(HelloResponseProcessor())
     
 
 from glashammer.testing import TestController

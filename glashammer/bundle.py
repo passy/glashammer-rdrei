@@ -85,6 +85,12 @@ class Bundle(object):
     def register_feature_provider(self, feature, provider):
         self.site.feature.register(feature, provider)
 
+    def register_response_processor(self, processor):
+        self.site.processors.register_response_processor(processor)
+
+    def register_request_processor(self, processor):
+        self.site.processors.register_request_processor(processor)
+
     # Listing features provided by the bundle
     def list_feature_providers(self, feature):
         return self.site.feature.list(feature)

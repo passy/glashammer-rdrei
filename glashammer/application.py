@@ -71,7 +71,7 @@ class GlashammerApplication(object):
 
         # Response processors
         for proc in self.site.processors.list_response_processors():
-            req = proc.process_response(req, resp)
+            resp = proc.process_response(req, resp)
 
         return resp(environ, start_response)
 

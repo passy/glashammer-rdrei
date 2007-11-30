@@ -34,3 +34,4 @@ from glashammer.application import GlashammerSite
 from glashammer.utils import Request, Response, TemplateResponse
 from glashammer.testing import TestController
 from glashammer.auth import UserPermission
+from glashammer.processors import ResponseProcessor, RequestProcessor
