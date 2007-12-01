@@ -5,7 +5,7 @@
 {% endmacro %}
 
 {% macro input(name, type='text') %}
-    <div class="form_error">{{ errors[name] }}</div>
+    <div class="form_error" id="{{ name }}_error">{{ errors[name] }}</div>
     <input type="{{ type }}" name="{{ name }}" id="{{ name }}_field"
            value="
             {%- if item -%}
@@ -16,8 +16,8 @@
 {% endmacro %}
 
 {% macro textarea(name) %}
-<div class="form_error">{{ errors[name] }}</div>
-<textarea name="{{ name }}" id="{{ name }}_field">
+<div class="form_error" id="{{ name }}_error">{{ errors[name] }}</div>
+<textarea name="{{ name }}" id="{{ name }}_field" cols="60" rows="20">
     {%- if item -%}
         {{- item|getattribute(name) -}}
     {%- else -%}

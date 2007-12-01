@@ -1,6 +1,9 @@
 
-{% macro yui_css_reset %}
-    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.3.1/build/reset/reset-min.css">
+
+{% macro yui_base_includes %}
+<script type="text/javascript" src="http://yui.yahooapis.com/2.3.1/build/yahoo-dom-event/yahoo-dom-event.js"></script> 
+<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.3.1/build/reset-fonts-grids/reset-fonts-grids.css"> 
+<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.3.1/build/assets/skins/sam/skin.css">
 {% endmacro %}
 
 {% macro yui_conn_includes %}
@@ -8,124 +11,26 @@
 {% endmacro %}
 
 {% macro yui_rte_includes %}
-<!-- Skin CSS file -->
-<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.3.1/build/assets/skins/sam/skin.css">
+<script src="http://yui.yahooapis.com/2.3.1/build/editor/editor-beta-min.js"></script>
+{% endmacro %}
 
-<!-- Utility Dependencies -->
-<script type="text/javascript" src="http://yui.yahooapis.com/2.3.1/build/yahoo-dom-event/yahoo-dom-event.js"></script> 
+{% macro yui_button_includes %}
 <script type="text/javascript" src="http://yui.yahooapis.com/2.3.1/build/element/element-beta-min.js"></script> 
-
-<!-- Needed for Menus, Buttons and Overlays used in the Toolbar -->
 <script src="http://yui.yahooapis.com/2.3.1/build/container/container_core-min.js"></script>
 <script src="http://yui.yahooapis.com/2.3.1/build/menu/menu-min.js"></script>
 <script src="http://yui.yahooapis.com/2.3.1/build/button/button-beta-min.js"></script>
-
-<!-- Source file for Rich Text Editor-->
-<script src="http://yui.yahooapis.com/2.3.1/build/editor/editor-beta-min.js"></script>
-
-
 {% endmacro %}
 
 {% macro yui_tabview_includes %}
 <script type="text/javascript" src="http://yui.yahooapis.com/2.3.1/build/tabview/tabview-min.js"></script>
 {% endmacro %}
 
-{% macro yui_button_includes %}
-<!-- Core + Skin CSS -->
-<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.3.1/build/button/assets/skins/sam/button.css">
-<!-- OPTIONAL: Menu Stylesheet (required for creating buttons of type "menu" and "split") -->
-<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.3.1/build/menu/assets/skins/sam/menu.css">
-
-<!-- Dependencies -->
-<script type="text/javascript" src="http://yui.yahooapis.com/2.3.1/build/yahoo-dom-event/yahoo-dom-event.js"></script>
-<script type="text/javascript" src="http://yui.yahooapis.com/2.3.1/build/element/element-beta-min.js"></script>
-
-<!-- OPTIONAL: Menu and Container Core (required for creating buttons of type "menu" and "split") -->
-<script type="text/javascript" src="http://yui.yahooapis.com/2.3.1/build/container/container_core-min.js"></script>
-<script type="text/javascript" src="http://yui.yahooapis.com/2.3.1/build/menu/menu-min.js"></script>
-
-<!-- Source file -->
-<script type="text/javascript" src="http://yui.yahooapis.com/2.3.1/build/button/button-beta-min.js"></script>
-
+{% macro yui_all_includes %}
+   {{ yui_base_includes() }}
+   {{ yui_conn_includes() }}
+   {{ yui_button_includes() }}
+   {{ yui_rte_includes() }}
+   {{ yui_tabview_includes() }}
+    <script type="text/javascript" src="/layout/js/yui-utils.js"></script>
 {% endmacro %}
 
-{% macro yui_rte(id) %}
-    <script type="text/javascript">
-    var {{ id }}_yui_editor = new YAHOO.widget.Editor('{{ id }}', {
-    handleSubmit: true,
-    height: '300px',
-    width: '600px',
-    dompath: false, //Turns on the bar at the bottom
-    animate: true, //Animates the opening, closing and moving of Editor windows
-    toolbar: {
-
-collapse: false,
-titlebar: '',
-draggable: false,
-buttons: [
-    { group: 'textstyle', label: 'Font Style',
-        buttons: [
-            { type: 'push', label: 'Bold CTRL + SHIFT + B', value: 'bold' },
-            { type: 'push', label: 'Italic CTRL + SHIFT + I', value: 'italic' },
-            { type: 'push', label: 'Underline CTRL + SHIFT + U', value: 'underline' },
-            { type: 'separator' },
-            { type: 'push', label: 'Remove Formatting', value: 'removeformat', disabled: true },
-        ]
-    },
-    { type: 'separator' },
-    { group: 'alignment', label: 'Alignment',
-        buttons: [
-            { type: 'push', label: 'Align Left CTRL + SHIFT + [', value: 'justifyleft' },
-            { type: 'push', label: 'Align Center CTRL + SHIFT + |', value: 'justifycenter' },
-            { type: 'push', label: 'Align Right CTRL + SHIFT + ]', value: 'justifyright' },
-            { type: 'push', label: 'Justify', value: 'justifyfull' }
-        ]
-    },
-    { type: 'separator' },
-    { group: 'parastyle', label: 'Paragraph Style',
-        buttons: [
-        { type: 'select', label: 'Normal', value: 'heading', disabled: true,
-            menu: [
-                { text: 'Normal', value: 'none', checked: true },
-                { text: 'Header 1', value: 'h2' },
-                { text: 'Header 2', value: 'h3' },
-                { text: 'Header 3', value: 'h4' },
-            ]
-        }
-        ]
-    },
-    { type: 'separator' },
-    { group: 'indentlist', label: 'Lists',
-        buttons: [
-            { type: 'push', label: 'Create an Unordered List', value: 'insertunorderedlist' },
-            { type: 'push', label: 'Create an Ordered List', value: 'insertorderedlist' }
-        ]
-    },
-    { type: 'separator' },
-    { group: 'insertitem', label: 'Insert Item',
-        buttons: [
-            { type: 'push', label: 'HTML Link CTRL + SHIFT + L', value: 'createlink', disabled: true },
-            { type: 'push', label: 'Insert Image', value: 'insertimage' }
-        ]
-    }
-]
-}
-    });
-    {{ id }}_yui_editor.render();
-    </script>
-{% endmacro %}
-
-{% macro yui_submit_button(id, callback=None) %}
-    <script type="text/javascript">
-    var {{ id }}_yui_button = new YAHOO.widget.Button("{{ id }}", { value: "submitbutton1value" });
-    {% if callback %}
-        {{ id }}_yui_button.addListener("click", {{ callback }});
-    {% endif %}
-    </script>
-{% endmacro %}
-
-{% macro yui_tabview(id) %}
-    <script type="text/javascript">
-    var {{ id }}_yui_tabs = new YAHOO.widget.TabView("{{ id }}");
-    </script>
-{% endmacro %}

@@ -3,7 +3,8 @@ from formencode import Schema, Invalid
 
 from glashammer.controller import Controller
 from werkzeug.routing import Rule
-from glashammer.utils import RedirectResponse
+from glashammer.utils import RedirectResponse, Response
+from simplejson import dumps
 
 
 class CrudController(Controller):
@@ -46,6 +47,8 @@ class CrudController(Controller):
                                              item=item)
 
     def save(self, req):
+        is_xhr = req.environ.get('HTTP_X_REQUESTED_WITH') is not None
+        print is_xhr
         try:
             values = self._validate_form(req)
             store = self.site.storm.store
@@ -62,11 +65,18 @@ class CrudController(Controller):
                 store.add(item)
             store.flush()
             store.commit()
-            return RedirectResponse(self.base_url + '/%s' % item.id)
+            if is_xhr:
+                return Response(dumps({'SUCCESS': True}))
+            else:
+                return RedirectResponse(self.base_url + '/%s' % item.id)
         except Invalid, e:
             item = None
-            print e.unpack_errors()
-            return self.create_template_response(req, self.form_template,
+            if is_xhr:
+                return Response(dumps(
+                    {'SUCCESS': False, 'ERRORS': e.unpack_errors()}
+                ))
+            else:
+                return self.create_template_response(req, self.form_template,
                         item=item, prefill=req.form, errors=e.unpack_errors())
 
     def _validate_form(self, req):
