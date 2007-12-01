@@ -26,6 +26,10 @@
 
 {% endmacro %}
 
+{% macro yui_tabview_includes %}
+<script type="text/javascript" src="http://yui.yahooapis.com/2.3.1/build/tabview/tabview-min.js"></script>
+{% endmacro %}
+
 {% macro yui_button_includes %}
 <!-- Core + Skin CSS -->
 <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.3.1/build/button/assets/skins/sam/button.css">
@@ -47,14 +51,67 @@
 
 {% macro yui_rte(id) %}
     <script type="text/javascript">
-    var myEditor = new YAHOO.widget.Editor('{{ id }}', {
+    var {{ id }}_yui_editor = new YAHOO.widget.Editor('{{ id }}', {
     handleSubmit: true,
     height: '300px',
-    width: '522px',
+    width: '600px',
     dompath: false, //Turns on the bar at the bottom
-    animate: true //Animates the opening, closing and moving of Editor windows
+    animate: true, //Animates the opening, closing and moving of Editor windows
+    toolbar: {
+
+collapse: false,
+titlebar: '',
+draggable: false,
+buttons: [
+    { group: 'textstyle', label: 'Font Style',
+        buttons: [
+            { type: 'push', label: 'Bold CTRL + SHIFT + B', value: 'bold' },
+            { type: 'push', label: 'Italic CTRL + SHIFT + I', value: 'italic' },
+            { type: 'push', label: 'Underline CTRL + SHIFT + U', value: 'underline' },
+            { type: 'separator' },
+            { type: 'push', label: 'Remove Formatting', value: 'removeformat', disabled: true },
+        ]
+    },
+    { type: 'separator' },
+    { group: 'alignment', label: 'Alignment',
+        buttons: [
+            { type: 'push', label: 'Align Left CTRL + SHIFT + [', value: 'justifyleft' },
+            { type: 'push', label: 'Align Center CTRL + SHIFT + |', value: 'justifycenter' },
+            { type: 'push', label: 'Align Right CTRL + SHIFT + ]', value: 'justifyright' },
+            { type: 'push', label: 'Justify', value: 'justifyfull' }
+        ]
+    },
+    { type: 'separator' },
+    { group: 'parastyle', label: 'Paragraph Style',
+        buttons: [
+        { type: 'select', label: 'Normal', value: 'heading', disabled: true,
+            menu: [
+                { text: 'Normal', value: 'none', checked: true },
+                { text: 'Header 1', value: 'h2' },
+                { text: 'Header 2', value: 'h3' },
+                { text: 'Header 3', value: 'h4' },
+            ]
+        }
+        ]
+    },
+    { type: 'separator' },
+    { group: 'indentlist', label: 'Lists',
+        buttons: [
+            { type: 'push', label: 'Create an Unordered List', value: 'insertunorderedlist' },
+            { type: 'push', label: 'Create an Ordered List', value: 'insertorderedlist' }
+        ]
+    },
+    { type: 'separator' },
+    { group: 'insertitem', label: 'Insert Item',
+        buttons: [
+            { type: 'push', label: 'HTML Link CTRL + SHIFT + L', value: 'createlink', disabled: true },
+            { type: 'push', label: 'Insert Image', value: 'insertimage' }
+        ]
+    }
+]
+}
     });
-    myEditor.render();
+    {{ id }}_yui_editor.render();
     </script>
 {% endmacro %}
 
@@ -64,5 +121,11 @@
     {% if callback %}
         {{ id }}_yui_button.addListener("click", {{ callback }});
     {% endif %}
+    </script>
+{% endmacro %}
+
+{% macro yui_tabview(id) %}
+    <script type="text/javascript">
+    var {{ id }}_yui_tabs = new YAHOO.widget.TabView("{{ id }}");
     </script>
 {% endmacro %}

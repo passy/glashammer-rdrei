@@ -7,7 +7,7 @@
         {% block page_includes %}{% endblock %}
         {% block extra_head %}{% endblock %}
     </head>
-    <body>
+    <body class="{% block bodyclass %}{% endblock %}">
         {% block body %}
         {% endblock %}
     </body>
