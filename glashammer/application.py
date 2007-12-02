@@ -131,29 +131,23 @@ class GlashammerApplication(object):
         """
         return self.site.controller.get(endpoint_name)
 
-
-
-class GlashammerSite(object):
+class BaseGlashammerSite(object):
     """
-    Site. This is the boss that controls everything else, including the
-    WSGI application
+    Base class so we can override a few things while testing.
     """
 
     def __init__(self, site_config):
         self.bundles = []
         self.site_config = site_config
         # core bundles
-        self.processors = self.register_bundle(ProcessorBundle)
-        self.config = self.register_bundle(ConfigBundle)
-        self.storm = self.register_bundle(StormBundle)
-        self.controller = self.register_bundle(ControllerBundle)
-        self.static = self.register_bundle(StaticBundle)
-        self.jinja = self.register_bundle(JinjaBundle)
-        self.routing = self.register_bundle(RoutingBundle)
-        self.auth = self.register_bundle(AuthBundle)
-        self.layout = self.register_bundle(LayoutBundle)
-        self.session = self.register_bundle(SessionBundle)
-        self.feature = self.register_bundle(FeatureBundle)
+        self.create_core_bundles()
+
+    
+    def create_core_bundles(self):
+        """
+        Override in concrete implementations.
+        """
+
 
     def finalise(self):
         """
@@ -227,6 +221,27 @@ class GlashammerSite(object):
         Run a debug server.
         """
         run_simple(host, port, self.thread_local_app, autoreload)
+
+
+
+class GlashammerSite(BaseGlashammerSite):
+    """
+    Site. This is the boss that controls everything else, including the
+    WSGI application
+    """
+
+    def create_core_bundles(self):
+        self.processors = self.register_bundle(ProcessorBundle)
+        self.config = self.register_bundle(ConfigBundle)
+        self.storm = self.register_bundle(StormBundle)
+        self.controller = self.register_bundle(ControllerBundle)
+        self.static = self.register_bundle(StaticBundle)
+        self.jinja = self.register_bundle(JinjaBundle)
+        self.routing = self.register_bundle(RoutingBundle)
+        self.auth = self.register_bundle(AuthBundle)
+        self.layout = self.register_bundle(LayoutBundle)
+        self.session = self.register_bundle(SessionBundle)
+        self.feature = self.register_bundle(FeatureBundle)
 
 
 
