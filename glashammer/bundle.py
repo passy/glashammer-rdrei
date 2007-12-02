@@ -47,18 +47,8 @@ class Bundle(object):
         """
         pass
 
-    def process_request(self, req):
-        return req
-
-    def process_response(self, resp, req):
-        return resp
-
-    def get_priority(self):
-        return 100
-
     def create_middleware(self, app):
         raise NotImplementedError
-
 
     # Database Access
     def get_store(self):
