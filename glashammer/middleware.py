@@ -24,17 +24,16 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+from glashammer.utils import Prioritisable
 
-from glashammer.bundle import Bundle
-from glashammer.plugins import Registry
 
-class FeatureBundle(Bundle):
-
-    def lifecycle(self):
-        self.registry = Registry()
-
-    def register(self, feature, provider):
-        self.registry.register_feature(feature, provider)
-
-    def list(self, feature):
-        return self.registry.list_feature_providers(feature)
+class Middleware(Prioritisable):
+    """
+    Usage:
+        >>> site.register_feature('middleware', your_middleware)
+    """
+    def process_request(self, req):
+        return req
+    
+    def process_response(self, req, resp):
+        return resp

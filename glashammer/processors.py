@@ -44,14 +44,14 @@ class ResponseProcessor(Prioritisable):
 
 class ProcessorBundle(Bundle):
 
-    def lifecycle(self):
+    def create(self):
         self.registry = Registry()
 
     def register_request_processor(self, processor):
-        self.registry.register_feature(RequestProcessor, processor)
+        self.registry.register_feature('request_processor', processor)
 
     def register_response_processor(self, processor):
-        self.registry.register_feature(ResponseProcessor, processor)
+        self.registry.register_feature('response_processor', processor)
 
     def _list_processors(self, processor_type):
         procs = self.registry.list_feature_providers(processor_type)
