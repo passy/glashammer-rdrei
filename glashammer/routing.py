@@ -29,14 +29,28 @@ from glashammer.bundle import Bundle
 
 class RoutingBundle(Bundle):
 
-    def lifecycle(self):
+    def create(self):
         self.map = Map()
-
+    
+    def initialize(self):
+        # load some config options for routing
+        if self.site.require_config('routing.default_subdomain', None):
+            self.map.default_subdomain = self.site.require_config('routing.default_subdomain')
+        if self.site.require_config('routing.charset', None):
+            self.map.charset = self.site.require_config('routing.charset')
+        if self.site.require_config('routing.strict_slashes', None):
+            self.map.strict_slashes = self.site.require_config('routing.strict_slashes')
+        if self.site.require_config('routing.redirect_defaults', None):
+            self.map.redirect_defaults = self.site.require_config('routing.redirect_defaults')
+        # load additional converters
+        if self.site.require_feature('routing.converters'):
+            self.map.converters.update(self.site.require_feature('routing.converters'))
+        
     def register(self, *rules):
         for rule in rules:
             self.map.add(rule)
     
-    def bind_to_environ(self, environ):
-        return self.map.bind_to_environ(environ)
+    def bind_to_environ(self, env):
+        return self.map.bind_to_environ(env)
 
 

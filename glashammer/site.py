@@ -74,9 +74,9 @@ class GlashammerSite(object):
         self.bundles.append(bdl)
         return bdl
     
-    def require_config(self, config_option):
+    def require_config(self, config_option, default=None):
         """ require a configuration option """
-        return self.config.find(config_option)
+        return self.config.find(config_option, default)
     
     def setup_bundles(self):
         """ Setup up everything for the bundles """
