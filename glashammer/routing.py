@@ -28,7 +28,6 @@ from werkzeug.routing import Map
 from glashammer.bundle import Bundle
 
 class RoutingBundle(Bundle):
-
     def create(self):
         self.map = Map()
     
@@ -52,5 +51,3 @@ class RoutingBundle(Bundle):
     
     def bind_to_environ(self, env):
         return self.map.bind_to_environ(env)
-
-

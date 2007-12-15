@@ -29,7 +29,7 @@ from glashammer.plugins import Registry
 class GlashammerSite(object):
     """
     Base class so we can override a few things while testing.
-    Some default places:
+    Some common places:
         self.confg      Config Framework(has to provide find)
         self.routing    Routing Framework(has to provide add)
         self.static     Static File Serving Framework(has to provide add_static_path)
@@ -39,8 +39,8 @@ class GlashammerSite(object):
         self.bundles = []
         self.features = Registry()
         self.site_config = site_config
-        self.setup_bundles()
-        self.initialize()
+        self.create_bundles()
+        self.initialize_bundles()
     
     def register_feature(self, feature, provider):
         self.features.register_feature(feature, provider)
