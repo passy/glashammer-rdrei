@@ -24,6 +24,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 from glashammer.plugins import Registry
+from glashammer.signals import Signal
 
 
 class GlashammerSite(object):
@@ -46,7 +47,7 @@ class GlashammerSite(object):
         self.features.register_feature(feature, provider)
     
     def require_feature(self, feature):
-        return self.feature.list_feature_providers(feature)
+        return self.features.list_feature_providers(feature)
     
     def create_bundles(self):
         """
@@ -74,9 +75,15 @@ class GlashammerSite(object):
         self.bundles.append(bdl)
         return bdl
     
+    def register_signal(self, name, handler):
+        self.register_feature('signals.%s' % name, handler)
+    
     def require_config(self, config_option, default=None):
         """ require a configuration option """
-        return self.config.find(config_option, default)
+        return self.config.get(config_option, default)
+    
+    def require_signal(self, name):
+        return Signal(self, name)
     
     def setup_bundles(self):
         """ Setup up everything for the bundles """
