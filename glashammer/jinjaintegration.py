@@ -41,13 +41,13 @@ def create_jinja_environment(paths):
 
 class JinjaBundle(Bundle):
 
-    def lifecycle(self):
+    def create(self):
         self.directories = []
 
     def register(self, directory):
         self.directories.insert(0, directory)
 
-    def finalise(self):
+    def initialize(self):
         self.env = self.jinja_environment = create_jinja_environment(
             self.directories)
 

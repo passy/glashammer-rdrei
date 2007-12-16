@@ -38,7 +38,7 @@ class StaticBundle(Bundle):
     A core service for handling static files
     """
 
-    def lifecycle(self):
+    def create(self):
         self.static_directories = {}
 
     def register(self, name, path):

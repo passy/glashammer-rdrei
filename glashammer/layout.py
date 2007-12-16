@@ -41,6 +41,6 @@ from glashammer.ui import EndpointLink
 
 class LayoutBundle(Bundle):
 
-    def lifecycle(self):
-        self.register_template_directory(TEMPLATE_PATH)
-        self.register_static_directory('/layout', STATIC_PATH)
+    def create(self):
+        self.site.jinja.register(TEMPLATE_PATH)
+        self.site.static.register('/layout', STATIC_PATH)

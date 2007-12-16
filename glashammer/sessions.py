@@ -34,5 +34,8 @@ from werkzeug.contrib.sessions import SessionMiddleware, FilesystemSessionStore
 
 class SessionBundle(Bundle):
 
+    def create(self):
+        pass
+
     def create_middleware(self, app):
         return SessionMiddleware(app, FilesystemSessionStore('.'))

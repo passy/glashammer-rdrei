@@ -145,7 +145,7 @@ class User(StormCreatorBase):
 
 class AuthBundle(Bundle):
 
-    def lifecycle(self):
+    def create(self):
         self.set_user_class(User, User.create_table)
         self.user_class_setup = User.create_table
         self.register_controller('auth', AuthController)

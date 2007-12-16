@@ -31,7 +31,7 @@ from glashammer.utils import TemplateResponse
 
 class ControllerBundle(Bundle):
 
-    def lifecycle(self):
+    def create(self):
         self.controllers = {}
 
     def register(self, name, controller):
@@ -57,6 +57,6 @@ class Controller(object):
 
     # XXX May not be the right place for this
     def list_feature_providers(self, feature):
-        return self.site.feature.list(feature)
+        return self.site.features.list_feature_providers(feature)
 
 

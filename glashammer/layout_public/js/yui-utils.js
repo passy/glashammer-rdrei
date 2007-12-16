@@ -129,3 +129,4 @@ function yui_basic_rte(id) {
     _yui_editor.render();
     return _yui_editor;
 }
+

@@ -37,7 +37,7 @@ class Bundle(object):
         register stuff here
         OVERRIDE THIS
         """
-        raise 'RTFM!'
+        raise NotImplementedError
 
     def initialize(self):
         """

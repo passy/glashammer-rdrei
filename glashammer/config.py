@@ -41,18 +41,18 @@ class ConfigOption(object):
 
 class ConfigBundle(Bundle):
 
-    def lifecycle(self):
+    def create(self):
         self.options = {}
 
     def register(self, name, default=None):
         opt = ConfigOption(name, default)
         self.options[name] = opt
 
-    def finalise(self):
+    def initialize(self):
         self.config = self.get_config()
 
-    def get(self, name):
-        return self.config.get(name)
+    def get(self, name, default=None):
+        return self.config.get(name, default)
 
     def get_default_config(self):
         conf = {}
