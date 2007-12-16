@@ -51,9 +51,9 @@ class GlashammerSite(object):
     def create_bundles(self):
         """
         This is the place where you should register the bundles you want to use
-        OVERRIDE THIS!
         """
-        raise 'RTFM!'
+        # AA: Allow to pass so instantiating the default empty site works?
+        # raise 'RTFM!'
     
     def initialize_bundles(self):
         """
