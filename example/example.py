@@ -2,6 +2,8 @@
 from os.path import dirname
 
 from glashammer import make_app, run_very_simple, render_response
+from glashammer.database import metadata, db
+from glashammer.bundles.auth import setup as setup_auth, User
 
 FOLDER = dirname(__file__)
 
@@ -11,9 +13,22 @@ def index_view(req):
 def setup(app):
     app.add_url('/', 'example/hello', view=index_view)
     app.add_template_searchpath(FOLDER)
+    app.add_setup(setup_auth)
+    app.add_data_func(init_data)
 
-def signal(*args):
-    print 'signal-args', args
+class UserExtra(object):
+    pass
+
+def init_data(engine):
+    users_extra = db.Table('users_extra', metadata,
+        db.Column('user_extra_id', db.Integer, primary_key=True),
+        db.Column('user_id', db.Integer, db.ForeignKey('users.user_id')),
+        db.Column('notes', db.Unicode),
+    )
+    db.mapper(UserExtra, users_extra, properties={'user': db.relation(User)})
+    metadata.create_all(engine)
+
+
 
 if __name__ == '__main__':
     app = make_app(setup, FOLDER)

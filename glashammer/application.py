@@ -7,15 +7,19 @@ from werkzeug.routing import Map, Rule
 from werkzeug.exceptions import HTTPException, NotFound
 
 from glashammer.simpleconfig import SimpleConfig
+
 from glashammer.templating import create_template_environment
 
 from glashammer.utils import local, local_manager, EventManager, emit_event
 
+from glashammer.database import db
+
+DEFAULT_CONFIG = {'db_uri':'sqlite://'}
 
 class GlashammerApplication(object):
     """WSGI Application"""
 
-    def __init__(self, setup_func, instance_dir, config_name='gh.ini'):
+    def __init__(self, setup_func, instance_dir):
         # just for playing in the shell
         local.application = self
 
@@ -23,9 +27,17 @@ class GlashammerApplication(object):
 
         # Start the setup
         self.instance_dir = os.path.abspath(instance_dir)
-        self.config_file = os.path.join(self.instance_dir, config_name)
+        self.config_file = os.path.join(self.instance_dir, 'config.ini')
 
-        self.conf = SimpleConfig()
+        if not os.path.exists(self.instance_dir):
+            raise RunTimeError('Application instance director missing')
+
+        self.conf = SimpleConfig(DEFAULT_CONFIG)
+
+        if not os.path.exists(self.config_file):
+            self.conf.dump_file(self.config_file)
+        else:
+            self.conf.merge(self.config_file)
         self.map = Map()
         self.views = {}
         self.events = EventManager(self)
@@ -33,15 +45,29 @@ class GlashammerApplication(object):
         # Temporary variables for collecting setup information
         self._template_searchpaths = []
         self._setup_funcs = set()
+        self._osetup_funcs = []
+        self._data_funcs = set()
+        self._odata_funcs = []
 
         # setup the application
         setup_func(self)
 
         # run the additional setup funcions
-        for setup_func in self._setup_funcs:
+        for setup_func in self._osetup_funcs:
             setup_func(self)
 
         del self._setup_funcs
+
+        # Now the database
+
+        self.db_engine = db.create_engine(self.conf['db_uri'],
+                                          convert_unicode=True)
+
+        for data_func in self._odata_funcs:
+            data_func(self.db_engine)
+
+        del self._data_funcs
+
 
 
         # create the template environment
@@ -54,7 +80,6 @@ class GlashammerApplication(object):
         self.finalized = True
         # create the template environment
         emit_event('app-setup')
-
 
     def __call__(self, environ, start_response):
         local.application = self
@@ -87,7 +112,20 @@ class GlashammerApplication(object):
 
     @_prefinalize_only
     def add_setup(self, setup_func):
-        self._setup_funcs.add(setup_func)
+        if setup_func not in self._setup_funcs:
+            self._setup_funcs.add(setup_func)
+            self._osetup_funcs.append(setup_func)
+
+
+    @_prefinalize_only
+    def add_data_func(self, data_func):
+        if data_func not in self._data_funcs:
+            self._data_funcs.add(data_func)
+            self._odata_funcs.append(data_func)
+
+    @_prefinalize_only
+    def add_bundle(self, bundle):
+        self.add_setup(bundle.setup)
 
     @_prefinalize_only
     def add_url(self, url, endpoint, view=None, **kw):
@@ -111,10 +149,9 @@ class GlashammerApplication(object):
         return self.events.connect(event, callback, position)
 
 
-
-def make_app(setup_func, instance_dir, config_name='gh.ini'):
+def make_app(setup_func, instance_dir):
     application = local('application')
-    application = GlashammerApplication(setup_func, instance_dir, config_name)
+    application = GlashammerApplication(setup_func, instance_dir)
     application = local_manager.make_middleware(application)
     return application
 

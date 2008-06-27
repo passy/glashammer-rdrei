@@ -137,6 +137,11 @@ class SimpleConfig(dict):
             else:
                 self[k] = v
 
+    def dump_file(self, path):
+        f = open(path, 'w')
+        f.write(str(self))
+        f.close()
+
 
 def readmany(*sources):
     """reads from many sources at once, merges into a single result"""
