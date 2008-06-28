@@ -268,6 +268,11 @@ class DatabaseManager(object):
         """Return a query with an offset."""
         return self.query.offset(offset)
 
+    def count(self):
+        """Count all posts."""
+        return self.query.count()
+
+
 
 #: a new scoped session
 session = orm.scoped_session(lambda: orm.create_session(

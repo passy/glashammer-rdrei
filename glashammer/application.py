@@ -1,8 +1,9 @@
 
 
 import os
+from time import time
 
-from werkzeug import Request, Response, ClosingIterator, Local, LocalManager
+from werkzeug import ClosingIterator, SharedDataMiddleware
 from werkzeug.routing import Map, Rule
 from werkzeug.exceptions import HTTPException, NotFound
 
@@ -10,14 +11,26 @@ from glashammer.simpleconfig import SimpleConfig
 
 from glashammer.templating import create_template_environment
 
-from glashammer.utils import local, local_manager, EventManager, emit_event
+from glashammer.utils import local, local_manager, EventManager, emit_event, \
+    url_for, sibpath, Request, Response, _, format_datetime
 
 from glashammer.database import db
 
-DEFAULT_CONFIG = {'db_uri':'sqlite://'}
+from glashammer import htmlhelpers
+
+DEFAULT_CONFIG = {'db_uri':'sqlite://',
+                  'session_cookie_name': 'glashammer_session',
+                  'secret_key': 'my secret'}
+
+
+def default_setup_func(app):
+    app.add_template_searchpath(sibpath(__file__, 'templates'))
+
 
 class GlashammerApplication(object):
     """WSGI Application"""
+
+    default_setup = default_setup_func
 
     def __init__(self, setup_func, instance_dir):
         # just for playing in the shell
@@ -30,24 +43,42 @@ class GlashammerApplication(object):
         self.config_file = os.path.join(self.instance_dir, 'config.ini')
 
         if not os.path.exists(self.instance_dir):
-            raise RunTimeError('Application instance director missing')
+            raise RunTimeError('Application instance directory missing')
 
         self.conf = SimpleConfig(DEFAULT_CONFIG)
 
+        # Create a config file if one doesn't exist
+        # Otherwise, merge the current file
         if not os.path.exists(self.config_file):
             self.conf.dump_file(self.config_file)
         else:
             self.conf.merge(self.config_file)
+
         self.map = Map()
         self.views = {}
         self.events = EventManager(self)
 
         # Temporary variables for collecting setup information
+
+        # Template stuff
         self._template_searchpaths = []
+        self._template_globals = {}
+        self._template_filters = {}
+        self._layout_template = None
+
+        # shared
+        self._shared_exports = {}
+
+        # Setup functions (basically plugins)
         self._setup_funcs = set()
         self._osetup_funcs = []
+
+        # Data initialization functions
         self._data_funcs = set()
         self._odata_funcs = []
+
+        # setup the default stuff
+        self.default_setup()
 
         # setup the application
         setup_func(self)
@@ -70,33 +101,73 @@ class GlashammerApplication(object):
 
 
 
+        self._template_globals.update({
+            'url_for': url_for,
+            'layout_template': self._layout_template,
+            '_': _,
+            'conf': self.conf,
+            'cfg': self.conf,
+            'request':local('request'),
+            'h': htmlhelpers,
+        })
+
+        self._template_filters.update({
+            'datetimeformat': format_datetime
+        })
+
         # create the template environment
         self.template_env = create_template_environment(
-            searchpaths=self._template_searchpaths
+            searchpaths=self._template_searchpaths,
+            globals=self._template_globals,
+            filters=self._template_filters,
         )
 
         del self._template_searchpaths
+        del self._layout_template
+
+
+        # now add the middleware for static file serving
+        #self.add_shared_exports('core', SHARED_DATA)
+        self.add_middleware(SharedDataMiddleware, self._shared_exports)
+
+        del self._shared_exports
+
         # finalize the setup
         self.finalized = True
         # create the template environment
         emit_event('app-setup')
 
     def __call__(self, environ, start_response):
+        return ClosingIterator(self.dispatch_request(environ, start_response),
+                               [local_manager.cleanup])
+
+    def dispatch_request(self, environ, start_response):
         local.application = self
-        local.adapter = adapter = self.map.bind_to_environ(environ)
-        local.request = request = Request(environ)
+        local.url_adapter = adapter = self.map.bind_to_environ(environ)
+        local.request = request = Request(self, environ)
         emit_event('app-request', request)
         try:
             endpoint, values = adapter.match()
-            response = self.dispatch(request, endpoint, values)
+            response = self.get_view(request, endpoint, values)
         except HTTPException, e:
             response = e
         # cleanup
         emit_event('app-response', response)
-        return ClosingIterator(response(environ, start_response),
-                               [local_manager.cleanup])
 
-    def dispatch(self, request, endpoint, values):
+        # save the session
+        if request.session.should_save:
+            cookie_name = self.conf['session_cookie_name']
+            if request.session.get('pmt'):
+                max_age = 60 * 60 * 24 * 31
+                expires = time() + max_age
+            else:
+                max_age = expires = None
+            request.session.save_cookie(response, cookie_name, max_age=max_age,
+                                        expires=expires, session_expires=expires)
+        return response(environ, start_response)
+
+
+    def get_view(self, request, endpoint, values):
         view = self.views.get(endpoint)
         if view is None:
             return NotFound()
@@ -115,7 +186,6 @@ class GlashammerApplication(object):
         if setup_func not in self._setup_funcs:
             self._setup_funcs.add(setup_func)
             self._osetup_funcs.append(setup_func)
-
 
     @_prefinalize_only
     def add_data_func(self, data_func):
@@ -144,10 +214,33 @@ class GlashammerApplication(object):
         self._template_searchpaths.append(path)
 
     @_prefinalize_only
+    def add_template_global(self, key, value):
+        self._template_globals[key] = value
+
+    @_prefinalize_only
     def connect_event(self, event, callback, position='after'):
         """Connect an event to the current application."""
         return self.events.connect(event, callback, position)
 
+    @_prefinalize_only
+    def set_layout_template(self, template_name):
+        self._layout_template = template_name
+
+    @_prefinalize_only
+    def add_shared(self, name, path):
+        """Add a shared export for name that points to a given path and
+        creates an url rule for <name>/shared that takes a filename
+        parameter.
+        """
+        self._shared_exports['/_shared/' + name] = path
+        self.add_url('/_shared/%s/<string:filename>' % name,
+                     endpoint=name + '/shared', build_only=True)
+
+    @_prefinalize_only
+    def add_middleware(self, middleware_factory, *args, **kwargs):
+        """Add a middleware to the application."""
+        self.dispatch_request = middleware_factory(self.dispatch_request,
+                                                   *args, **kwargs)
 
 def make_app(setup_func, instance_dir):
     application = local('application')

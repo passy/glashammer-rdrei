@@ -4,6 +4,7 @@ from os.path import dirname
 from glashammer import make_app, run_very_simple, render_response
 from glashammer.database import metadata, db
 from glashammer.bundles.auth import setup as setup_auth, User
+from glashammer.bundles.admin import setup as setup_admin
 
 FOLDER = dirname(__file__)
 
@@ -13,8 +14,9 @@ def index_view(req):
 def setup(app):
     app.add_url('/', 'example/hello', view=index_view)
     app.add_template_searchpath(FOLDER)
-    app.add_setup(setup_auth)
+    app.add_setup(setup_admin),
     app.add_data_func(init_data)
+    app.set_layout_template('hello.jinja')
 
 class UserExtra(object):
     pass

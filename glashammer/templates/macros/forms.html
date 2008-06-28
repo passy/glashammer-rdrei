@@ -1,0 +1,17 @@
+
+
+{% macro input_row(form, name) %}
+<div class="form-row">
+    {{ form[name].label }}<br />
+    {{ form[name] }}
+</div>
+{% endmacro %}
+
+{% macro fieldset(form, legend, fields) %}
+    <fieldset>
+        <legend>{{ legend }}</legend>
+        {% for field in fields %}
+            {{ input_row(form, field) }}
+        {% endfor %}
+    </fieldset>
+{% endmacro %}

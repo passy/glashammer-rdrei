@@ -1,0 +1,25 @@
+{% extends "admin/layout.html" %}
+{% block title %}{{ _("Edit Tag") }}{% endblock %}
+{% block contents %}
+  <h2>{{ _("Edit Tag") }}</h2>
+  <form action="" method="post">
+    <div class="formbox">
+      <h3>{{ _("Slug") }}</h3>
+      {{ h.input_field('slug', form.slug) }}
+    </div>
+    <div class="formbox">
+      <h3>{{ _("Name") }}</h3>
+      {{ h.input_field('name', form.name) }}
+    </div>
+    <div class="formbox">
+      <h3>{{ _("Description") }}</h3>
+      {{ h.textarea('description', form.description, rows=5) }}
+    </div>
+    <div class="actions">
+       {{ hidden_form_data }}
+      <input type="submit" value="{{ _('Save') }}">
+      <input type="submit" name="delete" value="{{ _('Delete') }}">
+      <input type="submit" name="cancel" value="{{ _('Cancel') }}">
+    </div>
+  </form>
+{% endblock %}

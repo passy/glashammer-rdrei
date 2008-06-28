@@ -1,0 +1,788 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Trebuchet MS', sans-serif;
+    font-size: 15px;
+}
+
+::-moz-selection {
+    background-color: #ffa800;
+    color: white;
+}
+
+::selection {
+    background-color: #ffa800;
+    color: white;
+}
+
+a {
+    color: #316182;
+}
+
+a:hover {
+    color: #ffa800;
+}
+
+/* :::: ADMIN PANEL HEADER :::: */
+div.header {
+    background: #316182 url(img/dialogbg.png) repeat-x left center;
+    padding: 32px;
+    margin: 20px 20px 0 20px;
+}
+
+div.header:before {
+    background: transparent url(img/border-tr.png) no-repeat top right;
+    height: 32px;
+    line-height: 0;
+    margin: -32px -32px 0 -32px;
+    padding: 0;
+    display: block;
+    content: url(img/border-tl.png);
+}
+
+div.header h1 {
+    color: white;
+    margin: -10px 0 -10px -10px;
+    font-family: 'Georgia', serif;
+    font-weight: normal;
+    padding: 0;
+    font-size: 25px;
+}
+
+div.header div.metanav {
+    position: absolute;
+    top: 40px;
+    right: 50px;
+    background-color: #222e4b;
+    border: 1px solid #4f849d;
+    padding: 5px;
+    font-size: 13px;
+    text-align: center;
+    color: #eee;
+}
+
+div.header div.metanav a {
+    color: #ffa800;
+    text-decoration: none;
+}
+
+div.header div.metanav a:hover {
+    text-decoration: underline;
+}
+
+div.footer {
+    background: transparent url(img/footerbg.png) repeat-x top left;
+    padding: 0 20px 0 20px;
+    color: white;
+    margin: 0 20px 20px 20px;
+}
+
+div.footer a {
+    color: white;
+}
+
+div.footer p {
+    margin: -15px 0 -20px 0;
+    padding: 0;
+    font-size: 13px;
+    text-align: center;
+}
+
+div.footer:after {
+    background: transparent url(img/border-br.png) no-repeat bottom right;
+    height: 32px;
+    line-height: 0;
+    margin: 0 -20px 0 -20px;
+    display: block;
+    content: url(img/border-bl.png);
+}
+
+div.body ul.navbar {
+    margin: 0 20px 0 20px;
+    padding: 0 0 0 15px;
+    height: 30px;
+    background-color: #222e4b;
+    list-style: none;
+}
+
+div.body ul.navbar li {
+    float: left;
+    margin: 0;
+    padding: 4px 0 0 4px;
+}
+
+div.body ul.navbar li a {
+    display: block;
+    background: transparent url(img/dialogbg.png) repeat-x center left;
+    padding: 0 10px 0 10px;
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 14px!important;
+    line-height: 26px!important;
+    height: 26px!important;
+}
+
+div.body ul.navbar li a:hover {
+    background: #263d5b;
+}
+
+div.body ul.navbar li.active a {
+    background-position: bottom;
+    color: white;
+}
+
+div.body ul.navbar li.active a:hover {
+    background: transparent url(img/dialogbg.png) repeat-x bottom left;
+}
+
+div.body ul.ctxnavbar {
+    border-left: 4px solid #222e4b;
+    border-right: 4px solid #222e4b;
+    margin: 0 20px 0 20px;
+    padding: 0 0 0 12px;
+    height: 25px;
+    background-color: #316081;
+    list-style: none;
+}
+
+div.body ul.ctxnavbar li {
+    float: left;
+    margin: 0;
+    padding: 3px 0 0 3px;
+}
+
+div.body ul.ctxnavbar li a {
+    display: block;
+    padding: 0 8px 0 8px;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 12px!important;
+    line-height: 22px!important;
+    height: 22px!important;
+}
+
+div.body ul.ctxnavbar li a:hover {
+    background-color: #2a516d;
+}
+
+div.body ul.ctxnavbar li.active a,
+div.body ul.standalonebar li.active a,
+div.body ul.standalonebar li.active a:hover {
+    background: white;
+    color: #316182;
+}
+
+div.body div.contents {
+    background: #fff url(img/bodybg.png) repeat-x bottom left;
+    border: 4px solid #222e4b;
+    border-top: none;
+    border-bottom-width: 26px;
+    margin: 0 20px 0 20px;
+    padding: 10px;
+}
+
+div.contents div.drafts-box {
+    border: 1px solid #30C42B;
+    margin: -15px 0 15px 0;
+    padding: 8px 8px 8px 32px;
+    background: #C7F1C6 url(img/info.png) no-repeat 9px 9px;
+}
+
+div.contents div.message {
+    border: 1px solid #2580B2;
+    margin: 0 0 10px 0;
+    padding: 8px 8px 8px 32px;
+    background: #CFEBF7 url(img/info.png) no-repeat 9px 9px;
+}
+
+div.contents div.message-add {
+    background-image: url(img/add.png);
+}
+
+div.contents div.message-remove {
+    background-image: url(img/remove.png);
+}
+
+div.contents div.message-error {
+    background-image: url(img/error.png);
+    background-color: #e3cbc1;
+    border-color: #c80e0e;
+}
+
+div.contents div.message-ok {
+    background-image: url(img/ok.png);
+}
+
+div.contents div.message-configure {
+    background-image: url(img/configure.png);
+}
+
+div.contents h2 {
+    color: #222e4b;
+    margin: 0 0 0.8em 0;
+    padding: 0;
+    font-family: 'Georgia', serif;
+    font-size: 1.8em;
+    border-bottom: 1px solid #ccc;
+}
+
+div.contents h3 {
+    color: #222e4b;
+    margin: 0;
+    padding: 0.5em 0 0.3em 0;
+    font-size: 1.5em;
+}
+
+div.contents input,
+div.contents select {
+    font-family: 'Georgia', sans-serif;
+    font-size: 1em;
+    font-weight: bold;
+    border-color: #999 #ccc #ccc #999;
+    border-style: solid;
+    border-width: 1px;
+    padding: 3px;
+}
+
+div.contents textarea {
+    font-family: 'Consolas', 'Bitstream Vera Sans Mono', monospace;
+    font-size: 1em;
+    font-weight: normal;
+    border-color: #999 #ccc #ccc #999;
+    border-style: solid;
+    border-width: 1px;
+    padding: 4px;
+    width: 99%;
+}
+
+div.contents input:focus,
+div.contents textarea:focus,
+div.contents select:focus {
+    border: 1px solid #ffa800;
+    outline: 1px solid #ff7200;
+}
+
+div.contents input[type="submit"],
+div.contents input[type="button"],
+div.contents input[type="reset"] {
+    padding: 0.2em 0.7em;
+    background-color: #fefefe;
+    border-color: #bbb #aaa #aaa #bbb;
+    border-style: double;
+    border-width: 3px;
+    color: #333;
+    cursor: pointer;
+}
+
+div.contents input[type="submit"]:active,
+div.contents input[type="button"]:active,
+div.contents input[type="reset"]:active {
+    border-color: #aaa #ccc #ccc #aaa;
+    background-color: #f2f2f2;
+    outline: none;
+}
+
+div.contents input[type="submit"]:hover,
+div.contents input[type="button"]:hover,
+div.contents input[type="reset"]:hover {
+    border-color: #999 #aaa #999 #aaa;
+    background-color: #fff;
+}
+
+div.contents input[name="delete"]:hover {
+    background-color: #d00;
+    color: white;
+}
+
+div.contents fieldset {
+    margin: 10px 0 0 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+    background-color: #f2f2f2;
+}
+
+div.contents fieldset legend {
+    font-family: 'Georgian', serif;
+    font-size: 1.1em;
+    padding: 3px;
+    font-weight: bold;
+    background-color: #222e4b;
+    color: white;
+    border: 1px solid #316182;
+}
+
+div.contents fieldset ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+div.contents pre,
+div.contents tt,
+div.contents code {
+    font-family: monospace;
+    font-size: 0.9em;
+}
+
+div.contents pre {
+    padding: 5px;
+    border: 1px solid #ccc;
+}
+
+div.contents div.actions {
+    margin: 30px 0 10px 0;
+    padding: 6px;
+    background-color: #eee;
+    border-top: 1px solid #aaa;
+    border-bottom: 1px solid #aaa;
+}
+
+div.contents table {
+    margin: 0.4em 0 0.2em 0;
+    border: 1px solid #ccc;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+div.contents table th {
+    background-color: #ccc;
+    padding: 4px;
+    text-align: left;
+}
+
+div.contents table td {
+    border-bottom: 1px dotted #ccc;
+    padding: 5px;
+}
+
+div.contents table tr.even {
+    background-color: #fbfbfb;
+}
+
+div.contents table tr.odd {
+    background-color: #fefefe;
+}
+
+div.contents dl {
+    margin: 0.2em 0 0.2em 1.2em;
+    padding: 0;
+}
+
+div.contents dl dt {
+    font-weight: bold;
+    margin: 0;
+    padding: 0.5em 0 0.2em 0;
+    color: #222e4b;
+}
+
+div.contents dl dd {
+    margin: 0 0 0 2.4em;
+    padding: 0;
+}
+
+p.preview {
+    text-align: right;
+}
+
+.note {
+  font-size: 0.9em;
+  padding-left: 1.0em;
+  color: #444;
+}
+
+/* :::: POST LIST :::: */
+table.postlist tr.draft td {
+    background-color: #C7F1C6;
+}
+
+table.postlist tr.draft a {
+    color: #456F3D;
+}
+
+table.postlist tr.draft a:hover {
+    color: #51AD3E;
+}
+
+/* :::: COMMENTS :::: */
+ul.comments {
+    list-style: none;
+    margin: 20px 0 20px 0;
+    padding: 0;
+}
+
+ul.comments li.comment {
+    margin: 10px 0 10px 0;
+    padding: 10px 10px 2px 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+ul.comments li.comment p {
+    margin: 0 0 8px 0;
+}
+
+ul.comments li.even {
+    background-color: #f2f2f2;
+}
+
+ul.comments li.odd {
+    background-color: #eeeeee;
+}
+
+ul.comments li.blocked {
+    color: #aaa;
+}
+
+ul.comments li.blocked:hover {
+    color: #555;
+}
+
+ul.comments li.blocked a {
+    color: #afbbbd;
+}
+
+ul.comments li.blocked:hover a {
+    color: #2b6272;
+}
+
+/* :::: THEME SELECTION :::: */
+div.themes {
+    margin: 20px 0 0 0;
+}
+
+div.themes div.themewrapper {
+    width: 33%;
+    height: 350px;
+    float: left;
+}
+
+div.themes div.theme {
+    margin: 0;
+    padding: 10px;
+    overflow: hidden;
+}
+
+div.themes div.current h3 a {
+    color: #ff7200;
+}
+
+div.themes div.current {
+    border: 1px solid #aaa;
+    background-color: #f2f2f2;
+    padding: 9px;
+}
+
+div.themes div.theme h3 {
+    margin: 0;
+    padding: 2px 0 10px 0;
+    text-align: center;
+}
+
+div.themes div.theme h3 a {
+    text-decoration: none;
+}
+
+div.themes div.theme div.detail {
+    margin: 0;
+    padding: 5px;
+}
+
+div.themes div.theme img.preview {
+    display: block;
+    margin: auto;
+}
+
+div.themes div.theme div.detail blockquote {
+    margin: 0;
+    padding: 5px;
+    text-align: center;
+    color: #333;
+}
+
+div.themes div.theme div.detail p.author {
+    margin: 0;
+    padding: 0;
+    font-size: 90%;
+    text-align: center;
+}
+
+/* :::: WIDGETS :::: */
+#sidebar {
+    border: 2px solid #267696;
+    background-color: #BCE2F1;
+    padding: 2px;
+    margin: 0 0 10px 0;
+    list-style: none;
+}
+
+div.inventory {
+    border: 2px solid #ccc;
+    background-color: #eee;
+    padding: 10px;
+}
+
+div.inventory h3 {
+    margin: 0;
+    padding: 0 0 10px 0;
+}
+
+#config-panel {
+    margin: 0 0 10px 0;
+    padding: 10px;
+    border: 2px solid #ccc;
+}
+
+#config-panel h3 {
+    margin: 0;
+    padding: 0 0 10px 0;
+}
+
+#inventory {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+li.widget {
+    float: left;
+    cursor: pointer;
+    padding: 6px;
+    margin: 3px;
+    font-weight: bold;
+    border: 1px solid #FA9D23;
+    background-color: #FFEFDA;
+    color: #975325;
+}
+
+#inventory li.widget:hover {
+    border: 1px solid #E76F2A;
+    background-color: #ECD8CD;
+}
+
+#sidebar li.widget {
+    float: none;
+    background-color: #D4ECF5;
+    border: 1px solid #3FA9D3;
+    color: #1F6885;
+    cursor: default;
+}
+
+#sidebar li.widget .buttons {
+    float: right;
+    display: none;
+    cursor: pointer;
+}
+
+#sidebar li.widget:hover .buttons {
+    display: block;
+}
+
+#sidebar li.widget .buttons span.button {
+    padding: 0 0 0 8px;
+    font-size: 0.9em;
+}
+
+#sidebar li.widget .buttons span.button:hover {
+    color: black;
+}
+
+/* :::: PLUGIN PAGE :::: */
+table.plugins td.active {
+    text-align: right;
+}
+
+table.plugins td.description span.author {
+    font-style: italic;
+}
+
+table.plugins td.plugin {
+    font-weight: bold;
+}
+
+table.plugins td.version {
+    text-align: center;
+}
+
+table.plugins td {
+    vertical-align: middle;
+}
+
+table.plugins tr.plugin-active td {
+background-color: #98E8F0;
+}
+
+/* :::: CONFIG EDITOR :::: */
+table.config-table tr.user-defined {
+    background: #eee;
+}
+
+table.config-table td.default {
+    text-align: right;
+}
+
+table.config-table td input[type="text"] {
+    width: 97%;
+}
+
+/* :::: IMPORTER PAGE :::: */
+table.importable-posts tr.already-imported td {
+    background-color: #98E8F0;
+}
+
+/* :::: ABOUT PAGE :::: */
+ul.plugin-table {
+    list-style: none;
+}
+
+ul.plugin-table dl {
+    margin: 20px 0 20px 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+ul.plugin-table li {
+    clear: both;
+}
+
+ul.plugin-table dl dt {
+    margin: 0;
+    padding: 0;
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+ul.plugin-table dl dd {
+    margin: -3px 0 4px 20px;
+}
+
+div.text {
+    max-width: 40em;
+    text-align: justify;
+}
+
+/* :::: UPLOAD WIDGET :::: */
+div.uploadstatus {
+    display: none;
+    width: 500px;
+    height: 30px;
+    border: 1px solid #ccc;
+    padding: 2px;
+    margin: 20px 0 20px 10px;
+}
+
+div.uploadstatus div.bar {
+    float: left;
+    height: 30px;
+    background-color: #c1edef;
+}
+
+div.uploadstatus div.label {
+    position: absolute;
+    display: block;
+    color: #0c3c50;
+    line-height: 30px;
+    width: 500px;
+    text-align: center;
+}
+
+/* :::: LOGIN BOX :::: */
+div.login-box {
+    background: #316182 url(img/dialogbg.png) repeat-x;
+    padding: 32px;
+    width: 400px;
+    margin: 70px auto 0 auto;
+}
+
+div.login-box:before {
+    background: transparent url(img/border-tr.png) no-repeat top right;
+    height: 32px;
+    line-height: 0;
+    margin: -32px -32px 0 -32px;
+    padding: 0;
+    display: block;
+    content: url(img/border-tl.png);
+}
+
+div.login-box:after {
+    background: transparent url(img/border-br.png) no-repeat bottom right;
+    height: 32px;
+    line-height: 0;
+    display: block;
+    margin: 0 -32px -32px -32px;
+    padding: 0;
+    content: url(img/border-bl.png);
+}
+
+div.login-box h2 {
+    background: transparent url(img/banner.png) no-repeat center top;
+    margin: 0;
+    padding: 90px 0 0 0;
+}
+
+div.login-box h2 span {
+    display: none;
+}
+
+div.login-box div.error,
+div.login-box div.notice {
+    background-color: #222e4b;
+    border: 1px solid #4f849d;
+    padding: 5px;
+    margin: 10px 10px 0 10px;
+    font-size: 14px;
+    text-align: center;
+    color: #ffa800;
+}
+
+div.login-box form {
+    text-align: center;
+}
+
+div.login-box dl {
+    margin: 20px 0 30px 0;
+    padding: 0;
+}
+
+div.login-box dt {
+    margin: 5px 0 5px 0;
+    padding: 0;
+    color: white;
+    font-weight: bold;
+}
+
+div.login-box dd {
+    margin: 0;
+    padding: 0 20px 0 20px;
+}
+
+div.login-box input {
+    color: white;
+    background: #222e4b;
+    border: 1px solid #4f849d;
+    font-family: 'Georgia', serif;
+    font-size: 20px;
+    font-weight: bold;
+    width: 340px;
+    padding: 3px;
+}
+
+div.login-box input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+}
+
+div.login-box label {
+    color: white;
+}
+
+div.login-box input[type="submit"] {
+    display: block;
+    margin: 20px auto 0 auto;
+    background-color: #ebf0f3;
+    width: 130px;
+    border-color: #bbb #aaa #aaa #bbb;
+    border-style: double;
+    border-width: 3px;
+    color: #333;
+}

@@ -1,0 +1,59 @@
+{% extends "admin/layout.html" %}
+{% block title %}{{ _("Edit Comment") }}{% endblock %}
+{% block contents %}
+  <h2>{{ _("Edit Comment") }}</h2>
+  {% if comment.is_pingback %}
+  <p>
+    This comment was submitted as pingback.  If you will change the URL
+    of the comment the blog software that submitted this pingback will
+    probably submit a new pingback after some time.
+  <p>
+  {% endif %}
+  <form action="" method="post">
+    <div class="formbox">
+      <h3>{{ _("Author") }}</h3>
+      {{ h.input_field('author', form.author) }}
+    </div>
+    <div class="formbox">
+      <h3>{{ _("E-Mail") }}</h3>
+      {{ h.input_field('email', form.email) }}
+    </div>
+    <div class="formbox">
+      <h3>{{ _("Webpage") }}</h3>
+      {{ h.input_field('www', form.www) }}
+    </div>
+    <div class="formbox">
+      <h3>{{ _("Text") }}</h3>
+      {{ h.textarea('body', form.body, rows=7) }}
+    </div>
+    <div class="formbox toggleable collapsed">
+      <h3>{{ _("Parser") }}</h3>
+      <select name="parser">
+      {%- for parser_id, name in parsers %}
+        <option value="{{ parser_id|e }}"{% if parser_id == form.parser
+          %} selected{% endif %}>{{ name|e }}</option>
+      {%- endfor %}
+      </select>
+    </div>
+    <div class="formbox toggleable collapsed">
+      <h3>{{ _("Date") }}</h3>
+      {{ h.input_field('pub_date', form.pub_date) }}
+    </div>
+    <div class="formbox toggleable collapsed">
+      <h3>{{ _("Block Comment") }}</h3>
+      {{ h.checkbox('blocked', form.blocked) }}
+      {% if comment.blocked %}
+        <label for="blocked">{% trans reason=comment.blocked_msg|e
+          %}block comment ({{ reason }}){% endtrans %}</label>
+      {% else %}
+        <label for="blocked">{{ _("block comment") }}</label>
+      {% endif %}
+    </div>
+    <div class="actions">
+      {{ hidden_form_data }}
+      <input type="submit" value="{{ _('Save') }}">
+      <input type="submit" name="delete" value="{{ _('Delete') }}">
+      <input type="submit" name="cancel" value="{{ _('Cancel') }}">
+    </div>
+  </form>
+{% endblock %}

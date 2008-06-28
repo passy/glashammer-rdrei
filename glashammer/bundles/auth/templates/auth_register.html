@@ -1,2 +1,14 @@
+{% if layout_template %}
+    {% extends layout_template %}
+{% endif %}
 
+{% from 'macros/forms.html' import fieldset %}
 
+{% block content %}
+<form action="{{ url_for('auth/register') }}" method="post">
+    {{ fieldset(form, 'General Information', ['username', 'email']) }}
+    <div class="form_buttons">
+        <input type="submit" name="submit" />
+    </div>
+</form>
+{% endblock %}
