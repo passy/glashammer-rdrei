@@ -187,8 +187,6 @@ class ManagerExtension(orm.MapperExtension):
                                    'rename this attribute or defined a '
                                    'mapper yourself with a different name')
             class_.objects = mgr = DatabaseManager()
-            print 'here', class_
-            print class_.objects
             managers.append(mgr)
         class_._tp_managers = managers
         for manager in managers:
