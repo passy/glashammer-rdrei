@@ -1,0 +1,15 @@
+{% block content %}
+    <h1>Edit Note {{ note.id }}:</h1>
+    <form action="/edit/{{ note.id }}/submit" method="post" >
+        Title: <input type="text" name="title" size="32" maxlength="32" value="{{ note.title }}"/>
+    	<br />
+    	Text:
+    	<br />
+    	<textarea name="text" rows="7" cols="30" >{{ note.note }}</textarea>
+    	<br />
+    	Importance: <input type="text" name="importance" size="16" maxlength="32" value="{{ note.importance }}"/>
+    	<br />
+    	<br />
+    	<input type="submit" name="notsubmit" value="Submit" />
+    </form>
+{% endblock %}

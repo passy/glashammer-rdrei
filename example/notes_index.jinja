@@ -1,0 +1,27 @@
+{% block content %}
+    <h1>Notes:</h1>
+    {% for note in notes %}
+    <div>
+        <h2>{{ note.title }}</h2>
+        <p>{{ note.note }}</p>
+        {% if note.importance %}
+        <p>Importance: {{ note.importance }}</p>
+        {% endif %}
+        <p><a href="/edit/{{ note.id }}">Edit</a></p>
+    </div>
+    {% endfor %}
+    <h1>Add Note:</h1>
+    <form action="/add" method="post" >
+        Title: <input type="text" name="title" size="32" maxlength="32" />
+    	<br />
+    	Text:
+    	<br />
+    	<textarea name="text" rows="7" cols="30" ></textarea>
+    	<br />
+    	Importance: <input type="text" name="importance" size="16" maxlength="32" />
+    	<br />
+    	<br />
+    	<input type="submit" name="notsubmit" value="Submit" />
+    </form>
+    
+{% endblock %}
