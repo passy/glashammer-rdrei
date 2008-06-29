@@ -8,6 +8,7 @@ from werkzeug.routing import Map, Rule
 from werkzeug.exceptions import HTTPException, NotFound
 
 from glashammer.simpleconfig import SimpleConfig
+from glashammer.config import Configuration
 
 from glashammer.templating import create_template_environment
 
@@ -18,9 +19,12 @@ from glashammer.database import db
 
 from glashammer import htmlhelpers
 
-DEFAULT_CONFIG = {'db_uri':'sqlite://',
-                  'session_cookie_name': 'glashammer_session',
-                  'secret_key': 'my secret'}
+DEFAULT_CONFIG = [
+    ('db_uri', 'sqlite://', str),
+    ('session_cookie_name', 'glashammer_session', str),
+    ('secret_key', 'my secret', str),
+    ('base_url', u'', str),
+]
 
 
 def default_setup_func(app):
@@ -45,15 +49,18 @@ class GlashammerApplication(object):
         if not os.path.exists(self.instance_dir):
             raise RunTimeError('Application instance directory missing')
 
-        self.conf = SimpleConfig(DEFAULT_CONFIG)
+        #self.conf = SimpleConfig(DEFAULT_CONFIG)
+        self.conf = self.cfg = Configuration(self.config_file)
+
+        for name, default, type in DEFAULT_CONFIG:
+            self.add_config_var(name, type, default)
 
         # Create a config file if one doesn't exist
         # Otherwise, merge the current file
         if not os.path.exists(self.config_file):
-            self.conf.dump_file(self.config_file)
-        else:
-            self.conf.merge(self.config_file)
+            self.cfg.save(self.config_file)
 
+        print self.cfg
         self.map = Map()
         self.views = {}
         self.events = EventManager(self)
@@ -91,7 +98,7 @@ class GlashammerApplication(object):
 
         # Now the database
 
-        self.db_engine = db.create_engine(self.conf['db_uri'],
+        self.db_engine = db.create_engine(self.cfg['db_uri'],
                                           convert_unicode=True)
 
         for data_func in self._odata_funcs:
@@ -105,8 +112,7 @@ class GlashammerApplication(object):
             'url_for': url_for,
             'layout_template': self._layout_template,
             '_': _,
-            'conf': self.conf,
-            'cfg': self.conf,
+            'cfg': self.cfg,
             'request':local('request'),
             'h': htmlhelpers,
         })
@@ -241,6 +247,14 @@ class GlashammerApplication(object):
         """Add a middleware to the application."""
         self.dispatch_request = middleware_factory(self.dispatch_request,
                                                    *args, **kwargs)
+
+    @_prefinalize_only
+    def add_config_var(self, key, type, default):
+        """Add a configuration variable to the application."""
+        if key.count('/') > 1:
+            raise ValueError('key might not have more than one slash')
+        self.cfg.config_vars[key] = (type, default)
+
 
 def make_app(setup_func, instance_dir):
     application = local('application')

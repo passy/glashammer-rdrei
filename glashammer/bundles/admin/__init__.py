@@ -46,6 +46,8 @@ from werkzeug import escape
 from werkzeug.exceptions import NotFound
 
 #: how many posts / comments should be displayed per page?
+
+can_build_eventmap = True
 PER_PAGE = 20
 
 
@@ -100,7 +102,10 @@ def render_admin_response(template_name, _active_menu_item=None, **values):
             ('users', url_for('admin/show_users'), _('Users'), [
                 ('overview', url_for('admin/show_users'), _('Overview')),
                 ('edit', url_for('admin/new_user'), _('Edit User'))
-            ])]
+            ]),
+            ('configuration', url_for('admin/configuration'),
+            _    ('Configuration'), []),
+            ]
             #,
             #('options', url_for('admin/options'), _('Options'), [
             #    ('basic', url_for('admin/basic_options'), _('Basic')),
@@ -119,15 +124,15 @@ def render_admin_response(template_name, _active_menu_item=None, **values):
         #]
 
     # add the about items to the navigation bar
-    #about_items = [
-    #    ('system', url_for('admin/about'), _('System')),
+    about_items = [
+        ('system', url_for('admin/about'), _('System')),
     #    ('textpress', url_for('admin/about_textpress'), _('TextPress'))
-    #]
-    #if can_build_eventmap:
-    #    about_items.insert(1, ('eventmap', url_for('admin/eventmap'),
-    #                           _('Event Map')))
-    #navigation_bar.append(('about', url_for('admin/about'), _('About'),
-    #                      about_items))
+    ]
+    if can_build_eventmap:
+        about_items.insert(1, ('eventmap', url_for('admin/eventmap'),
+                               _('Event Map')))
+    navigation_bar.append(('about', url_for('admin/about'), _('About'),
+                          about_items))
 
     #! allow plugins to extend the navigation bar
     emit_event('modify-admin-navigation-bar', request, navigation_bar)
@@ -731,6 +736,60 @@ def do_change_password(request):
         hidden_form_data=make_hidden_fields(csrf_protector, redirect)
     )
 
+@require_role(ROLE_AUTHOR)
+def do_about(request):
+    """
+    Shows some details about this TextPress installation.  It's useful for
+    debugging and checking configurations.  If severe errors in a TextPress
+    installation occour it's a good idea to dump this page and attach it to
+    a bug report mail.
+    """
+    from threading import activeCount
+    from jinja.defaults import DEFAULT_NAMESPACE, DEFAULT_FILTERS
+
+    thread_count = activeCount()
+    #version_info = get_version_info()
+
+    return render_admin_response('admin/about.html', 'about.system',
+        #apis=[{
+        #    'name':         name,
+        #    'blog_id':      blog_id,
+        #    'preferred':    preferred,
+        #    'endpoint':     endpoint
+        #} for name, (blog_id, preferred, endpoint) in request.app.apis.iteritems()],
+        endpoints=[{
+            'name':         rule.endpoint,
+            'rule':         unicode(rule)
+        } for rule in sorted(request.app.map._rules, key=lambda x: x.endpoint)],
+        #servicepoints=sorted(request.app._services.keys()),
+        configuration=[{
+            'key':          key,
+            'default':      default,
+            'value':        request.app.cfg[key]
+        } for key, (_, default) in sorted(request.app.cfg.config_vars.iteritems())],
+        hosting_env={
+            'persistent':       not request.is_run_once,
+            'multithreaded':    request.is_multithread,
+            'thread_count':     thread_count,
+            'multiprocess':     request.is_multiprocess,
+            'wsgi_version':     '.'.join(map(str, request.environ['wsgi.version']))
+        },
+        #plugins=sorted(request.app.plugins.values(), key=lambda x: x.name),
+        #textpress_version='.'.join(map(str, version_info[0:3])),
+        #textpress_tag=version_info[3],
+        #textpress_hg_node=version_info[4],
+        #textpress_hg_checkout=version_info[4] is not None,
+        template_globals=[name for name, obj in
+                          sorted(request.app.template_env.globals.items())
+                          if name not in DEFAULT_NAMESPACE],
+        template_filters=[name for name, obj in
+                          sorted(request.app.template_env.filters.items())
+                          if name not in DEFAULT_FILTERS],
+        can_build_eventmap=can_build_eventmap,
+        instance_path=request.app.instance_dir,
+        database_uri=str(request.app.db_engine.url)
+    )
+
 
 def do_login(request):
     """Show a login page."""
@@ -785,6 +844,12 @@ def setup(app):
                 view=do_edit_user),
     app.add_url('/change_password', endpoint='admin/change_password',
                 view=do_change_password)
+
+    app.add_url('/options/configuration', endpoint='admin/configuration',
+                view=do_configuration)
+
+    app.add_url('/about/', endpoint='admin/about', view=do_about)
+    app.add_url('/about/eventmap', endpoint='admin/eventmap'),
     app.add_template_searchpath(sibpath(__file__, 'templates'))
     app.add_shared('admin', sibpath(__file__, 'shared'))
 

@@ -2,14 +2,14 @@
 {% block title %}{{ _("Configuration Editor") }}{% endblock %}
 {% block contents %}
   <h2>{{ _("Configuration Editor") }}</h2>
-  <p>{% trans %}
+  <p>
     Here you can tune all registered configuration values. Note that some of
     them (especially the core configuration values) can easily break your
     installation if set to an illegal value. Don't alter any of those values
     if you don't know what effect they will have. This editor is especially
     useful if you want to configure plugins that don't provide a configuration
     page (yet).
-  {% endtrans %}</p>
+  </p>
   <form action="" method="post">
   {% if editor_enabled %}
       <table class="config-table">
@@ -43,10 +43,10 @@
         <input type="submit" name="disable_editor" value="{{ _('Disable Editor') }}">
       </div>
   {% else %}
-    <p>{% trans %}
+    <p>
       The configuration editor is disabled because of this. If you really want
       to use it, click the button to proceed.
-    {% endtrans %}</p>
+    </p>
     <div class="actions">
       {{ csrf_protector }}
       <input type="submit" name="enable_editor" value="{{ _('Enable Editor') }}">
