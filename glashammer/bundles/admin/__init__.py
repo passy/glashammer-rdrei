@@ -28,7 +28,7 @@ from glashammer.bundles.auth.database import User, ROLE_ADMIN, \
 
 from glashammer.utils import require_role, IntelligentRedirect, \
     render_response, sibpath, _, redirect, url_for, get_request, emit_event, \
-    Pagination, CSRFProtector, make_hidden_fields, flash
+    Pagination, CSRFProtector, make_hidden_fields, flash, build_eventmap
 
 from glashammer.database import db
 #from textpress.database import comments, posts, post_tags, post_links
@@ -849,7 +849,7 @@ def setup(app):
                 view=do_configuration)
 
     app.add_url('/about/', endpoint='admin/about', view=do_about)
-    app.add_url('/about/eventmap', endpoint='admin/eventmap'),
+    app.add_url('/about/eventmap', endpoint='admin/eventmap', view=do_eventmap),
     app.add_template_searchpath(sibpath(__file__, 'templates'))
     app.add_shared('admin', sibpath(__file__, 'shared'))
 
