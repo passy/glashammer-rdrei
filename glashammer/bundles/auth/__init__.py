@@ -34,10 +34,5 @@ def setup(app):
 
 def init_data(engine):
     metadata.create_all(engine)
-    #admin_role = Role.objects.get(1)
-    #if admin_role is None:
-    #    r = Role()
-    #    r.name = 'admin'
-    #    db.commit()
 
 

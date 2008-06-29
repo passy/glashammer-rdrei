@@ -19,8 +19,9 @@ from glashammer.database import db
 
 from glashammer import htmlhelpers
 
+
 DEFAULT_CONFIG = [
-    ('db_uri', 'sqlite://', str),
+    ('db_uri', '', str),
     ('session_cookie_name', 'glashammer_session', str),
     ('secret_key', 'my secret', str),
     ('base_url', u'', str),
@@ -28,6 +29,9 @@ DEFAULT_CONFIG = [
 
 
 def default_setup_func(app):
+    from glashammer.bundles.auth import setup as auth_setup
+    # XXX shouldn't really need this
+    app.add_setup(auth_setup)
     app.add_template_searchpath(sibpath(__file__, 'templates'))
 
 
@@ -58,7 +62,10 @@ class GlashammerApplication(object):
         # Create a config file if one doesn't exist
         # Otherwise, merge the current file
         if not os.path.exists(self.config_file):
-            self.cfg.save(self.config_file)
+            db_file = os.path.join(self.instance_dir, 'gh.sqlite')
+            self.cfg['db_uri'] = 'sqlite:///' + db_file
+            print self.cfg['db_uri']
+            self.cfg.save()
 
         self.map = Map()
         self.views = {}
