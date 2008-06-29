@@ -60,7 +60,6 @@ class GlashammerApplication(object):
         if not os.path.exists(self.config_file):
             self.cfg.save(self.config_file)
 
-        print self.cfg
         self.map = Map()
         self.views = {}
         self.events = EventManager(self)
