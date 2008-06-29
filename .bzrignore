@@ -1,2 +1,4 @@
 examples/*/config.ini
 examples/*/gh.sqlite
+docs/build
+docs/build/*

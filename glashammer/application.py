@@ -64,7 +64,6 @@ class GlashammerApplication(object):
         if not os.path.exists(self.config_file):
             db_file = os.path.join(self.instance_dir, 'gh.sqlite')
             self.cfg['db_uri'] = 'sqlite:///' + db_file
-            print self.cfg['db_uri']
             self.cfg.save()
 
         self.map = Map()
@@ -193,8 +192,21 @@ class GlashammerApplication(object):
             return f(self, *args, **kw)
         return _decorated
 
+
     @_prefinalize_only
     def add_setup(self, setup_func):
+        """Add a setup callable to be called on startup by the application.
+
+        This method is used to add pluggable capability to the application.
+        For example, plugin A can load plugin B by importing and adding it's
+        setup func.
+
+        ::
+            >>> from glashammer.bundles.admin import setup
+            >>> app.add_setup(setup)
+
+        Will initialize the admin interface for the application.
+        """
         if setup_func not in self._setup_funcs:
             self._setup_funcs.add(setup_func)
             self._osetup_funcs.append(setup_func)
