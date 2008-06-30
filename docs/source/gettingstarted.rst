@@ -1,3 +1,17 @@
+Getting Started
+===============
+
+This chapter will help you get running with Glashammer. It is only a cursory
+look, and the following chapters will describe more detailed usage.
+
+Downloading
+-----------
+
+While there are no official releases, you can check out the source code using
+Bazaar, with::
+
+    bzr branch lp:glashammer
+
 
 Requirements
 ------------

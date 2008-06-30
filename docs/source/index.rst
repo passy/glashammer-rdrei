@@ -11,7 +11,7 @@ Contents:
    :maxdepth: 2
 
    introduction
-   requirements
+   gettingstarted
    application
 
 Indices and tables
