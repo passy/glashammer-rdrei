@@ -275,6 +275,10 @@ class GlashammerApplication(object):
 
 
 def make_app(setup_func, instance_dir):
+    """Create an application instance.
+    
+    `instance_dir` The directory where instance-related files will be stored.
+    """
     application = local('application')
     application = GlashammerApplication(setup_func, instance_dir)
     application = local_manager.make_middleware(application)
