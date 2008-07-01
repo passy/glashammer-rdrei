@@ -68,6 +68,7 @@ class GlashammerApplication(object):
 
         self.map = Map()
         self.views = {}
+        self.controllers = {}
         self.events = EventManager(self)
 
         # Temporary variables for collecting setup information
@@ -179,11 +180,17 @@ class GlashammerApplication(object):
 
 
     def get_view(self, request, endpoint, values):
+        # try looking up by view first
         view = self.views.get(endpoint)
         if view is None:
-            return NotFound()
-        else:
-            return view(request, **values)
+            # fallback to controller->view
+            controller = self.controllers.get(endpoint.split('/', 1)[0])
+            if controller is not None and hasattr(controller, endpoint.split('/', 1)[1]):
+                return getattr(controller, endpoint.split('/', 1)[0])(request, **values)
+            else:
+                # fallback to notfound
+                return NotFound()
+        return view(request, **values)
 
     def _prefinalize_only(f):
         def _decorated(self, *args, **kw):
@@ -231,6 +238,10 @@ class GlashammerApplication(object):
     @_prefinalize_only
     def add_view(self, endpoint, view):
         self.views[endpoint] = view
+    
+    @_prefinalize_only
+    def add_controller(self, endpoint, controller):
+        self.controllers[endpoint] = controller
 
     @_prefinalize_only
     def add_template_searchpath(self, path):
