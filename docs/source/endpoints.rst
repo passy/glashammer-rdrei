@@ -120,3 +120,12 @@ callable. Using the endpoint example above::
 Note that you can make this argument optional in the view by providing a default
 argument to the function, and thus use the same view for many endpoints.
 
+Adding related views as a controller
+------------------------------------
+
+A controller, or "view controller" if we want to be explicit is a container,
+either module, or isntance, which contains a number of views which will be
+available for a single endpoint's base.
+
+.. automethod:: glashammer.application.GlashammerApplication.add_views_controller
+
