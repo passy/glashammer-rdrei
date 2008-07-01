@@ -238,7 +238,7 @@ class GlashammerApplication(object):
     @_prefinalize_only
     def add_view(self, endpoint, view):
         self.views[endpoint] = view
-    
+
     @_prefinalize_only
     def add_views_controller(self, endpoint_base, controller):
         """Add a an instance or module which contains functions for a number of 
@@ -273,11 +273,13 @@ class GlashammerApplication(object):
 
     @_prefinalize_only
     def add_template_searchpath(self, path):
+        """Add a directory to the template search path"""
         path = os.path.abspath(path)
         self._template_searchpaths.append(path)
 
     @_prefinalize_only
     def add_template_global(self, key, value):
+        """Add a template global"""
         self._template_globals[key] = value
 
     @_prefinalize_only
