@@ -240,8 +240,36 @@ class GlashammerApplication(object):
         self.views[endpoint] = view
     
     @_prefinalize_only
-    def add_controller(self, endpoint, controller):
-        self.controllers[endpoint] = controller
+    def add_views_controller(self, endpoint_base, controller):
+        """Add a an instance or module which contains functions for a number of 
+           views.
+        
+        `endpoint_base` The base end point
+        `controller` A module or instance to search for views in.
+        
+        This method allows you to add multiple views from a source. It is useful
+        in situations where it is desirable to add many views at once for a certain
+        endpoint's base.
+
+        For example::
+
+            app.add_url('/foo', 'foo/index')
+            app.add_url('/foo/add', 'foo/add')
+            
+            class Controller(object):
+                
+                def index(self):
+                    ...
+
+                def add(self):
+                    ...
+    
+            app.add_views_controller('foo', Controller())
+
+        Here, the endpoint's base is 'foo'. And the actual endpoints will be the
+        attribute names concatenated with the endpoint_base.
+        """
+        self.controllers[endpoint_base] = controller
 
     @_prefinalize_only
     def add_template_searchpath(self, path):
