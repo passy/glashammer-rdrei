@@ -12,6 +12,21 @@ documentation at http://werkzeug.pocoo.org/documentation/ ill certainly be worth
 your while at some point.
 
 
+Creating an application instance
+--------------------------------
+
+Application instances should be created using glashammer.make_app:
+
+.. autofunction:: glashammer.make_app
+
+The passed setup_func is a callable that will be the main entry point into the
+application. It is in this function that the application is configured.
+Throughout this manual when we refer to a "setup function" this is what we are
+referring to.
+
+The instance directory is where the data for one particular instance of an
+applicaiton lives. This is explained in more detail in the next section.
+
 
 Code Structure
 --------------

@@ -276,7 +276,10 @@ class GlashammerApplication(object):
 
 def make_app(setup_func, instance_dir):
     """Create an application instance.
-    
+
+    `setup_func`   The callable used by the application to set itself up. This
+                   is the main entry point into the application.
+
     `instance_dir` The directory where instance-related files will be stored.
     """
     application = local('application')

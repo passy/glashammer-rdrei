@@ -16,7 +16,9 @@ Contents:
    concepts
    endpoints
    templating
-   application
+   database
+   forms
+   api
 
 Indices and tables
 ==================
