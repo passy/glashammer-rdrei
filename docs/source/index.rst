@@ -1,9 +1,10 @@
-.. Glashammer documentation master file, created by sphinx-quickstart on Sun Jun 29 23:12:28 2008.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+.. Glashammer documentation master file
 
-Welcome to Glashammer's documentation!
-======================================
+Glashammer User Manual
+======================
+
+Welcome to the Glashammer documentation. Please select an item from the contents
+below. The introduction is a good place to start for first-time users.
 
 Contents:
 
@@ -12,6 +13,9 @@ Contents:
 
    introduction
    gettingstarted
+   concepts
+   endpoints
+   templating
    application
 
 Indices and tables

@@ -44,6 +44,16 @@ def render_template(template_name, _stream=False, **context):
     return tmpl.render(context)
 
 def render_response(template_name, mimetype='text/html', **context):
+    """Render a template and return a response instance.
+
+    `template_name` The name of the template to use, this can include a relative
+    path to the template from the searchpath directory.
+
+    `mimetype` The mimetype for the response.
+
+    `context` Key worded context variables for the template. These variables are
+    passed into the template namespace.
+    """
     return Response(
         render_template(template_name, **context),
         mimetype=mimetype
