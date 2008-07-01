@@ -184,9 +184,10 @@ class GlashammerApplication(object):
         view = self.views.get(endpoint)
         if view is None:
             # fallback to controller->view
-            controller = self.controllers.get(endpoint.split('/', 1)[0])
-            if controller is not None and hasattr(controller, endpoint.split('/', 1)[1]):
-                return getattr(controller, endpoint.split('/', 1)[0])(request, **values)
+            base, target = endpoint.split('/', 1)
+            controller = self.controllers.get(base)
+            if controller is not None and hasattr(controller, target):
+                return getattr(controller, target)(request, **values)
             else:
                 # fallback to notfound
                 return NotFound()
