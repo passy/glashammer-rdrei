@@ -6,12 +6,13 @@ from distutils.core import setup
 
 
 setup(
-
     name='Glashammer',
 
+    version='0.1',
 
     packages = [
-        'glashammer'
+        'glashammer', 'glashammer.bundles', 'glashammer.bundles.auth',
+        'glashammer.bundles.admin',
     ],
 
     package_dir = {
@@ -20,8 +21,9 @@ setup(
 
     package_data = {
         'glashammer': [
-            '*_public/*/*',
-            '*_templates/*'
+            'shared/*',
+            'templates/macros/forms.html',
+            'templates/*.html'
         ]
     },
 )

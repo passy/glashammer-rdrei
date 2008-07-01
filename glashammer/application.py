@@ -1,4 +1,7 @@
 
+"""
+The Glashammer Application.
+"""
 
 import os
 from time import time
