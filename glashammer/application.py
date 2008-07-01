@@ -198,6 +198,9 @@ class GlashammerApplication(object):
             if self.finalized:
                 raise RuntimeError('Already Finalized')
             return f(self, *args, **kw)
+        _decorated.__doc__ = f.__doc__
+        _decorated.__name__ = f.__name__
+        _decorated.__module__ = f.__module__
         return _decorated
 
 
