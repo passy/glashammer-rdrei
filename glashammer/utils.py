@@ -5,6 +5,8 @@ from random import choice, randrange, random
 
 import pytz
 
+from simplejson import dumps as dump_json, loads as load_json
+
 from werkzeug import run_simple, Request as wzRequest, \
     Response as wzResponse, ClosingIterator, Local, LocalManager, redirect, \
     escape
@@ -79,6 +81,12 @@ def get_request():
 
 class Response(wzResponse):
     default_mimetype = 'text/html'
+
+class JSonResponse(wzResponse):
+    default_mimetype = 'text/javascript'
+
+    def __init__(self, data, *args, **kw):
+        wzResponse.__init__(self, dump_json(data), *args, **kw)
 
 class Request(wzRequest):
     """The used request class."""
