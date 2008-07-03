@@ -623,3 +623,85 @@ class NavigationItem(object):
     def get_url(self):
         return url_for(self.endpoint, **self.rule_args)
 
+
+class CrudController(object):
+    """Controller with basic crud functions"""
+
+    actions = ['add', 'edit', 'save', 'list']
+
+    def __init__(self, model_type, model_name, form_type, form_template,
+                 endpoint_base):
+
+        self.model_type = model_type
+        self.model_name = model_name
+
+        self.form_type = form_type
+        self.form_template = form_template
+        self.endpoint_base = endpoint_base
+
+        self.endpoints = {}
+        self.templates = {}
+        for action in self.actions:
+            ep = endpoint_base + '/' + action
+            self.endpoints[action] = ep
+            self.templates[action] = ep + '.jinja'
+
+        self.subnav = self._create_nav()
+
+    def index(self, req):
+        return self.render_response(self.templates['list'],
+               items=self.model_type.objects.all())
+
+    def edit(self, req, id=None):
+        if id:
+            obj = self.model_type.objects.get(id)
+            template = self.templates['edit']
+        else:
+            obj = None
+            template = self.templates['add']
+
+        form = self.form_type(req.form, obj=obj)
+
+        return self.render_response(template, form=form)
+
+    def save(self, req):
+        form = self.form_type(req.form)
+        if form.validate():
+            if not form.id.data:
+                obj = self.model_type()
+            else:
+                obj = self.model_type.objects.get(form.id.data)
+            form.auto_populate(obj)
+            db.commit()
+            return redirect(url_for(self.endpoints['edit'], id=obj.id))
+        else:
+            if not form.id.data:
+                template = self.templates['add']
+            else:
+                template = self.templates['edit']
+            return self.render_response(template, form=form)
+
+    def _create_nav(self):
+        n = NavigationItem
+        return [
+            n('List users', self.endpoints['list']),
+            n('New user', self.endpoints['add']),
+        ]
+
+    def render_response(self, template, **context):
+        return render_ecdr_response(
+            template,
+            middle_content_menu_items=self.subnav,
+            **context
+        )
+
+    def mount_actions(self, app, prefix=''):
+        app.add_url(prefix + '/' + self.endpoint_base,
+                    self.endpoints['list'], view=self.index)
+        app.add_url(prefix + '/' + self.endpoints['add'],
+                    self.endpoints['add'], view=self.edit)
+        app.add_url(prefix + '/' + self.endpoints['edit'] + '/<int:id>',
+                    self.endpoints['edit'], view=self.edit)
+        app.add_url(prefix + '/' + self.endpoints['save'],
+                    self.endpoints['save'], view=self.save)
+
