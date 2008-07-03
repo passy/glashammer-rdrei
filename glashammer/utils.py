@@ -705,3 +705,5 @@ class CrudController(object):
         app.add_url(prefix + '/' + self.endpoints['save'],
                     self.endpoints['save'], view=self.save)
 
+
+
