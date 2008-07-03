@@ -614,11 +614,13 @@ def build_eventmap(app):
 
 class NavigationItem(object):
     """An item that contains navigation information"""
-    def __init__(self, title, endpoint, rule_args={}, children=[]):
+    def __init__(self, title, endpoint, rule_args={}, children=[],
+                 nolink=False):
         self.title = title
         self.endpoint = endpoint
         self.children = children
         self.rule_args = rule_args
+        self.nolink = nolink
 
     def get_url(self):
         return url_for(self.endpoint, **self.rule_args)
