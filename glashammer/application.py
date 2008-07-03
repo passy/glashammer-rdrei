@@ -54,7 +54,7 @@ class GlashammerApplication(object):
         self.config_file = os.path.join(self.instance_dir, 'config.ini')
 
         if not os.path.exists(self.instance_dir):
-            raise RunTimeError('Application instance directory missing')
+            raise RuntimeError('Application instance directory missing')
 
         #self.conf = SimpleConfig(DEFAULT_CONFIG)
         self.conf = self.cfg = Configuration(self.config_file)
@@ -163,6 +163,8 @@ class GlashammerApplication(object):
         emit_event('app-request', request)
         try:
             endpoint, values = adapter.match()
+            request.endpoint = endpoint
+            request.values = values
             response = self.get_view(request, endpoint, values)
         except HTTPException, e:
             response = e
