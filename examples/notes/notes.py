@@ -44,6 +44,9 @@ class Note(object):
         self.importance = importance
 
 def setup(app):
+    from glashammer.bundles.sqladb import setup_sqladb
+    app.add_setup(setup_sqladb)
+
     app.add_url('/', 'example/index', view=index_view)
     app.add_url('/add', 'example/add', view=add_view)
     app.add_url('/edit/<int:nid>', 'example/edit', view=edit_view)
@@ -52,7 +55,8 @@ def setup(app):
     app.add_data_func(init_data)
     app.set_layout_template('notes_layout.jinja')
 
-def init_data(engine):
+def init_data(app):
+    engine = app.sqla_db_engine
     notes = db.Table('notes', metadata,
         db.Column('id', db.Integer, primary_key=True),
         db.Column('title', db.Unicode),

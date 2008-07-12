@@ -3,14 +3,13 @@ import os, string, sha, math, linecache, _ast
 from collections import deque
 from random import choice, randrange, random
 
-import pytz
+#import pytz
 
 from simplejson import dumps as dump_json, loads as load_json
 
 from werkzeug import run_simple, Request as wzRequest, \
     Response as wzResponse, ClosingIterator, Local, LocalManager, redirect, \
     escape
-from werkzeug.contrib.securecookie import SecureCookie
 from werkzeug.exceptions import Forbidden
 
 local = Local()
@@ -29,7 +28,7 @@ def format_datetime(obj, format=None):
     format = DATE_FORMATS[3]
     return obj.strftime(format)
     cfg = local.application.conf
-    tzinfo = pytz.timezone(str(cfg['timezone']))
+    tzinfo = None#pytz.timezone(str(cfg['timezone']))
     if type(obj) is date:
         obj = datetime(obj.year, obj.month, obj.day, tzinfo=tzinfo)
     else:
@@ -94,53 +93,6 @@ class Request(wzRequest):
     def __init__(self, app, environ):
         wzRequest.__init__(self, environ)
         self.app = app
-
-        engine = self.app.db_engine
-
-        # get the session and try to get the user object for this request.
-        from glashammer.bundles.auth.database import User
-        user = None
-        cookie_name = app.conf['session_cookie_name']
-        session = SecureCookie.load_cookie(self, cookie_name,
-                                           app.conf['secret_key'])
-        user_id = session.get('uid')
-        if user_id:
-            user = User.objects.get(user_id)
-        if user is None:
-            user = User.objects.get_nobody()
-        self.user = user
-        self.session = session
-
-
-    def login(self, user, permanent=False):
-        """Log the given user in. Can be user_id, username or
-        a full blown user object.
-        """
-        from glashammer.bundles.auth.database import User
-        if isinstance(user, (int, long)):
-            user = User.objects.get(user)
-        elif isinstance(user, basestring):
-            user = User.objects.filter_by(username=user).first()
-        if user is None:
-            raise RuntimeError('User does not exist')
-        print user
-        self.user = user
-        #! called after a user was logged in successfully
-        emit_event('after-user-login', user)
-        self.session['uid'] = user.user_id
-        print self.session
-        print self.session['uid']
-        if permanent:
-            self.session['pmt'] = True
-
-    def logout(self):
-        """Log the current user out."""
-        from glashammer.bundles.auth.database import User
-        user = self.user
-        self.user = User.objects.get_nobody()
-        self.session.clear()
-        #! called after a user was logged out and the session cleared.
-        emit_event('after-user-logout', user)
 
 
 def get_app():

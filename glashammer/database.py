@@ -276,7 +276,7 @@ class DatabaseManager(object):
 
 #: a new scoped session
 session = orm.scoped_session(lambda: orm.create_session(
-                             local.application.db_engine,
+                             local.application.sqla_db_engine,
                              autoflush=True, transactional=True),
                              local_manager.get_ident)
 

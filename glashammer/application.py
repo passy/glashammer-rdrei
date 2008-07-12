@@ -18,7 +18,6 @@ from glashammer.templating import create_template_environment
 from glashammer.utils import local, local_manager, EventManager, emit_event, \
     url_for, sibpath, Request, Response, _, format_datetime
 
-from glashammer.database import db
 
 from glashammer import htmlhelpers
 
@@ -32,9 +31,9 @@ DEFAULT_CONFIG = [
 
 
 def default_setup_func(app):
-    from glashammer.bundles.auth import setup as auth_setup
+    #from glashammer.bundles.auth import setup as auth_setup
     # XXX shouldn't really need this
-    app.add_setup(auth_setup)
+    #app.add_setup(auth_setup)
     app.add_template_searchpath(sibpath(__file__, 'templates'))
 
 
@@ -43,7 +42,7 @@ class GlashammerApplication(object):
 
     default_setup = default_setup_func
 
-    def __init__(self, setup_func, instance_dir):
+    def __init__(self, setup_func, instance_dir=None, config_factory=None):
         # just for playing in the shell
         local.application = self
 
@@ -56,23 +55,24 @@ class GlashammerApplication(object):
         if not os.path.exists(self.instance_dir):
             raise RuntimeError('Application instance directory missing')
 
-        #self.conf = SimpleConfig(DEFAULT_CONFIG)
         self.conf = self.cfg = Configuration(self.config_file)
 
-        for name, default, type in DEFAULT_CONFIG:
-            self.add_config_var(name, type, default)
+        #for name, default, type in DEFAULT_CONFIG:
+        #    self.add_config_var(name, type, default)
 
         # Create a config file if one doesn't exist
         # Otherwise, merge the current file
-        if not os.path.exists(self.config_file):
-            db_file = os.path.join(self.instance_dir, 'gh.sqlite')
-            self.cfg['db_uri'] = 'sqlite:///' + db_file
-            self.cfg.save()
+        #if not os.path.exists(self.config_file):
+        #    self.cfg.save()
 
         self.map = Map()
         self.views = {}
         self.controllers = {}
         self.events = EventManager(self)
+
+        # permanent things you can use during setup
+        self.request_processors = []
+        self.response_processors = []
 
         # Temporary variables for collecting setup information
 
@@ -107,11 +107,9 @@ class GlashammerApplication(object):
 
         # Now the database
 
-        self.db_engine = db.create_engine(self.cfg['db_uri'],
-                                          convert_unicode=True)
 
         for data_func in self._odata_funcs:
-            data_func(self.db_engine)
+            data_func(self)
 
         del self._data_funcs
 
@@ -161,6 +159,8 @@ class GlashammerApplication(object):
         local.url_adapter = adapter = self.map.bind_to_environ(environ)
         local.request = request = Request(self, environ)
         emit_event('app-request', request)
+        for proc in self.request_processors:
+            proc(request)
         try:
             endpoint, values = adapter.match()
             request.endpoint = endpoint
@@ -171,18 +171,10 @@ class GlashammerApplication(object):
         # cleanup
         emit_event('app-response', response)
 
-        # save the session
-        if request.session.should_save:
-            cookie_name = self.conf['session_cookie_name']
-            if request.session.get('pmt'):
-                max_age = 60 * 60 * 24 * 31
-                expires = time() + max_age
-            else:
-                max_age = expires = None
-            request.session.save_cookie(response, cookie_name, max_age=max_age,
-                                        expires=expires, session_expires=expires)
-        return response(environ, start_response)
 
+        for proc in self.response_processors:
+            proc(response)
+        return response(environ, start_response)
 
     def get_view(self, request, endpoint, values):
         # try looking up by view first
@@ -322,6 +314,12 @@ class GlashammerApplication(object):
         if key.count('/') > 1:
             raise ValueError('key might not have more than one slash')
         self.cfg.config_vars[key] = (type, default)
+
+    def add_request_processor(self, processor):
+        self.request_processors.append(processor)
+
+    def add_response_processor(self, processor):
+        self.response_processors.append(processor)
 
 
 def make_app(setup_func, instance_dir):
