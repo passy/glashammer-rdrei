@@ -73,6 +73,7 @@ class GlashammerApplication(object):
         # permanent things you can use during setup
         self.request_processors = []
         self.response_processors = []
+        self.local_processors = []
 
         # Temporary variables for collecting setup information
 
@@ -158,6 +159,8 @@ class GlashammerApplication(object):
         local.application = self
         local.url_adapter = adapter = self.map.bind_to_environ(environ)
         local.request = request = Request(self, environ)
+        for proc in self.local_processors:
+            proc(local)
         emit_event('app-request', request)
         for proc in self.request_processors:
             proc(request)
@@ -320,6 +323,9 @@ class GlashammerApplication(object):
 
     def add_response_processor(self, processor):
         self.response_processors.append(processor)
+
+    def add_local_processor(self, processor):
+        self.local_processors.append(processor)
 
 
 def make_app(setup_func, instance_dir):

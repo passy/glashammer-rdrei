@@ -1,5 +1,4 @@
 
-
 from werkzeug.contrib.securecookie import SecureCookie
 from glashammer.utils import local, get_app
 
@@ -8,7 +7,7 @@ def get_session():
 
 def setup_session(request):
     app = get_app()
-    cookie_name = app.conf['sessionse/cookie_name']
+    cookie_name = app.conf['sessions/cookie_name']
     session = SecureCookie.load_cookie(self, cookie_name,
                                            app.conf['secret_key'])
     local.session = session
