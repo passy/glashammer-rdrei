@@ -18,10 +18,19 @@ def gae_local_processor(req):
 def gae_user_only_view(f):
     def wrapped(req, **kw):
         if local.gae_user is None:
-            return redirect_appengine_url()
+            return redirect_gae_login_url()
         else:
             return f(req, **kw)
     return wrapped
+
+def gae_admin_only_view(f):
+    def wrapped(req, **kw):
+        if not users.is_current_user_admin():
+            return redirect_gae_login_url()
+        else:
+            return f(req, **kw)
+    return wrapped
+    
 
 def redirect_gae_login_url():
     req = get_request()
