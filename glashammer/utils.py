@@ -13,26 +13,8 @@ local = Local()
 local_manager = LocalManager([local])
 
 
-SALT_CHARS = string.ascii_lowercase + string.digits
 
-DATE_FORMATS = ['%m/%d/%Y', '%d/%m/%Y', '%Y%m%d', '%d. %m. %Y',
-                '%m/%d/%y', '%d/%m/%y', '%d%m%y', '%m%d%y', '%y%m%d']
-TIME_FORMATS = ['%H:%M', '%H:%M:%S', '%I:%M %p', '%I:%M:%S %p']
-
-
-def format_datetime(obj, format=None):
-    """Format a datetime object. Later with i18n"""
-    format = DATE_FORMATS[3]
-    return obj.strftime(format)
-    cfg = local.application.conf
-    tzinfo = None#pytz.timezone(str(cfg['timezone']))
-    if type(obj) is date:
-        obj = datetime(obj.year, obj.month, obj.day, tzinfo=tzinfo)
-    else:
-        obj = obj.replace(tzinfo=tzinfo)
-    if format is None:
-        format = cfg['datetime_format']
-    return obj.strftime(format.encode('utf-8')).decode('utf-8')
+# Template rendering
 
 def render_template(template_name, _stream=False, **context):
     #emit_event('before-render-template', template_name, _stream, context)
@@ -57,6 +39,9 @@ def render_response(template_name, mimetype='text/html', **context):
         mimetype=mimetype
     )
 
+
+# Grab useful things from the local object
+
 def url_for(endpoint, **args):
     """Get the url to an endpoint."""
     if hasattr(endpoint, 'get_url_values'):
@@ -75,6 +60,17 @@ def url_for(endpoint, **args):
 def get_request():
     return local.request
 
+def get_app():
+    return local.application
+
+def run_very_simple(app):
+    from werkzeug.debug import DebuggedApplication
+    app = DebuggedApplication(app, True)
+    run_simple('localhost', 6060, app, use_reloader=True)
+
+
+# Wrappers
+
 class Response(wzResponse):
     default_mimetype = 'text/html'
 
@@ -87,14 +83,7 @@ class Request(wzRequest):
         self.app = app
 
 
-def get_app():
-    return local.application
-
-def run_very_simple(app):
-    from werkzeug.debug import DebuggedApplication
-    app = DebuggedApplication(app, True)
-    run_simple('localhost', 6060, app, use_reloader=True)
-
+# Events
 
 def emit_event(event, *args, **kwargs):
     """Emit a event and return a `EventResult` instance."""
@@ -151,35 +140,14 @@ class EventManager(object):
                 results.append(rv)
         return TemplateEventResult(results)
 
+# File utilities
+
 def sibpath(path, sibling):
     return os.path.join(os.path.dirname(path), sibling)
 
-def require_role(role):
-    """Wrap a view so that it requires a given role to access."""
-    def wrapped(f):
-        def decorated(request, **kwargs):
-            print request.user
-            if request.user.role >= role:
-                return f(request, **kwargs)
-            raise Forbidden()
-        decorated.__name__ = f.__name__
-        decorated.__doc__ = f.__doc__
-        return decorated
-    return wrapped
+# Crypto
 
-
-
-
-
-
-
-def gettext(string, plural=None, n=1):
-    """Translate something. XXX: add real translation here"""
-    if plural is not None and n != 1:
-        return plural
-    return string
-
-_ = gettext
+SALT_CHARS = string.ascii_lowercase + string.digits
 
 def gen_pwhash(password):
     """Return a the password encrypted in sha format with a random salt."""
@@ -240,6 +208,8 @@ def check_pwhash(pwhash, password):
     h.update(password)
     return h.hexdigest() == hashval
 
+
+# Useful things for paging and navigation
 
 class Pagination(object):
     """Pagination helper."""
@@ -305,8 +275,18 @@ class Pagination(object):
 
         return u''.join(result)
 
+class NavigationItem(object):
+    """An item that contains navigation information"""
+    def __init__(self, title, endpoint, rule_args={}, children=[],
+                 nolink=False):
+        self.title = title
+        self.endpoint = endpoint
+        self.children = children
+        self.rule_args = rule_args
+        self.nolink = nolink
 
-
+    def get_url(self):
+        return url_for(self.endpoint, **self.rule_args)
 
 def flash(msg, type='info'):
     """Add a message to the message flash buffer.
@@ -323,6 +303,8 @@ def flash(msg, type='info'):
     local.request.session.setdefault('admin/flashed_messages', []).\
             append((type, msg))
 
+
+# system utilities
 
 can_build_eventmap = True
 def build_eventmap(app):
@@ -396,19 +378,4 @@ def build_eventmap(app):
                                                          lineno, help))
 
     return result
-
-
-class NavigationItem(object):
-    """An item that contains navigation information"""
-    def __init__(self, title, endpoint, rule_args={}, children=[],
-                 nolink=False):
-        self.title = title
-        self.endpoint = endpoint
-        self.children = children
-        self.rule_args = rule_args
-        self.nolink = nolink
-
-    def get_url(self):
-        return url_for(self.endpoint, **self.rule_args)
-
 

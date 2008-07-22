@@ -9,9 +9,9 @@ from werkzeug import ClosingIterator, SharedDataMiddleware
 from werkzeug.routing import Map, Rule
 from werkzeug.exceptions import HTTPException, NotFound
 
-from glashammer.config import Configuration
+from glashammer.utils.config import Configuration
 
-from glashammer.templating import create_template_environment
+from glashammer.utils.templating import create_template_environment
 
 from glashammer.utils import local, local_manager, EventManager, emit_event, \
     url_for, sibpath, Request
