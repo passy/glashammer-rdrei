@@ -27,7 +27,7 @@ class GlashammerApplication(object):
 
     default_setup = default_setup_func
 
-    def __init__(self, setup_func, instance_dir=None, config_factory=None):
+    def __init__(self, setup_func, instance_dir=None):
         # just for playing in the shell
         local.application = self
 
@@ -45,14 +45,6 @@ class GlashammerApplication(object):
             raise RuntimeError('Application instance directory missing')
 
         self.conf = self.cfg = Configuration(self.config_file)
-
-        #for name, default, type in DEFAULT_CONFIG:
-        #    self.add_config_var(name, type, default)
-
-        # Create a config file if one doesn't exist
-        # Otherwise, merge the current file
-        #if not os.path.exists(self.config_file):
-        #    self.cfg.save()
 
         self.map = Map()
         self.views = {}
@@ -127,7 +119,6 @@ class GlashammerApplication(object):
 
 
         # now add the middleware for static file serving
-        #self.add_shared_exports('core', SHARED_DATA)
         self.add_middleware(SharedDataMiddleware, self._shared_exports)
 
         del self._shared_exports

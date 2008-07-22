@@ -30,7 +30,6 @@ def gae_admin_only_view(f):
         else:
             return f(req, **kw)
     return wrapped
-    
 
 def redirect_gae_login_url():
     req = get_request()

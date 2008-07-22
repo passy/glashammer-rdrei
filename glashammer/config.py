@@ -15,66 +15,6 @@ import os
 from os import path
 
 
-#: variables the textpress core uses
-DEFAULT_VARS = {
-    # general settings
-    'database_uri':             (unicode, u''),
-    'blog_title':               (unicode, u'My TextPress Blog'),
-    'blog_tagline':             (unicode, u'just another textpress blog'),
-    'blog_url':                 (unicode, u''),
-    'blog_email':               (unicode, u''),
-    'timezone':                 (unicode, u'Europe/Vienna'),
-    'maintenance_mode':         (bool, False),
-    'session_cookie_name':      (unicode, u'textpress_session'),
-    'theme':                    (unicode, u'default'),
-    'secret_key':               (unicode, u''),
-
-    # url settings
-    'blog_url_prefix':          (unicode, u''),
-    'admin_url_prefix':         (unicode, u'/admin'),
-    'tags_url_prefix':          (unicode, u'/tags'),
-    'profiles_url_prefix':      (unicode, u'/authors'),
-
-    # cache settings
-    'enable_eager_caching':     (bool, False),
-    'cache_timeout':            (int, 300),
-    'cache_system':             (unicode, u'null'),
-    'memcached_servers':        (unicode, u''),
-    'filesystem_cache_path':    (unicode, u'cache'),
-
-    # the default markup parser. Don't ever change this value! The
-    # htmlprocessor module bypasses this test when falling back to
-    # the default parser. If there plans to change the default parser
-    # for future TextPress versions that code must be altered first.
-    'default_parser':           (unicode, u'default'),
-    'comment_parser':           (unicode, u'comment'),
-
-    # comments and pingback
-    'comments_enabled':         (bool, True),
-    'moderate_comments':        (bool, True),
-    'pings_enabled':            (bool, True),
-
-    # post view
-    'posts_per_page':           (int, 10),
-    'datetime_format':          (unicode, u'%Y-%m-%d %H:%M'),
-    'date_format':              (unicode, u'%Y-%m-%d'),
-    'use_flat_comments':        (bool, False),
-
-    # email settings
-    'smtp_host':                (unicode, u'localhost'),
-    'smtp_port':                (int, 25),
-    'smtp_user':                (unicode, u''),
-    'smtp_password':            (unicode, u''),
-    'smtp_use_tls':             (bool, False),
-
-    # plugin settings
-    'plugin_guard':             (bool, True),
-    'plugins':                  (unicode, u''),
-
-    # importer settings
-    'blogger_auth_token':       (unicode, u'')
-}
-
 #: header for the config file
 CONFIG_HEADER = '''\
 # TextPress configuration file
