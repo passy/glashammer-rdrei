@@ -207,6 +207,46 @@ def test_add_config():
     app = make_app(_setup_config, 'test_output')
     assert app.conf['foo'] == 'blah'
 
+# processors
+
+def test_req_processor():
+
+    def _a_view(req):
+        return Response('%s' % (req.foo == 1))
+
+    def _process_request(req):
+        req.foo = 1
+
+    def _setup_proc(app):
+        app.add_request_processor(_process_request)
+        app.add_url('/', '', view=_a_view)
+
+    app = make_app(_setup_proc, 'test_output')
+    c = Client(app)
+
+    appiter, status, headers = c.open()
+
+    assert list(appiter)[0] == 'True'
+
+def test_resp_processor():
+
+    def _a_view(req):
+        return Response('hello')
+
+    def _process_response(resp):
+        resp.data = 'byebye'
+
+    def _setup_proc(app):
+        app.add_response_processor(_process_response)
+        app.add_url('/', '', view=_a_view)
+
+    app = make_app(_setup_proc, 'test_output')
+    c = Client(app)
+
+    appiter, status, headers = c.open()
+
+    assert list(appiter)[0] == 'byebye'
+
 
 # Sessions
 def _sessioned_view(req):
@@ -313,4 +353,5 @@ class TestJsonRestService(object):
         ai, st, h = self.client.open(method='DELETE')
         s = list(ai)[0]
         assert 'DELETE' in s
+
 
