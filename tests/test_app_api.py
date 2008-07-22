@@ -148,6 +148,9 @@ test_add_template_searchpath.teardown = _teardown_template
 
 
 def test_add_template_global():
+    """
+    Add a template global and ensure it is available for rendering
+    """
 
     def _add_template_global(app):
         app.add_template_global('hello', 'byebye')
@@ -161,6 +164,9 @@ test_add_template_global.teardown = _teardown_template
 
 
 def test_render_response():
+    """
+    Test a full response.
+    """
 
     def _simple_view(req):
         return render_response('variables.html', hello='byebye')
@@ -174,6 +180,7 @@ def test_render_response():
     i, status, headers = c.open()
     assert list(i) == ['byebye']
     assert status == '200 OK'
+
 
 test_render_response.setup = _setup_template
 test_render_response.teardown = _teardown_template
