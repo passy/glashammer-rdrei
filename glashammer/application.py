@@ -29,9 +29,6 @@ DEFAULT_CONFIG = [
 
 
 def default_setup_func(app):
-    #from glashammer.bundles.auth import setup as auth_setup
-    # XXX shouldn't really need this
-    #app.add_setup(auth_setup)
     app.add_template_searchpath(sibpath(__file__, 'templates'))
 
 
@@ -120,11 +117,10 @@ class GlashammerApplication(object):
 
         self._template_globals.update({
             'url_for': url_for,
-            'layout_template': self._layout_template,
+            'layout_template': local('layout_template'),
             '_': _,
             'cfg': self.cfg,
             'request':local('request'),
-            'h': htmlhelpers,
         })
 
         self._template_filters.update({
