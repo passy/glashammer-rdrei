@@ -34,3 +34,5 @@ def setup_sessions(app):
     app.add_request_processor(setup_session)
     app.add_response_processor(cleanup_sessions)
 
+setup_app = setup_sessions
+

@@ -14,18 +14,8 @@ from glashammer.config import Configuration
 from glashammer.templating import create_template_environment
 
 from glashammer.utils import local, local_manager, EventManager, emit_event, \
-    url_for, sibpath, Request, _, format_datetime
+    url_for, sibpath, Request
 
-
-from glashammer import htmlhelpers
-
-
-DEFAULT_CONFIG = [
-    ('db_uri', '', str),
-    ('session_cookie_name', 'glashammer_session', str),
-    ('secret_key', 'my secret', str),
-    ('base_url', u'', str),
-]
 
 
 def default_setup_func(app):
@@ -118,13 +108,11 @@ class GlashammerApplication(object):
         self._template_globals.update({
             'url_for': url_for,
             'layout_template': local('layout_template'),
-            '_': _,
             'cfg': self.cfg,
             'request':local('request'),
         })
 
         self._template_filters.update({
-            'datetimeformat': format_datetime
         })
 
         # create the template environment
@@ -201,7 +189,6 @@ class GlashammerApplication(object):
         _decorated.__module__ = f.__module__
         return _decorated
 
-
     @_prefinalize_only
     def add_setup(self, setup_func):
         """Add a setup callable to be called on startup by the application.
@@ -243,11 +230,12 @@ class GlashammerApplication(object):
 
     @_prefinalize_only
     def add_views_controller(self, endpoint_base, controller):
-        """Add a an instance or module which contains functions for a number of 
+        """
+        Add a an instance or module which contains functions for a number of
            views.
 
-        `endpoint_base` The base end point
-        `controller` A module or instance to search for views in.
+        'endpoint_base` The base end point
+        'controller` A module or instance to search for views in.
 
         This method allows you to add multiple views from a source. It is useful
         in situations where it is desirable to add many views at once for a certain
@@ -270,7 +258,9 @@ class GlashammerApplication(object):
 
         Here, the endpoint's base is 'foo'. And the actual endpoints will be the
         attribute names concatenated with the endpoint_base.
+
         """
+
         self.controllers[endpoint_base] = controller
 
     @_prefinalize_only
@@ -283,6 +273,9 @@ class GlashammerApplication(object):
     def add_template_global(self, key, value):
         """Add a template global"""
         self._template_globals[key] = value
+
+    def add_template_filter(self, name, f):
+        self._template_filters[name] = f
 
     @_prefinalize_only
     def connect_event(self, event, callback, position='after'):
