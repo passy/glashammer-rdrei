@@ -7,7 +7,7 @@ from werkzeug.test import Client
 
 from glashammer.application import GlashammerApplication
 from glashammer.utils import render_response, Response, local, \
-    render_template, sibpath, get_request, get_app
+    render_template, sibpath, get_request, get_app, url_for
 
 from glashammer.bundles.json import json_view, JsonRestService
 
@@ -123,6 +123,17 @@ def test_add_controller():
     assert app.get_view(None, 'foo/index', {}) == 3
     assert app.get_view(None, 'foo/edit', {}) == 2
 
+def test_endpoint_lookup():
+    """
+    Adding a rule, and that it's in the map
+    """
+    def _add_rule_setup(app):
+        app.add_url('/', endpoint='foo/blah')
+
+    app = make_app(_add_rule_setup, 'test_output')
+
+    assert url_for('foo/blah') == '/'
+
 
 # Templating
 
@@ -202,16 +213,18 @@ class TestTemplating(object):
 
 class TestLocals():
 
-    def _a_view(req):
-        assert req is local.request
-        return Response('hello')
-
-    def _setup_view(app):
-        app.add_url('/', '', view=_a_view)
 
     def setup(self):
-        self.app = make_app(_setup_app, 'test_output')
-        self.client = Client(app)
+
+        def _a_view(req):
+            assert req is local.request
+            return Response('hello')
+
+        def _setup_view(app):
+            app.add_url('/', '', view=_a_view)
+
+        self.app = make_app(_setup_view, 'test_output')
+        self.client = Client(self.app)
 
     def test_get_app(self):
         assert get_app() is self.app

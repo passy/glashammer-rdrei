@@ -10,11 +10,6 @@ local_manager = LocalManager([local])
 
 def url_for(endpoint, **args):
     """Get the url to an endpoint."""
-    if hasattr(endpoint, 'get_url_values'):
-        rv = endpoint.get_url_values()
-        if rv is not None:
-            endpoint, updated_args = rv
-            args.update(updated_args)
     anchor = args.pop('_anchor', None)
     external = args.pop('_external', False)
     rv = local.url_adapter.build(endpoint, args,
