@@ -25,12 +25,15 @@ def test_make_app():
 
 def test_app_no_instance():
     """
-    Test creating an application with no instance directory (BROKEN)
+    Test creating an application with no instance directory
     """
     app = make_app(_setup_empty)
 
 
 def test_app_missing_instance():
+    """
+    Explicitly passed application directories must exist.
+    """
     assert_raises((RuntimeError,), make_app, _setup_empty, 'i_do_not_exist')
 
 
