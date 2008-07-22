@@ -57,6 +57,9 @@ def test_add_setup_func():
 # View and endpoints
 
 def _has_rule(map, url, endpoint):
+    """
+    Check a map contains a url for an endpoint
+    """
     return (url, endpoint) in [(i.rule, i.endpoint) for i in map.iter_rules()]
 
 
