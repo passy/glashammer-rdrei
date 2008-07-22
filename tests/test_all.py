@@ -247,6 +247,25 @@ def test_resp_processor():
 
     assert list(appiter)[0] == 'byebye'
 
+def test_local_processor():
+
+    def _a_view(req):
+        return Response('%s' % (local.foo == 1))
+
+    def _local_proc(local):
+        local.foo = 1
+
+    def _setup_local(app):
+        app.add_local_processor(_local_proc)
+        app.add_url('/', '', view=_a_view)
+
+    app = make_app(_setup_local, 'test_output')
+
+    c = Client(app)
+    appiter, status, headers = c.open()
+    assert list(appiter)[0] == 'True'
+
+
 
 # Sessions
 def _sessioned_view(req):
