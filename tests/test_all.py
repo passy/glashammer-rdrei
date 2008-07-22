@@ -8,6 +8,8 @@ from werkzeug.test import Client
 from glashammer.application import GlashammerApplication
 from glashammer.utils import render_response, Response, local
 
+from glashammer.bundles.json import json_view, JsonRestService
+
 def make_app(setup_func, instance_dir=None):
     return GlashammerApplication(setup_func, instance_dir)
 
@@ -228,4 +230,76 @@ def test_htmlhelpers_setup():
     # now test you can actually use the thing
     h = app.template_env.globals['h']
     assert h.meta() == '<meta>'
+
+# Json Stuff
+
+def test_json_response():
+
+    @json_view
+    def _a_json_view(req):
+        return {'foo': 'blah'}
+
+    def _setup_json(app):
+        app.add_url('/', '', view=_a_json_view)
+
+    app = make_app(_setup_json, 'test_output')
+
+    c = Client(app)
+    appiter, status, headers = c.open()
+
+    s = list(appiter)[0]
+
+    h = dict(headers)
+    assert 'text/javascript' in h['Content-Type']
+    assert s == '{"foo": "blah"}'
+
+
+class _Service(JsonRestService):
+
+    @json_view
+    def get(self, req):
+        return {'url':req.url, 'type': 'GET'}
+
+    @json_view
+    def post(self, req):
+        return {'url':req.url, 'type': 'POST'}
+
+    @json_view
+    def put(self, req):
+        return {'url':req.url, 'type': 'PUT'}
+
+    @json_view
+    def delete(self, req):
+        return {'url':req.url, 'type': 'DELETE'}
+
+
+class TestJsonRestService(object):
+
+    def setup(self):
+        def _setup_json(app):
+            app.add_url('/', '', view=_Service())
+
+        app = make_app(_setup_json, 'test_output')
+
+        self.client = Client(app)
+
+    def test_get(self):
+        ai, st, h = self.client.open(method='GET')
+        s = list(ai)[0]
+        assert 'GET' in s
+
+    def test_post(self):
+        ai, st, h = self.client.open(method='POST')
+        s = list(ai)[0]
+        assert 'POST' in s
+
+    def test_put(self):
+        ai, st, h = self.client.open(method='PUT')
+        s = list(ai)[0]
+        assert 'PUT' in s
+
+    def test_delete(self):
+        ai, st, h = self.client.open(method='DELETE')
+        s = list(ai)[0]
+        assert 'DELETE' in s
 
