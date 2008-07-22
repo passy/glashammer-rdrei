@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-    textpress.config
-    ~~~~~~~~~~~~~~~~
+    glashammer.config
+    ~~~~~~~~~~~~~~~~~
 
     This module implements the configuration.  The configuration is a more or
     less flat thing saved as ini in the instance folder.  If the configuration
@@ -17,7 +17,7 @@ from os import path
 
 #: header for the config file
 CONFIG_HEADER = '''\
-# TextPress configuration file
+# Configuration file
 # This file is also updated by the TextPress admin interface which will strip
 # all comments due to a limitation in the current implementation.  If you
 # want to maintain the file with your text editor be warned that comments
