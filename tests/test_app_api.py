@@ -3,7 +3,10 @@ import os, shutil
 
 from nose.tools import *
 
+from werkzeug.test import Client
+
 from glashammer.application import GlashammerApplication
+from glashammer.utils import render_response
 
 def make_app(setup_func, instance_dir=None):
     return GlashammerApplication(setup_func, instance_dir)
@@ -155,4 +158,23 @@ def test_add_template_global():
 
 test_add_template_global.setup = _setup_template
 test_add_template_global.teardown = _teardown_template
+
+
+def test_render_response():
+
+    def _simple_view(req):
+        return render_response('variables.html', hello='byebye')
+
+    def _add_bits(app):
+        app.add_template_searchpath('test_output/templates')
+        app.add_url('/', 'foo/blah', _simple_view)
+
+    app = make_app(_add_bits, 'test_output')
+    c = Client(app)
+    i, status, headers = c.open()
+    assert list(i) == ['byebye']
+    assert status == '200 OK'
+
+test_render_response.setup = _setup_template
+test_render_response.teardown = _teardown_template
 

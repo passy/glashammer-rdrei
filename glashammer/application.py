@@ -318,12 +318,15 @@ class GlashammerApplication(object):
             raise ValueError('key might not have more than one slash')
         self.cfg.config_vars[key] = (type, default)
 
+    @_prefinalize_only
     def add_request_processor(self, processor):
         self.request_processors.append(processor)
 
+    @_prefinalize_only
     def add_response_processor(self, processor):
         self.response_processors.append(processor)
 
+    @_prefinalize_only
     def add_local_processor(self, processor):
         self.local_processors.append(processor)
 
