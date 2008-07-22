@@ -2,7 +2,7 @@
 
 from wtforms import HiddenField
 
-
+from glashammer.utils import sibpath
 
 class IdField(HiddenField):
     def _value(self):
@@ -173,5 +173,11 @@ class IntelligentRedirect(HiddenFormField):
         if target is None:
             return
         return '_redirect_target', target
+
+
+def setup_forms(app):
+    app.add_template_searchpath(sibpath(__file__, 'templates'))
+
+setup_app = setup_forms
 
 
