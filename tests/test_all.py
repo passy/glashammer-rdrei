@@ -6,7 +6,8 @@ from nose.tools import assert_raises
 from werkzeug.test import Client
 
 from glashammer.application import GlashammerApplication
-from glashammer.utils import render_response, Response, local
+from glashammer.utils import render_response, Response, local, \
+    render_template, sibpath, get_request, get_app
 
 from glashammer.bundles.json import json_view, JsonRestService
 
@@ -125,77 +126,99 @@ def test_add_controller():
 
 # Templating
 
-def _setup_template():
-    try:
+class TestTemplating(object):
+
+    def setup(self):
+        try:
+            shutil.rmtree('test_output/templates')
+        except OSError:
+            pass
+        os.mkdir('test_output/templates')
+        f = open('test_output/templates/hello.html', 'w')
+        f.write('hello')
+        f.close()
+        f = open('test_output/templates/variables.html', 'w')
+        f.write('{{ hello }}')
+        f.close()
+
+    def teardown(self):
         shutil.rmtree('test_output/templates')
-    except OSError:
-        pass
-    os.mkdir('test_output/templates')
-    f = open('test_output/templates/hello.html', 'w')
-    f.write('hello')
-    f.close()
-    f = open('test_output/templates/variables.html', 'w')
-    f.write('{{ hello }}')
-    f.close()
+
+    def test_add_template_searchpath(self):
+        """
+        Add a template search path
+        """
+        def _add_template_searchpath(app):
+            app.add_template_searchpath('test_output/templates')
+
+        app = make_app(_add_template_searchpath, 'test_output')
+        assert app.template_env.get_template('hello.html').render() == 'hello'
+
+    def test_add_template_global(self):
+        """
+        Add a template global and ensure it is available for rendering
+        """
+
+        def _add_template_global(app):
+            app.add_template_global('hello', 'byebye')
+            app.add_template_searchpath('test_output/templates')
+
+        app = make_app(_add_template_global, 'test_output')
+        assert app.template_env.get_template('variables.html').render() == 'byebye'
+
+    def test_render_template(self):
+        """
+        Test a template render
+        """
+        def _add_bits(app):
+            app.add_template_searchpath('test_output/templates')
+
+        app = make_app(_add_bits, 'test_output')
+
+        s = render_template('variables.html', hello='byebye')
+
+        assert s == 'byebye'
 
 
-def _teardown_template():
-    shutil.rmtree('test_output/templates')
+    def test_render_response(self):
+        """
+        Test a full response.
+        """
 
+        def _simple_view(req):
+            return render_response('variables.html', hello='byebye')
 
-def test_add_template_searchpath():
-    """
-    Add a template search path
-    """
-    def _add_template_searchpath(app):
-        app.add_template_searchpath('test_output/templates')
+        def _add_bits(app):
+            app.add_template_searchpath('test_output/templates')
+            app.add_url('/', 'foo/blah', _simple_view)
 
-    app = make_app(_add_template_searchpath, 'test_output')
-    assert app.template_env.get_template('hello.html').render() == 'hello'
+        app = make_app(_add_bits, 'test_output')
+        c = Client(app)
+        i, status, headers = c.open()
+        assert list(i) == ['byebye']
+        assert status == '200 OK'
 
+# Grabbing local variable
 
-test_add_template_searchpath.setup = _setup_template
-test_add_template_searchpath.teardown = _teardown_template
+class TestLocals():
 
+    def _a_view(req):
+        assert req is local.request
+        return Response('hello')
 
-def test_add_template_global():
-    """
-    Add a template global and ensure it is available for rendering
-    """
+    def _setup_view(app):
+        app.add_url('/', '', view=_a_view)
 
-    def _add_template_global(app):
-        app.add_template_global('hello', 'byebye')
-        app.add_template_searchpath('test_output/templates')
+    def setup(self):
+        self.app = make_app(_setup_app, 'test_output')
+        self.client = Client(app)
 
-    app = make_app(_add_template_global, 'test_output')
-    assert app.template_env.get_template('variables.html').render() == 'byebye'
+    def test_get_app(self):
+        assert get_app() is self.app
 
-test_add_template_global.setup = _setup_template
-test_add_template_global.teardown = _teardown_template
-
-
-def test_render_response():
-    """
-    Test a full response.
-    """
-
-    def _simple_view(req):
-        return render_response('variables.html', hello='byebye')
-
-    def _add_bits(app):
-        app.add_template_searchpath('test_output/templates')
-        app.add_url('/', 'foo/blah', _simple_view)
-
-    app = make_app(_add_bits, 'test_output')
-    c = Client(app)
-    i, status, headers = c.open()
-    assert list(i) == ['byebye']
-    assert status == '200 OK'
-
-
-test_render_response.setup = _setup_template
-test_render_response.teardown = _teardown_template
-
+    def test_get_req(self):
+        a, s, h = self.client.open()
+        assert s == '200 OK'
 
 # config
 
@@ -372,5 +395,11 @@ class TestJsonRestService(object):
         ai, st, h = self.client.open(method='DELETE')
         s = list(ai)[0]
         assert 'DELETE' in s
+
+# file utilities
+
+def test_sibpath():
+    assert sibpath('foo', 'blah') == 'blah'
+    assert sibpath('/foo/boo', 'blah') == '/foo/blah'
 
 
