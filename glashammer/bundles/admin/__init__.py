@@ -30,7 +30,7 @@ from glashammer.utils import require_role, IntelligentRedirect, \
     render_response, sibpath, _, redirect, url_for, get_request, emit_event, \
     Pagination, CSRFProtector, make_hidden_fields, flash, build_eventmap
 
-from glashammer.database import db
+from glashammer.bundles.sqladb import db
 #from textpress.database import comments, posts, post_tags, post_links
 #from textpress.utils import parse_datetime, format_datetime, \
 #     is_valid_email, is_valid_url, get_version_info, can_build_eventmap, \

@@ -19,7 +19,7 @@ from glashammer.utils import get_app, url_for, gen_pwhash, gen_salt, \
 from wtforms import Form, TextField
 
 from glashammer.utils import render_response, sibpath
-from glashammer.database import metadata, db
+from glashammer.bundles.sqladb import metadata, db
 
 
 users = db.Table('users', metadata,
