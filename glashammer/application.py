@@ -3,7 +3,8 @@
 The Glashammer Application.
 """
 
-import os
+import os, sys
+
 from time import time
 
 from werkzeug import ClosingIterator, SharedDataMiddleware
@@ -49,7 +50,11 @@ class GlashammerApplication(object):
         self.finalized = False
 
         # Start the setup
+        if instance_dir is None:
+            instance_dir = os.path.dirname(__file__)
+
         self.instance_dir = os.path.abspath(instance_dir)
+
         self.config_file = os.path.join(self.instance_dir, 'config.ini')
 
         if not os.path.exists(self.instance_dir):
