@@ -119,6 +119,7 @@ class GlashammerApplication(object):
 
 
         # now add the middleware for static file serving
+        self.add_shared('glashammer', sibpath(__file__, 'shared'))
         self.add_middleware(SharedDataMiddleware, self._shared_exports)
 
         del self._shared_exports

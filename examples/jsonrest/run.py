@@ -4,6 +4,7 @@ from glashammer import make_app, run_very_simple, render_response
 from glashammer.utils import sibpath
 
 from glashammer.bundles.json import json_view, JsonRestService
+from glashammer.bundles.jquery import setup_jquery
 
 
 def hello_view(req):
@@ -28,6 +29,8 @@ class HelloService(JsonRestService):
         return {'url':req.url, 'type': 'DELETE'}
 
 def setup(app):
+    app.add_setup(setup_jquery)
+
     app.add_template_searchpath(sibpath(__file__, 'templates'))
     app.add_url('/', endpoint='index', view=hello_view)
     app.add_url('/svc', endpoint='service', view=HelloService())

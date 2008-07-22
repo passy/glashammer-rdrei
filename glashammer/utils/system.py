@@ -1,5 +1,7 @@
 import _ast, linecache
 
+from werkzeug import run_simple
+
 def run_very_simple(app):
     from werkzeug.debug import DebuggedApplication
     app = DebuggedApplication(app, True)
