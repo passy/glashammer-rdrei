@@ -1,7 +1,7 @@
 
 import os, shutil
 
-from nose.tools import *
+from nose.tools import assert_raises
 
 from werkzeug.test import Client
 
