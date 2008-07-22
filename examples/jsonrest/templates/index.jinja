@@ -1,0 +1,58 @@
+
+<html>
+
+<head>
+    <script src="http://www.google.com/jsapi"></script>
+    <script>
+    // Load jQuery
+    google.load("jquery", "1");
+    </script>
+</head>
+
+<body>
+
+    <div id="actions">
+    <a href="#" id="get_link">GET</a>
+    <a href="#" id="post_link">POST</a>
+    <a href="#" id="put_link">PUT</a>
+    <a href="#" id="delete_link">DELETE</a>
+    </div>
+
+    <div id="result"></div>
+
+    <script type="text/javascript">
+    var URL = "/svc";
+    function on_success(res) {
+        $("#result").html("<table><tr><th>Url</th><td>" +
+                          res.url +
+                          "</td></tr><tr><th>Type</th><td>" +
+                          res.type +
+                          "</td></tr></table>");
+
+    }
+    function do_get() {
+        $.ajax({url: URL, type: "GET", success: on_success, dataType: "json"})
+        return false
+    }
+    function do_post() {
+        $.ajax({url: URL, type: "POST", success: on_success, dataType: "json"})
+        return false
+    }
+    function do_put() {
+        $.ajax({url: URL, type: "PUT", success: on_success, dataType: "json"})
+        return false
+    }
+    function do_delete() {
+        $.ajax({url: URL, type: "DELETE", success: on_success, dataType: "json"})
+        return false
+    }
+    $("#actions").ready( function() {
+        $("#get_link").click(do_get);
+        $("#post_link").click(do_post);
+        $("#put_link").click(do_put);
+        $("#delete_link").click(do_delete);
+    });
+    </script>
+</body>
+
+</html>
