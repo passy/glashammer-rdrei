@@ -197,6 +197,17 @@ test_render_response.setup = _setup_template
 test_render_response.teardown = _teardown_template
 
 
+# config
+
+def test_add_config():
+
+    def _setup_config(app):
+        app.add_config_var('foo', str, 'blah')
+
+    app = make_app(_setup_config, 'test_output')
+    assert app.conf['foo'] == 'blah'
+
+
 # Sessions
 def _sessioned_view(req):
     assert local.session == {}
