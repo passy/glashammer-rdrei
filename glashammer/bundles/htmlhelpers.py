@@ -9,6 +9,8 @@
     :copyright: 2007 by Armin Ronacher.
     :license: GNU GPL.
 """
+import sys
+
 from xml.sax.saxutils import escape, quoteattr
 
 
@@ -94,4 +96,4 @@ def link(rel, href, type=None, title=None, charset=None, media=None, **attr):
     return _generate_tag('link', attr)
 
 def setup_app(app):
-    app.add_template_global('h', __module__)
+    app.add_template_global('h', sys.modules['glashammer.bundles.htmlhelpers'])

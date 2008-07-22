@@ -207,3 +207,5 @@ def setup_sqladb(app):
                                           convert_unicode=True)
     metadata.bind = app.sqla_db_engine
     app.add_data_func(data_init)
+
+setup_app = setup_sqladb

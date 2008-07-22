@@ -6,7 +6,7 @@ from nose.tools import assert_raises
 from werkzeug.test import Client
 
 from glashammer.application import GlashammerApplication
-from glashammer.utils import render_response
+from glashammer.utils import render_response, Response, local
 
 def make_app(setup_func, instance_dir=None):
     return GlashammerApplication(setup_func, instance_dir)
@@ -74,6 +74,9 @@ def test_add_rule():
 
 def _aview(req):
     return 1
+
+def _a_real_view(req):
+    return Response('hello')
 
 
 def test_add_view():
@@ -190,4 +193,39 @@ def test_render_response():
 
 test_render_response.setup = _setup_template
 test_render_response.teardown = _teardown_template
+
+
+# Sessions
+def _sessioned_view(req):
+    assert local.session == {}
+    return Response('')
+
+def test_session_setup():
+
+    def _setup_sessions(app):
+        from glashammer.bundles.sessions import setup_app
+        app.add_setup(setup_app)
+
+        app.add_url('/', '', view=_sessioned_view)
+
+    app = make_app(_setup_sessions, 'test_output')
+
+    c = Client(app)
+    c.open()
+
+
+# Html Helpers
+
+def test_htmlhelpers_setup():
+
+    def _setup_helpers(app):
+        from glashammer.bundles.htmlhelpers import setup_app
+        app.add_setup(setup_app)
+
+    app = make_app(_setup_helpers, 'test_output')
+    assert 'h' in app.template_env.globals
+
+    # now test you can actually use the thing
+    h = app.template_env.globals['h']
+    assert h.meta() == '<meta>'
 
