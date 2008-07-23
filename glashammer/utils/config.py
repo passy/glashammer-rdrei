@@ -13,17 +13,17 @@
 """
 import os
 from os import path
+from threading import Lock
+
 
 
 #: header for the config file
 CONFIG_HEADER = '''\
 # Configuration file
-# This file is also updated by the TextPress admin interface which will strip
-# all comments due to a limitation in the current implementation.  If you
-# want to maintain the file with your text editor be warned that comments
-# may disappear.  The charset of this file must be utf-8!
-
+#
+# This file can be updated programmatically, your comments will be lost.
 '''
+
 
 
 def unquote_value(value):
@@ -70,17 +70,24 @@ def get_converter_name(conv):
 
 class Configuration(object):
     """Helper class that manages configuration values in a INI configuration
-    file.  Changes are tracked and the application ensure that the global
-    config file flushes the changes at the end of every request is necessary.
+    file.
+
+    >>> app.cfg['blog_title']
+    u'My TextPress Blog'
+    >>> app.cfg.change_single('blog_title', 'Test Blog')
+    True
+    >>> app.cfg['blog_title']
+    u'Test Blog'
+    >>> t = app.cfg.edit(); t.revert_to_default('blog_title'); t.commit()
     """
 
     def __init__(self, filename):
         self.filename = filename
 
-        self.config_vars = {}#DEFAULT_VARS.copy()
+        self.config_vars = {}
         self._values = {}
         self._converted_values = {}
-        self.changed_local = False
+        self._lock = Lock()
 
         # if the path does not exist yet set the existing flag to none and
         # set the time timetamp for the filename to something in the past
@@ -92,8 +99,8 @@ class Configuration(object):
         # otherwise parse the file and copy all values into the internal
         # values dict.  Do that also for values not covered by the current
         # `config_vars` dict to preserve variables of disabled plugins
-        self.exists = True
         self._load_time = path.getmtime(self.filename)
+        self.exists = True
         section = 'textpress'
         f = file(self.filename)
         try:
@@ -119,80 +126,36 @@ class Configuration(object):
         """Return the value for a key."""
         if key.startswith('textpress/'):
             key = key[10:]
-        if key in self._converted_values:
+        try:
             return self._converted_values[key]
-        conv, default = self.config_vars[key]
-        if key in self._values:
+        except KeyError:
+            conv, default = self.config_vars[key]
+        try:
             value = from_string(self._values[key], conv, default)
-        else:
+        except KeyError:
             value = default
         self._converted_values[key] = value
         return value
 
-    def __setitem__(self, key, value):
-        """Set the value for a key by a python value."""
-        if key.startswith('textpress/'):
-            key = key[10:]
-        if key not in self.config_vars:
-            raise KeyError(key)
-        self._values[key] = unicode(value)
-        self._converted_values[key] = value
-        self.changed_local = True
+    def change_single(self, key, value):
+        """Create and commit a transaction for a single key-value-pair. Return
+        True on success, otherwise False.
+        """
+        t = self.edit()
+        t[key] = value
+        try:
+            t.commit()
+            return True
+        except IOError:
+            return False
 
-    def set_from_string(self, key, value, override=False):
-        """Set the value for a key from a string."""
-        if key.startswith('textpress/'):
-            key = key[10:]
-        conv, default = self.config_vars[key]
-        new = from_string(value, conv, default)
-        if override or unicode(self[key]) != unicode(new):
-            self._values[key] = unicode(new)
-            self._converted_values[key] = new
-            self.changed_local = True
-
-    def revert_to_default(self, key):
-        """Revert a key to the default value."""
-        if key.startswith('textpress'):
-            key = key[10:]
-        self._values.pop(key, None)
-        self._converted_values.pop(self, key)
-        self.changed_local = True
-
+    def edit(self):
+        """Return a new transaction object."""
+        return ConfigTransaction(self)
 
     def touch(self):
         """Touch the file to trigger a reload."""
         os.utime(self.filename, None)
-
-    def flush(self):
-        """Save changes to the file system if there are any."""
-        if self.changed_local:
-            self.save()
-
-    def save(self):
-        """Save changes to the file system."""
-        sections = {}
-        for key, value in self._values.iteritems():
-            if '/' in key:
-                section, key = key.split('/', 1)
-            else:
-                section = 'textpress'
-            sections.setdefault(section, []).append((key, value))
-        sections = sorted(sections.items())
-        for section in sections:
-            section[1].sort()
-
-        f = file(self.filename, 'w')
-        f.write(CONFIG_HEADER)
-        try:
-            for idx, (section, items) in enumerate(sections):
-                if idx:
-                    f.write('\n')
-                f.write('[%s]\n' % section.encode('utf-8'))
-                for key, value in items:
-                    f.write('%s = %s\n' % (key, quote_value(value)))
-        finally:
-            f.close()
-        self.changed_local = False
 
     @property
     def changed_external(self):
@@ -234,11 +197,6 @@ class Configuration(object):
     def items(self):
         """Return a list of all key, value tuples."""
         return list(self.iteritems())
-
-    def update(self, *args, **kwargs):
-        """Update multiple items at once."""
-        for key, value in dict(*args, **kwargs).iteritems():
-            self[key] = value
 
     def get_detail_list(self):
         """Return a list of categories with keys and some more
@@ -285,3 +243,115 @@ class Configuration(object):
 
     def __repr__(self):
         return '<%s %r>' % (self.__class__.__name__, dict(self.items()))
+
+
+class ConfigTransaction(object):
+    """A configuration transaction class. Instances of this class are returned
+    by Config.edit(). Changes can then be added to the transaction and
+    eventually be committed and saved to the file system using the commit()
+    method.
+    """
+
+    def __init__(self, cfg):
+        self.cfg = cfg
+        self._values = {}
+        self._converted_values = {}
+        self._remove = []
+        self._committed = False
+
+    def __getitem__(self, key):
+        """Get an item from the transaction or the underlaying config."""
+        if key in self._converted_values:
+            return self._converted_values[key]
+        elif key in self._remove:
+            return self.cfg.config_vars[key][1]
+        return self.cfg[key]
+
+    def __setitem__(self, key, value):
+        """Set the value for a key by a python value."""
+        self._assert_uncommitted()
+        if key.startswith('textpress/'):
+            key = key[10:]
+        if key not in self.cfg.config_vars:
+            raise KeyError(key)
+        if isinstance(value, str):
+            value = value.decode('utf-8')
+        if value == self.cfg.config_vars[key][1]:
+            self._remove.append(key)
+        else:
+            self._values[key] = unicode(value)
+            self._converted_values[key] = value
+
+    def _assert_uncommitted(self):
+        if self._committed:
+            raise ValueError('This transaction was already committed.')
+
+    def set_from_string(self, key, value, override=False):
+        """Set the value for a key from a string."""
+        self._assert_uncommitted()
+        if key.startswith('textpress/'):
+            key = key[10:]
+        conv, default = self.cfg.config_vars[key]
+        new = from_string(value, conv, default)
+        old = self._converted_values.get(key, None) or self.cfg[key]
+        if override or unicode(old) != unicode(new):
+            self[key] = new
+
+    def revert_to_default(self, key):
+        """Revert a key to the default value."""
+        self._assert_uncommitted()
+        if key.startswith('textpress'):
+            key = key[10:]
+        self._remove.append(key)
+
+    def update(self, *args, **kwargs):
+        """Update multiple items at once."""
+        for key, value in dict(*args, **kwargs).iteritems():
+            self[key] = value
+
+    def commit(self):
+        """Commit the transactions. This first tries to save the changes to the
+        configuration file and only updates the config in memory when that is
+        successful.
+        """
+        self._assert_uncommitted()
+        if not self._values and not self._remove:
+            self._committed = True
+            return
+        self.cfg._lock.acquire()
+        try:
+            all = self.cfg._values.copy()
+            all.update(self._values)
+            for key in self._remove:
+                all.pop(key, None)
+
+            sections = {}
+            for key, value in all.iteritems():
+                if '/' in key:
+                    section, key = key.split('/', 1)
+                else:
+                    section = 'textpress'
+                sections.setdefault(section, []).append((key, value))
+            sections = sorted(sections.items())
+            for section in sections:
+                section[1].sort()
+
+            f = file(self.cfg.filename, 'w')
+            f.write(CONFIG_HEADER)
+            try:
+                for idx, (section, items) in enumerate(sections):
+                    if idx:
+                        f.write('\n')
+                    f.write('[%s]\n' % section.encode('utf-8'))
+                    for key, value in items:
+                        f.write('%s = %s\n' % (key, quote_value(value)))
+            finally:
+                f.close()
+            self.cfg._values.update(self._values)
+            self.cfg._converted_values.update(self._converted_values)
+            for key in self._remove:
+                self.cfg._values.pop(key, None)
+                self.cfg._converted_values.pop(key, None)
+        finally:
+            self.cfg._lock.release()
+        self._committed = True
