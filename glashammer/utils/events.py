@@ -1,6 +1,8 @@
 
 # Events
 
+from collections import deque
+
 from glashammer.utils import local
 
 def emit_event(event, *args, **kwargs):
@@ -53,8 +55,24 @@ class EventManager(object):
         """Emits events for the template context."""
         results = []
         for f in self.iter(event):
-            rv = f(*args, **kwargs)
+            rv = f(event, *args, **kwargs)
             if rv is not None:
                 results.append(rv)
         return TemplateEventResult(results)
+
+
+class TemplateEventResult(list):
+    """A list subclass for results returned by the event listener that
+    concatenates the results if converted to string, otherwise it works
+    exactly like any other list.
+    """
+
+    def __init__(self, items):
+        list.__init__(self, items)
+
+    def __unicode__(self):
+        return u''.join(map(unicode, self))
+
+    def __str__(self):
+        return unicode(self).encode('utf-8')
 

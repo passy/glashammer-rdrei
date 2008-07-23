@@ -102,6 +102,7 @@ class GlashammerApplication(object):
             'layout_template': local('layout_template'),
             'cfg': self.cfg,
             'request':local('request'),
+            'emit_event':self.events.template_emit
         })
 
         self._template_filters.update({
@@ -127,7 +128,7 @@ class GlashammerApplication(object):
         # finalize the setup
         self.finalized = True
         # create the template environment
-        emit_event('app-setup')
+        emit_event('app-setup', self)
 
     def __call__(self, environ, start_response):
         return ClosingIterator(self.dispatch_request(environ, start_response),

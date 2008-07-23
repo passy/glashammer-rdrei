@@ -1,5 +1,6 @@
 
 import os, shutil
+from datetime import datetime, date, time
 
 from nose.tools import assert_raises
 
@@ -10,7 +11,9 @@ from glashammer.utils import render_response, Response, local, \
     render_template, sibpath, get_request, get_app, url_for, \
     gen_pwhash, check_pwhash
 
-from glashammer.bundles.json import json_view, JsonRestService
+from glashammer.utils.json import json_view, JsonRestService
+
+from glashammer.bundles import i18n
 
 def make_app(setup_func, instance_dir=None):
     return GlashammerApplication(setup_func, instance_dir)
@@ -152,6 +155,10 @@ class TestTemplating(object):
         f = open('test_output/templates/variables.html', 'w')
         f.write('{{ hello }}')
         f.close()
+        f = open('test_output/templates/events.html', 'w')
+        f.write('{{ emit_event("anevent") }}')
+        f.close()
+
 
     def teardown(self):
         shutil.rmtree('test_output/templates')
@@ -209,6 +216,26 @@ class TestTemplating(object):
         i, status, headers = c.open()
         assert list(i) == ['byebye']
         assert status == '200 OK'
+
+    def test_template_emit(self):
+        emitted = []
+
+        def _simple_view(req):
+            return render_response('events.html')
+
+        def _on_blah(event):
+            emitted.append(event)
+
+        def _add_bits(app):
+            app.add_template_searchpath('test_output/templates')
+            app.connect_event('anevent', _on_blah)
+            app.add_url('/', 'foo/blah', _simple_view)
+
+        app = make_app(_add_bits, 'test_output')
+        c = Client(app)
+        i, status, headers = c.open()
+        assert emitted == ['anevent']
+
 
 # Grabbing local variable
 
@@ -441,4 +468,39 @@ def test_unicode_pw_hash():
 
 def test_bad_pw():
     assert not check_pwhash(gen_pwhash('hello'), 'byebye')
+
+# i18n
+
+def test_languages():
+    """Might not work on your system"""
+    app = make_app(i18n.setup_i18n, 'test_output')
+    assert ('en', u'English') in i18n.list_languages()
+
+def test_datetime():
+    """Might not work on your system"""
+    app = make_app(i18n.setup_i18n, 'test_output')
+    dt = datetime(2008, 1, 2)
+    assert i18n.format_datetime(dt) == 'Jan 2, 2008 12:00:00 AM'
+    assert i18n.format_datetime(dt, 'short') == '1/2/08 12:00 AM'
+    assert i18n.format_datetime(dt, 'long') == 'January 2, 2008 12:00:00 AM +0000'
+
+def test_date():
+    app = make_app(i18n.setup_i18n, 'test_output')
+    d = date(2008, 1, 2)
+    assert i18n.format_date(d) == 'Jan 2, 2008'
+    assert i18n.format_date(d, 'short') == '1/2/08'
+    assert i18n.format_date(d, 'long') == 'January 2, 2008'
+
+def test_month():
+    app = make_app(i18n.setup_i18n, 'test_output')
+    d = date(2008, 1, 2)
+    assert i18n.format_month(d) == 'January 08'
+
+def test_time():
+    app = make_app(i18n.setup_i18n, 'test_output')
+    t = time()
+    assert i18n.format_time(t) == '12:00:00 AM'
+    assert i18n.format_time(t, 'short') == '12:00 AM'
+    assert i18n.format_time(t, 'long') == '12:00:00 AM +0000'
+
 

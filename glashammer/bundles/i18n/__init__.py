@@ -171,6 +171,16 @@ def _date_format(formatter, obj, format):
 
 _ = gettext
 
+# Here beginneth the pluging in process
 
-def setup(app):
-    pass
+def on_setup_complete(event, app):
+    lang = app.conf['language']
+    app.locale = Locale(app.cfg['language'])
+    app.translations = load_translations(app.locale)
+    app.template_env.install_gettext_translations(app.translations)
+
+def setup_i18n(app):
+    app.add_config_var('language', str, 'en')
+    app.connect_event('app-setup', on_setup_complete)
+
+setup_app = setup_i18n
