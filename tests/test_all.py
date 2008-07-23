@@ -9,7 +9,7 @@ from werkzeug.test import Client
 from glashammer.application import GlashammerApplication
 from glashammer.utils import render_response, Response, local, \
     render_template, sibpath, get_request, get_app, url_for, \
-    gen_pwhash, check_pwhash
+    gen_pwhash, check_pwhash, Configuration
 
 from glashammer.utils.json import json_view, JsonRestService
 
@@ -502,5 +502,41 @@ def test_time():
     assert i18n.format_time(t) == '12:00:00 AM'
     assert i18n.format_time(t, 'short') == '12:00 AM'
     assert i18n.format_time(t, 'long') == '12:00:00 AM +0000'
+
+# config
+
+class TestConfig(object):
+
+    def setup(self):
+        try:
+            os.unlink('test_output/config.ini')
+        except OSError:
+            pass
+        self.conf = Configuration('test_output/config.ini')
+
+    def test_not_write(self):
+        assert not os.path.exists('test_output/config.ini')
+
+    def test_add(self):
+        self.conf.config_vars['voo'] = (str, 'noo')
+        assert self.conf['voo'] == 'noo'
+
+    def test_change(self):
+        self.conf.config_vars['voo'] = (str, 'noo')
+        assert self.conf['voo'] == 'noo'
+        self.conf.change_single('voo', 'goo')
+        assert os.path.exists('test_output/config.ini')
+        assert self.conf['voo'] == 'goo'
+
+        self.conf2 = Configuration('test_output/config.ini')
+        self.conf2.config_vars['voo'] = (str, 'noo')
+        assert self.conf2['voo'] == 'goo'
+
+    def test_save(self):
+        self.conf.config_vars['voo'] = (str, 'noo')
+        assert self.conf['voo'] == 'noo'
+        self.conf.change_single('voo', 'goo')
+        assert self.conf['voo'] == 'goo'
+
 
 

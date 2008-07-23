@@ -71,14 +71,6 @@ def get_converter_name(conv):
 class Configuration(object):
     """Helper class that manages configuration values in a INI configuration
     file.
-
-    >>> app.cfg['blog_title']
-    u'My TextPress Blog'
-    >>> app.cfg.change_single('blog_title', 'Test Blog')
-    True
-    >>> app.cfg['blog_title']
-    u'Test Blog'
-    >>> t = app.cfg.edit(); t.revert_to_default('blog_title'); t.commit()
     """
 
     def __init__(self, filename):

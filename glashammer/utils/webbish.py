@@ -1,6 +1,6 @@
 
-
 # Useful things for paging and navigation
+from glashammer.utils.local import url_for
 
 class Pagination(object):
     """Pagination helper."""
@@ -20,7 +20,6 @@ class Pagination(object):
                  ellipsis=u'<span class="ellipsis">...\n</span>',
                  threshold=3, prev_link=False,
                  next_link=False, gray_prev_link=True, gray_next_link=True):
-        from textpress.application import url_for
         was_ellipsis = False
         result = []
         prev = None
