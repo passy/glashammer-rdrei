@@ -1,13 +1,22 @@
 
 options(
-    default "test"
+    default "tests"
 )
 
 depends()
 
 targets(
-    test
+    tests
         $ nosetests
-    testcover
+    coverage
         $ nosetests --with-coverage --cover-package=glashammer
+
+
+    helloworld_example
+        $ PYTHONPATH=. python examples/helloworld/run.py
+    jsonrest_example
+        $ PYTHONPATH=. python examples/jsonrest/run.py
+
 )
+
+# vim: set ft=vellum
