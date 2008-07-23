@@ -1,0 +1,13 @@
+
+options(
+    default "test"
+)
+
+depends()
+
+targets(
+    test
+        $ nosetests
+    testcover
+        $ nosetests --with-coverage --cover-package=glashammer
+)
