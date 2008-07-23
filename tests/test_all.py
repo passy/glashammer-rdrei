@@ -7,7 +7,8 @@ from werkzeug.test import Client
 
 from glashammer.application import GlashammerApplication
 from glashammer.utils import render_response, Response, local, \
-    render_template, sibpath, get_request, get_app, url_for
+    render_template, sibpath, get_request, get_app, url_for, \
+    gen_pwhash, check_pwhash
 
 from glashammer.bundles.json import json_view, JsonRestService
 
@@ -415,4 +416,29 @@ def test_sibpath():
     assert sibpath('foo', 'blah') == 'blah'
     assert sibpath('/foo/boo', 'blah') == '/foo/blah'
 
+# event map
+
+def test_event_map():
+    
+    app = make_app(lambda app: None, 'test_output')
+
+    from glashammer.utils.system import build_eventmap
+
+    em = build_eventmap(app)
+
+    assert 'app-setup' in em
+    assert 'app-request' in em
+    assert 'app-response' in em
+
+# crypto
+
+def test_pw_hash():
+    assert check_pwhash(gen_pwhash('hello'), 'hello')
+
+def test_unicode_pw_hash():
+    assert check_pwhash(gen_pwhash(u'hello'), 'hello')
+    assert check_pwhash(gen_pwhash('hello'), u'hello')
+
+def test_bad_pw():
+    assert not check_pwhash(gen_pwhash('hello'), 'byebye')
 

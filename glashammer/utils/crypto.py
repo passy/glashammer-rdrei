@@ -1,5 +1,6 @@
 
 import sha, string
+from random import choice
 
 SALT_CHARS = string.ascii_lowercase + string.digits
 
