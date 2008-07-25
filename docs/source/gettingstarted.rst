@@ -20,7 +20,6 @@ Requirements
 The following libraries should be installed:
 
 * Werkzeug
-* SQLAlchemy
 * Jinja2
 * WTForms
 
@@ -60,14 +59,14 @@ are available during the request by means of events.
 You can run a debug server for this WSGI application instance using the
 run_very_simple() function. This is not suitable for a production environment.
 
-If you have downloaded the source, you can run the example above using (from the
-source directory)::
+If you have downloaded the source, you can run the example above using (from
+the source directory)::
 
     PYTHONPATH=. python examples/helloworld/run.py
 
-This ensures that the glashammer package is available in the python path without
-actually installing. Now open a browser at http://localhost:6060/ and you will be presented with the
-single view of the application.
+This ensures that the glashammer package is available in the python path
+without actually installing. Now open a browser at http://localhost:6060/
+and you will be presented with the single view of the application.
 
 The following chapters will describe features in depth.
 

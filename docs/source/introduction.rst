@@ -12,17 +12,6 @@ components. However, unlike a framework like Pylons, Glashammer decides what is
 best for you in a number of situations. Choice is a great thing, and replacement
 components are easy to add/replace, but the default configuration is complete.
 
-Features
---------
-
-* WSGI (but no WSGI knowledge needed)
-* Painfully explicit
-* Reusable components
-* Form integration
-* Database Integration
-* Auth out of the box
-* Admin interface for application management
-* Template integration
 
 Ready Components
 ----------------
@@ -34,8 +23,6 @@ The table below shows the various components used, and what they are used for:
 +============+==========================+
 | Werkzeug   | WSGI utilities and more  |
 +------------+--------------------------+
-| SQLAlchemy | Database integration     |
-+------------+--------------------------+
 | Jinja2     | Templating               |
 +------------+--------------------------+
 | WTForms    | Form validation          |
@@ -45,4 +32,19 @@ We have aimed to make some of these decisions for you by selecting these
 components. You might hate one or more of them, in which case you could swap it out
 easily enough, or just use a different framework like Pylons, which has a real
 emphasis on making these things optional.
+
+
+Bundles
+-------
+
+Bundles are pluggable application components. The can to anything to your
+application (such as add urls and views, or very little such as add a
+template global variable).
+
+Bundles are initialised just by importing and calling the setup_app function
+from the bundle's module. That is the only requirement for a bundle, a
+callable that takes an application instance.
+
+We provide a number of bundles, but encourage you to use them as very
+lightweight reusable components between your web applications.
 
