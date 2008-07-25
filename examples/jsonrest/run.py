@@ -2,8 +2,8 @@
 from glashammer import make_app, run_very_simple, render_response
 
 from glashammer.utils import sibpath
+from glashammer.utils.json import json_view, JsonRestService
 
-from glashammer.bundles.json import json_view, JsonRestService
 from glashammer.bundles.jquery import setup_jquery
 
 
