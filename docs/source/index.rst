@@ -28,6 +28,7 @@ Contents
    database
    forms
    api
+   external-references
 
 Indices and tables
 ==================

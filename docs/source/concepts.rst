@@ -8,7 +8,7 @@ application with Glashammer. In principle, it would be very easy to just say
 
 Glashammer uses Werkzeug, which is a library of WSGI utilities. Most of the
 actual components that will be used are straight from there, so a look at the
-documentation at http://werkzeug.pocoo.org/documentation/ ill certainly be worth
+documentation at http://werkzeug.pocoo.org/documentation/ will certainly be worth
 your while at some point.
 
 
