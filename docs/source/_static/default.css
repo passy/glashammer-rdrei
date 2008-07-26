@@ -241,7 +241,7 @@ div.sidebar ul ul {
 }
 
 div.sidebar a {
-    font-weight: bold;
+    color: #b80000;
 }
 
 p {
@@ -500,4 +500,8 @@ ul.keywordmatches li.goodmatch a {
 
 p.logo {
     text-align: right;
+}
+
+.rss_date a {
+    display: none;
 }
