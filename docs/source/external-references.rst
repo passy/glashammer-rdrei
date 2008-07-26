@@ -1,4 +1,6 @@
 
+.. _external-references:
+
 Links to external documentation
 ===============================
 

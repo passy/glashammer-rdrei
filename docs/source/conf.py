@@ -32,7 +32,7 @@ templates_path = ['_templates']
 source_suffix = '.rst'
 
 # The master toctree document.
-master_doc = 'index'
+master_doc = 'contents'
 
 # General substitutions.
 project = 'Glashammer'
@@ -53,7 +53,7 @@ release = '0.1'
 today_fmt = '%B %d, %Y'
 
 # List of documents that shouldn't be included in the build.
-#unused_docs = []
+unused_docs = ['index']
 
 # List of directories, relative to source directories, that shouldn't be searched
 # for source files.
@@ -115,11 +115,11 @@ html_last_updated_fmt = '%b %d, %Y'
 #html_use_smartypants = True
 
 # Custom sidebar templates, maps document names to template names.
-#html_sidebars = {}
+html_sidebars = {'index': 'index-sidebar.jinja'}
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.
-#html_additional_pages = {}
+html_additional_pages = {'index': 'index.jinja'}
 
 # If false, no module index is generated.
 #html_use_modindex = True

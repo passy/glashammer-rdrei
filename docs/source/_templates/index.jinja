@@ -1,29 +1,31 @@
-.. Glashammer documentation master file
 
-Glashammer User Manual
-======================
+{% extends "layout.html" %}
 
+
+
+{% block body %}
+
+
+<img src="{{ pathto('_static/glashammer-logo-192.png', 1) }}"
+    style="float: right; margin-left: 24px;"/>
+
+<h1>Glashammer Web Site</h1>
+
+<p>
 Welcome to the Glashammer documentation.
+</p>
 
+<p>
 Glashammer is simply a Python web application development framework. Yes, yet
 another one. Glashammer has lofty goals. Firstly something simple such as
 "hello world" should be very simple, yet adding extra ready-components (such
 as an admin interface) should also be very easy, and thus, batteries are very
 much included.
+</b>
 
+<p>
 Please select an item from the contents below. The introduction is a good place
 to start for first-time users.
+</p>
 
-
-:ref:`contents`
-
-
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
+{% endblock %}

@@ -23,6 +23,10 @@ The following libraries should be installed:
 * Jinja2
 * WTForms
 
+.. seealso::
+
+   :ref:`external-references`
+
 
 Your First Application
 ----------------------
