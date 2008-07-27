@@ -1,8 +1,9 @@
 Introduction
 ============
 
-Glashammer is simply a Python web application development framework. Yes, yet
-another one. Glashammer has lofty goals. Firstly something simple such as "hello
+Glashammer Python web framework. Yes, yet another one.
+
+Glashammer has lofty goals. Firstly something simple such as "hello
 world" should be very simple, yet adding extra ready-components (such as an
 admin interface) should also be very easy, and thus, batteries are very much
 included.

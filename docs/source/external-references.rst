@@ -33,3 +33,17 @@ Tarballs
 Source
     ``hg clone hg clone http://dev.pocoo.org/hg/jinja2-main``
 
+
+WTForms
+-------
+
+Home Page
+    um...
+Documentation
+    err..
+Easy Install
+    ``easy_install WTForms``
+Tarballs
+    hah!
+Source
+    ``hg clone https://bitbucket.org/prencher/wtforms/``
