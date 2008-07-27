@@ -36,7 +36,7 @@ def redirect_gae_login_url():
     return redirect(users.create_login_url(req.url))
 
 def setup_gae(app):
-    app.add_local_processor(gae_local_processor)
+    app.connect_event('request-start', gae_local_processor)
 
 def make_gae_app(setup_func):
     app = make_app(setup_func, '.') 

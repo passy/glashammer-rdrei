@@ -223,8 +223,8 @@ class TestTemplating(object):
         def _simple_view(req):
             return render_response('events.html')
 
-        def _on_blah(event):
-            emitted.append(event)
+        def _on_blah():
+            emitted.append('anevent')
 
         def _add_bits(app):
             app.add_template_searchpath('test_output/templates')
@@ -282,7 +282,7 @@ def test_req_processor():
         req.foo = 1
 
     def _setup_proc(app):
-        app.add_request_processor(_process_request)
+        app.connect_event('request-end', _process_request)
         app.add_url('/', '', view=_a_view)
 
     app = make_app(_setup_proc, 'test_output')
@@ -301,7 +301,7 @@ def test_resp_processor():
         resp.data = 'byebye'
 
     def _setup_proc(app):
-        app.add_response_processor(_process_response)
+        app.connect_event('response-end', _process_response)
         app.add_url('/', '', view=_a_view)
 
     app = make_app(_setup_proc, 'test_output')
@@ -316,11 +316,11 @@ def test_local_processor():
     def _a_view(req):
         return Response('%s' % (local.foo == 1))
 
-    def _local_proc(local):
+    def _local_proc(req):
         local.foo = 1
 
     def _setup_local(app):
-        app.add_local_processor(_local_proc)
+        app.connect_event('request-start', _local_proc)
         app.add_url('/', '', view=_a_view)
 
     app = make_app(_setup_local, 'test_output')
@@ -454,8 +454,10 @@ def test_event_map():
     em = build_eventmap(app)
 
     assert 'app-setup' in em
-    assert 'app-request' in em
-    assert 'app-response' in em
+    assert 'request-start' in em
+    assert 'request-end' in em
+    assert 'response-start' in em
+    assert 'response-end' in em
 
 # crypto
 

@@ -30,8 +30,8 @@ def setup_sessions(app):
     app.add_config_var('sessions/cookie_name', str, 'glashammer_session')
     app.add_config_var('sessions/secret', str, 'glashammer_secret')
 
-    app.add_request_processor(setup_session)
-    app.add_response_processor(cleanup_sessions)
+    app.connect_event('request-start', setup_session)
+    app.connect_event('response-end', cleanup_sessions)
 
 setup_app = setup_sessions
 

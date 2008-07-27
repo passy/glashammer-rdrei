@@ -51,11 +51,6 @@ class GlashammerApplication(object):
         self.controllers = {}
         self.events = EventManager(self)
 
-        # permanent things you can use during setup
-        self.request_processors = []
-        self.response_processors = []
-        self.local_processors = []
-
         # Temporary variables for collecting setup information
 
         # Template stuff
@@ -138,25 +133,19 @@ class GlashammerApplication(object):
         local.application = self
         local.url_adapter = adapter = self.map.bind_to_environ(environ)
         local.request = request = Request(self, environ)
-        for proc in self.local_processors:
-            proc(local)
-        emit_event('app-request', request)
-        for proc in self.request_processors:
-            proc(request)
+        emit_event('request-start', request)
         try:
             endpoint, values = adapter.match()
             request.endpoint = endpoint
             request.values = values
+            emit_event('request-end', request)
             response = self.get_view(request, endpoint, values)
         except HTTPException, e:
             response = e
-        # cleanup
-        emit_event('app-response', response)
-
-
-        for proc in self.response_processors:
-            proc(response)
-        return response(environ, start_response)
+        emit_event('response-start', response)
+        resp = response(environ, start_response)
+        emit_event('response-end', response)
+        return resp
 
     def get_view(self, request, endpoint, values):
         # try looking up by view first
@@ -202,16 +191,25 @@ class GlashammerApplication(object):
 
     @_prefinalize_only
     def add_data_func(self, data_func):
+        """
+        Add a data callable to be called after the setup callables
+        """
         if data_func not in self._data_funcs:
             self._data_funcs.add(data_func)
             self._odata_funcs.append(data_func)
 
     @_prefinalize_only
     def add_bundle(self, bundle):
-        self.add_setup(bundle.setup)
+        """
+        Add a bundle (a module or other thing with a setup_app callable
+        """
+        self.add_setup(bundle.setup_app)
 
     @_prefinalize_only
     def add_url(self, url, endpoint, view=None, **kw):
+        """
+        Register a url for an endpoint, optionally register a view with it.
+        """
         rule = Rule(url, endpoint=endpoint, **kw)
         if view is not None:
             self.views[endpoint] = view
@@ -219,6 +217,9 @@ class GlashammerApplication(object):
 
     @_prefinalize_only
     def add_view(self, endpoint, view):
+        """
+        Register a view for an endpoint
+        """
         self.views[endpoint] = view
 
     @_prefinalize_only
@@ -264,10 +265,21 @@ class GlashammerApplication(object):
 
     @_prefinalize_only
     def add_template_global(self, key, value):
-        """Add a template global"""
+        """
+        Add a template global variable.
+
+        `key`
+            The variable name
+        `value`
+            The variable value. Note that you can use a proxy to a local
+            variable by using glashammer.utils.local('<variable name>').
+        """
         self._template_globals[key] = value
 
     def add_template_filter(self, name, f):
+        """
+        Add a template filter.
+        """
         self._template_filters[name] = f
 
     @_prefinalize_only
@@ -302,17 +314,6 @@ class GlashammerApplication(object):
             raise ValueError('key might not have more than one slash')
         self.cfg.config_vars[key] = (type, default)
 
-    @_prefinalize_only
-    def add_request_processor(self, processor):
-        self.request_processors.append(processor)
-
-    @_prefinalize_only
-    def add_response_processor(self, processor):
-        self.response_processors.append(processor)
-
-    @_prefinalize_only
-    def add_local_processor(self, processor):
-        self.local_processors.append(processor)
 
 
 def make_app(setup_func, instance_dir):

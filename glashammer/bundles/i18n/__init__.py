@@ -173,7 +173,7 @@ _ = gettext
 
 # Here beginneth the pluging in process
 
-def on_setup_complete(event, app):
+def on_setup_complete(app):
     lang = app.conf['language']
     app.locale = Locale(app.cfg['language'])
     app.translations = load_translations(app.locale)

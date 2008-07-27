@@ -10,7 +10,7 @@ def emit_event(event, *args, **kwargs):
     app = local.application
     if not app.finalized:
         raise RuntimeError('You cannot emit events before the app is set up')
-    return [x(event, *args, **kwargs) for x in
+    return [x(*args, **kwargs) for x in
             app.events.iter(event)]
 
 class EventManager(object):
@@ -46,6 +46,7 @@ class EventManager(object):
             event.pop(listener_id, None)
 
     def iter(self, event):
+        print event, self._listeners
         """Return an iterator for all listeners of a given name."""
         if event not in self._listeners:
             return iter(())
@@ -55,7 +56,7 @@ class EventManager(object):
         """Emits events for the template context."""
         results = []
         for f in self.iter(event):
-            rv = f(event, *args, **kwargs)
+            rv = f(*args, **kwargs)
             if rv is not None:
                 results.append(rv)
         return TemplateEventResult(results)
