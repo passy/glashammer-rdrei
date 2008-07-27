@@ -46,7 +46,6 @@ class EventManager(object):
             event.pop(listener_id, None)
 
     def iter(self, event):
-        print event, self._listeners
         """Return an iterator for all listeners of a given name."""
         if event not in self._listeners:
             return iter(())
