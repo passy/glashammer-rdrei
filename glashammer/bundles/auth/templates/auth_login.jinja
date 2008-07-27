@@ -1,0 +1,21 @@
+
+<form action="" method="post">
+
+{% if error %}
+<div class="form_error">{{ error }}</div>
+{% endif %}
+
+<div>
+    {{ auth_form.username.label }}<br />
+    {{ auth_form.username }}
+</div>
+
+<div>
+    {{ auth_form.password.label }}<br />
+    {{ auth_form.password }}
+</div>
+
+<input type="submit" />
+
+</form>
+
