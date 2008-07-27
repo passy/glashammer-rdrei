@@ -31,7 +31,7 @@ def check_username_password(username, password):
     for token in tokens:
         #XXX only use the first token - maybe bad
         if token:
-            return token
+            return username
 
 def login(token):
     session = get_session()
@@ -61,8 +61,6 @@ def do_login(request):
     form = UserForm(request.form)
 
     if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password', '')
         if form.validate():
             username = form.username.data
             password = form.password.data

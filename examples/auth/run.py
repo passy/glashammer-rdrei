@@ -10,7 +10,7 @@ def setup(app):
     app.connect_event('password-check', dumb_password_checker)
     app.add_url('/', 'home', view=homepage_view)
 
-def dumb_password_checker(event, username, password):
+def dumb_password_checker(username, password):
     return True
 
 @auth_protected_view

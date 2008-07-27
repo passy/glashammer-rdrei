@@ -5,7 +5,7 @@ from glashammer.utils import local, get_app, get_request
 def get_session():
     return local.session
 
-def setup_session(req):
+def tag_session(req):
     app = get_app()
     cookie_name = app.conf['sessions/cookie_name']
     session = SecureCookie.load_cookie(req, cookie_name,
@@ -30,8 +30,8 @@ def setup_sessions(app):
     app.add_config_var('sessions/cookie_name', str, 'glashammer_session')
     app.add_config_var('sessions/secret', str, 'glashammer_secret')
 
-    app.connect_event('request-start', setup_session)
-    app.connect_event('response-end', cleanup_sessions)
+    app.connect_event('request-start', tag_session)
+    app.connect_event('response-start', cleanup_sessions)
 
 setup_app = setup_sessions
 
