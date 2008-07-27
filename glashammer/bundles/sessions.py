@@ -5,9 +5,8 @@ from glashammer.utils import local, get_app, get_request
 def get_session():
     return local.session
 
-def setup_session(request):
+def setup_session(req):
     app = get_app()
-    req = get_request()
     cookie_name = app.conf['sessions/cookie_name']
     session = SecureCookie.load_cookie(req, cookie_name,
                                            app.conf['sessions/secret'])
@@ -28,8 +27,8 @@ def cleanup_sessions(response):
                             expires=expires, session_expires=expires)
 
 def setup_sessions(app):
-    app.add_config_var('sessions/cookie_name', 'glashammer_session', str)
-    app.add_config_var('sessions/secret', 'glashammer_secret', str)
+    app.add_config_var('sessions/cookie_name', str, 'glashammer_session')
+    app.add_config_var('sessions/secret', str, 'glashammer_secret')
 
     app.add_request_processor(setup_session)
     app.add_response_processor(cleanup_sessions)
