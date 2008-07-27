@@ -161,16 +161,16 @@ class GlashammerApplication(object):
     def get_view(self, request, endpoint, values):
         # try looking up by view first
         view = self.views.get(endpoint)
-        if view is None:
+        if view:
+            return view(request, **values)
+        elif '/' in endpoint:
             # fallback to controller->view
             base, target = endpoint.split('/', 1)
             controller = self.controllers.get(base)
             if controller is not None and hasattr(controller, target):
                 return getattr(controller, target)(request, **values)
-            else:
-                # fallback to notfound
-                return NotFound()
-        return view(request, **values)
+        return NotFound()
+
 
     def _prefinalize_only(f):
         def _decorated(self, *args, **kw):
