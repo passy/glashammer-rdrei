@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-    textpress.models
-    ~~~~~~~~~~~~~~~~
+    glashammer.models
+    ~~~~~~~~~~~~~~~~~
 
     The core models and query helper functions.
 
