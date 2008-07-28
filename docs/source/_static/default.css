@@ -511,9 +511,24 @@ p.logo {
 }
 
 div.main_menu a {
-    font-size: 1.7em;
-    font-weight: bold;
+    font-size: 2em;
+    font-weight: normal;
     color: #b80000;
     text-decoration: none;
     display: block;
+    margin-top: 10px;
+    font-family: monospace;
+}
+
+div.main_menu a:hover {
+    color: #444444;
+}
+
+div.main_menu a img {
+    vertical-align: middle;
+    margin-right: 12px;
+}
+
+img {
+    border: none;
 }

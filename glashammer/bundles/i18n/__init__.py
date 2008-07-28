@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
     glashammer.i18n
-    ~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~
 
     i18n tools for Glashammer.
 

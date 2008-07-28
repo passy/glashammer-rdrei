@@ -7,6 +7,7 @@ Full Table of Contents
 .. toctree::
    :maxdepth: 2
 
+   developers
    introduction
    gettingstarted
    concepts

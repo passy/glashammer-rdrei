@@ -12,7 +12,8 @@ setup(
 
     packages = [
         'glashammer', 'glashammer.bundles', 'glashammer.bundles.auth',
-        'glashammer.bundles.admin',
+        'glashammer.bundles.forms', 'glashammer.bundles.i18n',
+        'glashammer.bundles.jquery', 'glashammer.utils'
     ],
 
     package_dir = {
@@ -21,8 +22,10 @@ setup(
 
     package_data = {
         'glashammer': [
-            'shared/*',
-            'templates/macros/forms.html',
+            'shared/jquery/*',
+            'bundles/auth/templates/*',
+            'bundles/forms/templates/macros/forms.html',
+            'bundles/jquery/templates/includes/*'
             'templates/*.html'
         ]
     },

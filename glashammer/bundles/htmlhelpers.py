@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-    textpress.htmlhelpers
-    ~~~~~~~~~~~~~~~~~~~~~
+    glashammer.htmlhelpers
+    ~~~~~~~~~~~~~~~~~~~~~~
 
     This module povides helpers for the templates but can be useful for
     the views and modules too. In the template it's available as "h".
