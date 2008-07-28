@@ -191,8 +191,25 @@ div.related ul li a {
     font-weight: bold;
 }
 
+div.related2 {
+    background-color: #e6c200;
+}
+
+div.related2 ul {
+    background: none;
+    border: none;
+}
+
+div.related2 ul li a {
+    color: #000;
+}
+
 div.related ul li a:hover {
     color: #2491CF;
+}
+
+div.related2 ul li a:hover {
+    color: #b80000;
 }
 
 div.body {
@@ -531,4 +548,13 @@ div.main_menu a img {
 
 img {
     border: none;
+}
+
+dt {
+}
+
+dt a.reference {
+    font-weight: bold;
+    font-size: 1.3em;
+    text-decoration: none;
 }

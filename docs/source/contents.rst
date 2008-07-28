@@ -5,17 +5,10 @@ Full Table of Contents
 ======================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
 
    developers
-   introduction
-   gettingstarted
-   concepts
-   application
-   bundles
-   database
-   forms
-   api
+   documentation
    external-references
 
 Indices and tables

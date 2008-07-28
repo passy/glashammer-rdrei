@@ -41,8 +41,4 @@ Back to our very first example, but with annotations::
 So that's how we add a template search path, but what else? Well the generated API is
 below, but all these are regarded in more detail in subsequent chapters.
 
-.. toctree::
-
-   endpoints
-   templating
 

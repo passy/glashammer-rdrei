@@ -1,4 +1,6 @@
 
+.. _endpoints:
+
 Rules, endpoints and views
 ==========================
 
