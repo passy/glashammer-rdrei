@@ -48,9 +48,11 @@ def test_app_missing_instance():
 
 def _add_first_setup(app):
     app.add_setup(_add_second_setup)
+    app.called = 0
 
-def _add_second_setup(app):
-    app.test_var = 1
+def _add_second_setup(app, banana=1):
+    app.test_var = banana
+    app.called += 1
 
 
 def test_add_setup_func():
@@ -59,6 +61,43 @@ def test_add_setup_func():
     """
     app = make_app(_add_first_setup, 'test_output')
     assert app.test_var == 1
+
+
+def _add_first_setup_with_args(app):
+    app.add_setup(_add_second_setup, 2)
+    app.called = 0
+
+def test_add_setup_func_args():
+    app = make_app(_add_first_setup_with_args, 'test_output')
+    assert app.test_var == 2
+
+def _add_first_setup_twice(app):
+    app.add_setup(_add_second_setup)
+    app.add_setup(_add_second_setup)
+    app.called = 0
+
+def test_add_setup_func_twice():
+    app = make_app(_add_first_setup_twice, 'test_output')
+    assert app.called == 1
+
+def _add_first_setup_twice_with_diff_args(app):
+    app.add_setup(_add_second_setup, 1)
+    app.add_setup(_add_second_setup, 2)
+    app.called = 0
+
+def test_add_setup_func_twice_with_diff_args():
+    app = make_app(_add_first_setup_twice_with_diff_args, 'test_output')
+    assert app.called == 2
+
+
+def _add_first_setup_twice_with_same_args(app):
+    app.add_setup(_add_second_setup, 1)
+    app.add_setup(_add_second_setup, 1)
+    app.called = 0
+
+def test_add_setup_func_twice_with_diff_args():
+    app = make_app(_add_first_setup_twice_with_same_args, 'test_output')
+    assert app.called == 1
 
 
 # View and endpoints

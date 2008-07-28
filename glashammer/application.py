@@ -77,8 +77,8 @@ class GlashammerApplication(object):
         setup_func(self)
 
         # run the additional setup funcions
-        for setup_func in self._osetup_funcs:
-            setup_func(self)
+        for setup_func, args in self._osetup_funcs:
+            setup_func(self, *args)
 
         del self._setup_funcs
 
@@ -171,11 +171,14 @@ class GlashammerApplication(object):
         _decorated.__module__ = f.__module__
         return _decorated
 
-    def add_setup(self, setup_func):
+    def add_setup(self, setup_func, *args):
         """Add a setup callable to be called on startup by the application.
 
         `setup_func`
             The callable to be called during application setup.
+
+        `*args`
+            Arguments that will be passed to the setup function
 
         This method is used to add pluggable capability to the application.
         For example, plugin A can load plugin B by importing and adding it's
@@ -191,9 +194,10 @@ class GlashammerApplication(object):
 
         Will initialize the auth bundle for the application.
         """
-        if setup_func not in self._setup_funcs:
-            self._setup_funcs.add(setup_func)
-            self._osetup_funcs.append(setup_func)
+        vals = (setup_func, args)
+        if vals not in self._setup_funcs:
+            self._setup_funcs.add(vals)
+            self._osetup_funcs.append(vals)
 
     @_prefinalize_only
     def add_data_func(self, data_func):
