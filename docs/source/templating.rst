@@ -73,4 +73,30 @@ This would be rendered as::
 
 Template Globals
 ----------------
-    
+
+Variables can be added to the global template context for use in any template.
+Template globals are added during the setup phase of the application using:
+
+.. automethod:: glashammer.application.GlashammerApplication.add_template_global
+
+A very useful pattern for this situation is to use an object that is proxied
+to the local object. The actual variable may not be set at the time of
+application setup, but is set during the request and is available to the
+templates.
+
+For example, a good template global might be the current user object, and this
+will of course not be available during application setup. Thus we use a local
+proxy like so::
+
+    from glashammer.util import local
+
+    app.add_template_global('user', local('user'))
+
+Then during a request, the user attribute can be set on the local object
+like::
+
+    local.user = user
+
+And the result will be that the 'user' variable is available in all your
+templates.
+
