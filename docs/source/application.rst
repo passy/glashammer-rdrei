@@ -1,4 +1,6 @@
 
+.. _application:
+
 Setting up an application
 =========================
 

@@ -1,8 +1,8 @@
 
 .. _contents:
 
-Table of Contents
-=================
+Full Table of Contents
+======================
 
 .. toctree::
    :maxdepth: 2

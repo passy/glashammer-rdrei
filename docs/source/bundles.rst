@@ -1,4 +1,6 @@
 
+.. _bundles:
+
 Bundles
 =======
 

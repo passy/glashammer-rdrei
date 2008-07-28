@@ -1,5 +1,8 @@
-Getting Started
-===============
+
+.. _gettingstarted:
+
+Getting Started Guide
+=====================
 
 This chapter will help you get running with Glashammer. It is only a cursory
 look, and the following chapters will describe more detailed usage.
