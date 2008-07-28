@@ -10,8 +10,8 @@ Table of Contents
    introduction
    gettingstarted
    concepts
-   endpoints
-   templating
+   application
+   bundles
    database
    forms
    api

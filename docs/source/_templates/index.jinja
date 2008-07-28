@@ -6,26 +6,34 @@
 {% block body %}
 
 
-<img src="{{ pathto('_static/glashammer-logo-192.png', 1) }}"
-    style="float: right; margin-left: 24px;"/>
+
+<div style="float:right; margin-left: 20px; margin-top: 10px; text-align: center;">
+<div class="main_menu">
+<a href="{{ pathto('downloads') }}">Downloads</a>
+<a href="{{ pathto('documentation') }}">Documentation</a>
+<a href="{{ pathto('developers') }}">Developers</a>
+</div>
+</div>
 
 <h1>Glashammer Web Site</h1>
 
-<p>
-Welcome to the Glashammer documentation.
-</p>
+<p>Welcome to the Glashammer website.</p>
+
+<h2>What is Glashammer?</h2>
 
 <p>
-Glashammer is simply a Python web application development framework. Yes, yet
-another one. Glashammer has lofty goals. Firstly something simple such as
-"hello world" should be very simple, yet adding extra ready-components (such
-as an admin interface) should also be very easy, and thus, batteries are very
-much included.
+Glashammer is a Python web framework with an emphasis on
+simplicity, flexibility, and extensibility. It is built atop excellent
+components and reinvents zero wheels.
 </b>
 
+<h2>For the love of god why yet another Python web framework?</h2>
+
 <p>
-Please select an item from the contents below. The introduction is a good place
-to start for first-time users.
+I was getting fed up with rewriting the same code over and over for each web
+application. Werkzeug (being an anti-framework) doesn't offer reusable
+application objects, view dispatching or templating. Glashammer merely
+integrates these and other existing components into a reusable framework.
 </p>
 
 {% endblock %}

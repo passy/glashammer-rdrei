@@ -171,19 +171,25 @@ class GlashammerApplication(object):
         _decorated.__module__ = f.__module__
         return _decorated
 
-    @_prefinalize_only
     def add_setup(self, setup_func):
         """Add a setup callable to be called on startup by the application.
 
+        `setup_func`
+            The callable to be called during application setup.
+
         This method is used to add pluggable capability to the application.
         For example, plugin A can load plugin B by importing and adding it's
-        setup func.
+        setup func like so::
 
-        ::
-            >>> from glashammer.bundles.admin import setup
-            >>> app.add_setup(setup)
+            >>> from a import setup
+            >>> app.add_setup(a)
 
-        Will initialize the admin interface for the application.
+        Or in a real example::
+
+            >>> from glashammer.bundles.auth import setup_app
+            >>> app.add_setup(setup_app)
+
+        Will initialize the auth bundle for the application.
         """
         if setup_func not in self._setup_funcs:
             self._setup_funcs.add(setup_func)

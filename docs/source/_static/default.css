@@ -502,6 +502,18 @@ p.logo {
     text-align: right;
 }
 
-.rss_date a {
+#dodgy_rss center {
     display: none;
+}
+
+#dodgy_rss br {
+    display: none;
+}
+
+div.main_menu a {
+    font-size: 1.7em;
+    font-weight: bold;
+    color: #b80000;
+    text-decoration: none;
+    display: block;
 }
