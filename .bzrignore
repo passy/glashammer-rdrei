@@ -3,3 +3,6 @@ examples/*/gh.sqlite
 docs/build
 docs/build/*
 build
+dist
+MANIFEST
+.coverage
