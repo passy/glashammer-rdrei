@@ -185,7 +185,7 @@ class GlashammerApplication(object):
         setup func like so::
 
             >>> from a import setup
-            >>> app.add_setup(a)
+            >>> app.add_setup(setup)
 
         Or in a real example::
 
