@@ -28,6 +28,9 @@ The Glashammer User Manual
     ready-made bundles available with Glashammer, and explains how to create
     your own reusable compoents.
 
+:ref:`api`
+    The complete Glashammer API.
+
 :ref:`external-references`
     Contains quick links to references for the libraries used in Glashammer.
 

@@ -1,4 +1,6 @@
 
+.. _api:
+
 The Glashammer API
 ==================
 
