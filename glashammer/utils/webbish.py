@@ -1,6 +1,10 @@
-
-# Useful things for paging and navigation
+# -*- coding: utf-8 -*-
+"""
+    Useful things for paging and navigation
+"""
 from glashammer.utils.local import url_for
+
+
 
 class Pagination(object):
     """Pagination helper."""
