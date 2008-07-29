@@ -44,6 +44,23 @@ def test_app_missing_instance():
     assert_raises((RuntimeError,), make_app, _setup_empty, 'i_do_not_exist')
 
 
+def _test_finalized():
+
+    def _bview(req):
+        app = get_app()
+        assert_raises((RuntimeError,), app.add_config_var, 'a', str, 'a')
+        return Response('hello')
+
+    def _setup_app(app):
+        app.add_url('/', 'hoo', _bview)
+
+    app = make_app(_setup_app, 'test_output')
+
+    c = Client(app)
+    c.open()
+
+
+
 # Setup functions
 
 def _add_first_setup(app):
@@ -174,6 +191,7 @@ def test_endpoint_lookup():
         app.add_url('/', endpoint='foo/blah')
 
     app = make_app(_add_rule_setup, 'test_output')
+    print list(app.map.iter_rules())
 
     assert url_for('foo/blah') == '/'
 
@@ -589,6 +607,9 @@ class TestConfig(object):
         assert self.conf['voo'] == 'noo'
         self.conf.change_single('voo', 'goo')
         assert self.conf['voo'] == 'goo'
+
+
+
 
 
 

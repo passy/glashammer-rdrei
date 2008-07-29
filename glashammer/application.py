@@ -186,16 +186,9 @@ class GlashammerApplication(object):
                 return getattr(controller, target)(request, **values)
         return NotFound()
 
-
-    def _prefinalize_only(f):
-        def _decorated(self, *args, **kw):
-            if self.finalized:
-                raise RuntimeError('Already Finalized')
-            return f(self, *args, **kw)
-        _decorated.__doc__ = f.__doc__
-        _decorated.__name__ = f.__name__
-        _decorated.__module__ = f.__module__
-        return _decorated
+    def _ensure_not_finalized(self):
+        if self.finalized:
+            raise RuntimeError('You cannot do this. The application has been finalized.')
 
     def add_setup(self, setup_func, *args):
         """Add a setup callable to be called on startup by the application.
@@ -220,32 +213,37 @@ class GlashammerApplication(object):
 
         Will initialize the auth bundle for the application.
         """
+        self._ensure_not_finalized()
+
         vals = (setup_func, args)
         if vals not in self._setup_funcs:
             self._setup_funcs.add(vals)
             self._osetup_funcs.append(vals)
 
-    @_prefinalize_only
     def add_data_func(self, data_func):
         """
         Add a data callable to be called after the setup callables
         """
+        self._ensure_not_finalized()
+
         if data_func not in self._data_funcs:
             self._data_funcs.add(data_func)
             self._odata_funcs.append(data_func)
 
-    @_prefinalize_only
     def add_bundle(self, bundle):
         """
         Add a bundle (a module or other thing with a setup_app callable
         """
+        self._ensure_not_finalized()
+
         self.add_setup(bundle.setup_app)
 
-    @_prefinalize_only
     def add_url(self, url, endpoint, view=None, **kw):
         """
         Register a url for an endpoint, optionally register a view with it.
         """
+        self._ensure_not_finalized()
+
         rule = Rule(url, endpoint=endpoint, **kw)
         self.add_url_rule(rule, view)
 
@@ -253,6 +251,8 @@ class GlashammerApplication(object):
         """
         Add a url rule with optional view
         """
+        self._ensure_not_finalized()
+
         self.map.add(rule)
         if view is not None:
             self.views[rule.endpoint] = view
@@ -261,17 +261,19 @@ class GlashammerApplication(object):
         """
         Add a list of rules to the map
         """
+        self._ensure_not_finalized()
+
         for rule in rules:
             self.map.add(rule)
 
-    @_prefinalize_only
     def add_view(self, endpoint, view):
         """
         Register a view for an endpoint
         """
+        self._ensure_not_finalized()
+
         self.views[endpoint] = view
 
-    @_prefinalize_only
     def add_views_controller(self, endpoint_base, controller):
         """
         Add a an instance or module which contains functions for a number of
@@ -303,16 +305,19 @@ class GlashammerApplication(object):
         attribute names concatenated with the endpoint_base.
 
         """
+        self._ensure_not_finalized()
 
         self.controllers[endpoint_base] = controller
 
-    @_prefinalize_only
     def add_template_searchpath(self, path):
-        """Add a directory to the template search path"""
+        """
+        Add a directory to the template search path
+        """
+        self._ensure_not_finalized()
+
         path = os.path.abspath(path)
         self._template_searchpaths.append(path)
 
-    @_prefinalize_only
     def add_template_global(self, key, value):
         """
         Add a template global variable.
@@ -323,42 +328,58 @@ class GlashammerApplication(object):
             The variable value. Note that you can use a proxy to a local
             variable by using glashammer.utils.local('<variable name>').
         """
+        self._ensure_not_finalized()
+
         self._template_globals[key] = value
 
     def add_template_filter(self, name, f):
         """
         Add a template filter.
         """
+        self._ensure_not_finalized()
+
         self._template_filters[name] = f
 
-    @_prefinalize_only
     def connect_event(self, event, callback, position='after'):
-        """Connect an event to the current application."""
+        """
+        Connect an event to the current application.
+        """
+        self._ensure_not_finalized()
+
         return self.events.connect(event, callback, position)
 
-    @_prefinalize_only
     def set_layout_template(self, template_name):
+        self._ensure_not_finalized()
+
         self._layout_template = template_name
 
-    @_prefinalize_only
     def add_shared(self, name, path):
-        """Add a shared export for name that points to a given path and
+        """
+        Add a shared export for name that points to a given path and
         creates an url rule for <name>/shared that takes a filename
         parameter.
         """
+        self._ensure_not_finalized()
+
         self._shared_exports['/_shared/' + name] = path
         self.add_url('/_shared/%s/<string:filename>' % name,
                      endpoint=name + '/shared', build_only=True)
 
-    @_prefinalize_only
     def add_middleware(self, middleware_factory, *args, **kwargs):
-        """Add a middleware to the application."""
+        """
+        Add a middleware to the application.
+        """
+        self._ensure_not_finalized()
+
         self.dispatch_request = middleware_factory(self.dispatch_request,
                                                    *args, **kwargs)
 
-    @_prefinalize_only
     def add_config_var(self, key, type, default):
-        """Add a configuration variable to the application."""
+        """
+        Add a configuration variable to the application.
+        """
+        self._ensure_not_finalized()
+
         if key.count('/') > 1:
             raise ValueError('key might not have more than one slash')
         self.cfg.config_vars[key] = (type, default)
