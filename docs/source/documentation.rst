@@ -23,6 +23,14 @@ The Glashammer User Manual
     Learn how to use builtin glashammer events, and how to create and use your
     own.
 
+:ref:`config`
+    Glashammer applications are configurable by default, and this chapter will
+    show you how to add and use your own configuration variables.
+
+:ref:`statics`
+    This chapter will describe how to serve static files through WSGI, and then
+    how to override that with real web server sharing.
+
 :ref:`bundles`
     Glashammer is extended by the way of "bundles". This chapter describes the
     ready-made bundles available with Glashammer, and explains how to create
@@ -46,10 +54,12 @@ Full table of contents
     introduction
     concepts
     application
-    bundles
     endpoints
     templating
     events
+    config
+    statics
+    bundles
     forms
     utilities
     api
