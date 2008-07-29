@@ -19,13 +19,15 @@ Builtin bundles
 The following bundles are shipped with Glashammer, expect this list to increase,
 as we are adding functionality as required.
 
+.. toctree::
+
+    bundle_sessions
+    bundle_auth
+    bundle_i18n
+
 .. note::
 
    If you have a bundle you have written, and reuse, the chances are that others
    will find it useful too, so please tell us about it for inclusion into the
    source.
 
-.. toctree::
-
-    bundle_sessions
-    bundle_auth

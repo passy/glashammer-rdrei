@@ -1,8 +1,8 @@
 
 .. _bundle_sessions:
 
-Sessions Bundle
-===============
+Sessions
+========
 
 The sessions bundle provides client-side sessions safeguarded in a SecureCookie.
 The session object (just a dict) can be accessed through the function

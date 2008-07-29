@@ -1,8 +1,8 @@
 
 .. _bundle_auth:
 
-Authentication Bundle
-=====================
+Authentication
+==============
 
 The authentication system shipped with Glashammer is very simple, and very easy
 to extend. Essentially it splits authentication up into 3 sections:

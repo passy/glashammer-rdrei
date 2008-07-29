@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-    glashammer.i18n
-    ~~~~~~~~~~~~~~~
+    glashammer.bundles.i18n
+    ~~~~~~~~~~~~~~~~~~~~~~~
 
     i18n tools for Glashammer.
 
@@ -181,6 +181,8 @@ def on_setup_complete(app):
 
 def setup_i18n(app):
     app.add_config_var('language', str, 'en')
+    app.add_template_filter('formatdatetime', format_datetime)
+    app.add_template_filter('formatdate', format_date)
     app.connect_event('app-setup', on_setup_complete)
 
 setup_app = setup_i18n
