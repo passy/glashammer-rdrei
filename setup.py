@@ -9,7 +9,7 @@ setup(
 
     # Required metadata
     name='Glashammer',
-    version='0.1',
+    version='0.1.0',
 
     # package information
     packages = [
@@ -45,6 +45,14 @@ setup(
     author_email='aafshar@gmail.com',
 
     classifiers=[
-          'Development Status :: 4 - Beta',
+        'Development Status :: 3 - Alpha',
+        'License :: OSI Approved :: GNU General Public License (GPL)',
+        'Programming Language :: Python',
+        'Topic :: Internet :: WWW/HTTP :: WSGI',
+        'Topic :: Internet :: WWW/HTTP :: WSGI :: Application',
+        'Topic :: Internet :: WWW/HTTP :: WSGI :: Middleware',
+        'Topic :: Internet :: WWW/HTTP :: WSGI :: Server',
+        'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
+        'Topic :: Software Development',
     ]
 )
