@@ -1,5 +1,6 @@
 include *.txt
 include *.vel
-recursive-include tests
-recursive-include examples
-recursive-include docs
+recursive-include tests *.py
+recursive-include examples *.py *.html *.jinja
+recursive-include docs *.py *.rst *.css *.png
+prune docs/build
