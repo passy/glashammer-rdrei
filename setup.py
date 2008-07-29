@@ -26,9 +26,9 @@ setup(
         'glashammer': [
             'shared/jquery/*',
             'bundles/auth/templates/*',
-            'bundles/forms/templates/macros/forms.html',
+            'bundles/forms/templates/macros/*',
             'bundles/jquery/templates/includes/*'
-            'templates/*.html'
+            'templates/*'
         ]
     },
 
