@@ -27,7 +27,12 @@ class GlashammerApplication(object):
 
     default_setup = default_setup_func
 
-    def __init__(self, setup_func, instance_dir=None):
+    def __init__(self, setup_func,
+        instance_dir=None,
+        config_name='config.ini', config_factory=Configuration,
+        url_map=None, view_map=None,
+        template_searchpaths=None, template_filters=None, template_globals=None,
+        ):
         # just for playing in the shell
         local.application = self
 
@@ -39,24 +44,45 @@ class GlashammerApplication(object):
 
         self.instance_dir = os.path.abspath(instance_dir)
 
-        self.config_file = os.path.join(self.instance_dir, 'config.ini')
+        self.config_file = os.path.join(self.instance_dir, config_name)
 
         if not os.path.exists(self.instance_dir):
             raise RuntimeError('Application instance directory missing')
 
         self.conf = self.cfg = Configuration(self.config_file)
 
-        self.map = Map()
-        self.views = {}
+        if url_map:
+            self.map = url_map
+        else:
+            self.map = Map()
+
+        if view_map:
+            self.views = view_map
+        else:
+            self.views = {}
+
         self.controllers = {}
+
         self.events = EventManager(self)
 
         # Temporary variables for collecting setup information
 
         # Template stuff
-        self._template_searchpaths = []
-        self._template_globals = {}
-        self._template_filters = {}
+        if template_searchpaths:
+            self._template_searchpaths = template_searchpaths
+        else:
+            self._template_searchpaths = []
+
+        if template_globals:
+            self._template_globals = template_globals
+        else:
+            self._template_globals = {}
+
+        if template_filters:
+            self._template_filters = template_filters
+        else:
+            self._template_filters = {}
+
         self._layout_template = None
 
         # shared
@@ -339,7 +365,7 @@ class GlashammerApplication(object):
 
 
 
-def make_app(setup_func, instance_dir):
+def make_app(setup_func, instance_dir=None, **kw):
     """Create an application instance.
 
     `setup_func`   The callable used by the application to set itself up. This

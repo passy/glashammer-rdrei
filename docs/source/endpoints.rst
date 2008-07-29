@@ -69,6 +69,14 @@ will give us::
 
 In our scheme above.
 
+Adding a complete map
+---------------------
+
+Because rules bound to a map cannot then be moved to another map, if you have
+a pre-existing werkzeug.routing.Map isntance that you wish to use in your
+glashammer application, you should pass it as the named argument url_map to
+the make_app function.
+
 Views
 -----
 
