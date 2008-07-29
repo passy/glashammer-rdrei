@@ -11,6 +11,8 @@ targets(
     coverage
         $ nosetests --with-coverage --cover-package=glashammer
 
+    docs
+        $ cd docs && make html
 
     helloworld_example
         $ PYTHONPATH=. python examples/helloworld/run.py
