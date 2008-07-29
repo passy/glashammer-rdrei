@@ -191,7 +191,6 @@ def test_endpoint_lookup():
         app.add_url('/', endpoint='foo/blah')
 
     app = make_app(_add_rule_setup, 'test_output')
-    print list(app.map.iter_rules())
 
     assert url_for('foo/blah') == '/'
 
