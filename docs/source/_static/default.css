@@ -557,4 +557,9 @@ dt a.reference {
     font-weight: bold;
     font-size: 1.3em;
     text-decoration: none;
+    color: #b80000;
 }
+dt a.reference:hover {
+    color: #2491CF;
+}
+

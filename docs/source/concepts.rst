@@ -11,21 +11,34 @@ actual components that will be used are straight from there, so a look at the
 documentation at http://werkzeug.pocoo.org/documentation/ will certainly be worth
 your while at some point.
 
+Application Phases
+------------------
 
-Creating an application instance
---------------------------------
+In general an application created with Glashammer has two phases:
 
-Application instances should be created using glashammer.make_app:
+1. Application Setup Phase
+2. Request Phase
 
-.. autofunction:: glashammer.make_app
 
-The passed setup_func is a callable that will be the main entry point into the
-application. It is in this function that the application is configured.
-Throughout this manual when we refer to a "setup function" this is what we are
-referring to.
+Application Setup Phase
+~~~~~~~~~~~~~~~~~~~~~~~
 
-The instance directory is where the data for one particular instance of an
-applicaiton lives. This is explained in more detail in the next section.
+This phase takes place during the constructor of the application instance.
+During that time a number of callables can be registered which are run, which
+extend the functionality of the application instance.
+
+Once the constructor has completed, the configuration is "frozen" and the
+functionality is preserved in order to serve requests during the Request Phase.
+
+The details of the Application setup phase are found in :ref:`application`.
+
+
+Request Phase
+~~~~~~~~~~~~~
+
+The request phase takes place during the actuall HTTP request made to the web
+application. During this phase the application handles the request in the ways
+that the application setup phase has outlined.
 
 
 Code Structure

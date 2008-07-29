@@ -71,6 +71,7 @@ This would be rendered as::
 
     <h1>Hello Ali</h1>
 
+
 Template Globals
 ----------------
 
@@ -100,3 +101,38 @@ like::
 And the result will be that the 'user' variable is available in all your
 templates.
 
+
+Template filters
+----------------
+
+Template filters are used in templates, applied to variables, and produce some
+rendered formatting for display. They are actually Jinja2 filters, but
+Glashammer offers you a simple way of adding them to the application.
+
+Essentially a template filter is just a callable, which accepts one or more
+arguments. The first argument is required, and that is the variable in the
+template passed to the filter.
+
+This might be an dumb example filter for returning only the first letter of a
+string::
+
+    def first_letter_only(s):
+        return s[0]
+
+Now this would be added to you application during the application setup phase
+like so::
+
+    app.add_template_filter('first_letter_only', first_letter_only)
+
+And then used in your template as::
+
+    {{ foo|first_letter_only }}
+
+Jinja comes with a number of template filters as builtins (probably more than
+you ever might need) and various Glashammer bundles add others.
+
+.. seealso::
+
+   * http://jinja.pocoo.org/2/documentation/api#custom-filters
+   * http://jinja.pocoo.org/2/documentation/templates#id2
+   * http://jinja.pocoo.org/2/documentation/templates#builtin-filters
