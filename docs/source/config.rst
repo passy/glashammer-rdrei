@@ -41,11 +41,9 @@ phase by using the app.conf as a dict-like item.
 
 For example::
 
-    from glashammer.utils import get_app()
-    app = get_app()
-
     if app.conf['maintenance_mode']:
         # the application is in maintenance mode
+        return redirect('/maintenance')
 
 
 Setting a configuration variable
@@ -59,9 +57,6 @@ object:
 This method ensures that the value is changed and written in a transaction to
 avoid concurrency issues. So to continue our example, to set the
 'maintenance_mode' variable::
-
-    from glashammer.utils import get_app()
-    app = get_app()
 
     app.conf.change_single('maintenance_mode', True)
 
