@@ -11,3 +11,21 @@ function passed to an application on initial setup. The bundle's setup
 function is called during application setup and the functionality.
 
 .. automethod:: glashammer.application.GlashammerApplication.add_setup
+
+
+Builtin bundles
+---------------
+
+The following bundles are shipped with Glashammer, expect this list to increase,
+as we are adding functionality as required.
+
+.. note::
+
+   If you have a bundle you have written, and reuse, the chances are that others
+   will find it useful too, so please tell us about it for inclusion into the
+   source.
+
+.. toctree::
+
+    bundle_sessions
+    bundle_auth

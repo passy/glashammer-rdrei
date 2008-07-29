@@ -81,14 +81,23 @@ def view_logout(request):
 
 
 
-def setup_auth(app):
+def setup_auth(app, add_auth_views=True):
+    """
+    Setup the application to use auth.
+
+    `add_auth_views`
+        If True, the views for /login and /logout are created for you. This is
+        the reference implementation that you may or may not want to replace.
+    """
+
     app.add_setup(setup_sessions)
     app.add_config_var('auth/token_key', str, 'auth_session_key')
     app.add_template_searchpath(sibpath(__file__, 'templates'))
 
 
-    app.add_url('/login', endpoint='auth/login', view=view_login)
-    app.add_url('/logout', endpoint='auth/logout', view=view_logout)
+    if add_auth_views:
+        app.add_url('/login', endpoint='auth/login', view=view_login)
+        app.add_url('/logout', endpoint='auth/logout', view=view_logout)
 
-
+setup_app = setup_auth
 
