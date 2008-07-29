@@ -38,12 +38,12 @@ WTForms
 -------
 
 Home Page
-    um...
+    http://www.bitbucket.org/prencher/wtforms
 Documentation
-    err..
+    http://www.bitbucket.org/prencher/wtforms
 Easy Install
     ``easy_install WTForms``
 Tarballs
-    hah!
+    http://www.bitbucket.org/prencher/wtforms
 Source
     ``hg clone https://bitbucket.org/prencher/wtforms/``
