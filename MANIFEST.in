@@ -1,0 +1,5 @@
+include *.txt
+include *.vel
+recursive-include tests
+recursive-include examples
+recursive-include docs
