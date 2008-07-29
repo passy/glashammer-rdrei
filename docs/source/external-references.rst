@@ -31,7 +31,7 @@ Easy Install
 Tarballs
     http://pypi.python.org/pypi/packages/source/J/Jinja2/
 Source
-    ``hg clone hg clone http://dev.pocoo.org/hg/jinja2-main``
+    ``hg clone http://dev.pocoo.org/hg/jinja2-main``
 
 
 WTForms
