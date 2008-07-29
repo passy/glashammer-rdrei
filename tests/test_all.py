@@ -177,6 +177,17 @@ def test_endpoint_lookup():
 
     assert url_for('foo/blah') == '/'
 
+def test_add_rule():
+    def _add_rule_setup(app):
+        from werkzeug.routing import Rule
+        r = Rule('/', endpoint='ep')
+        app.add_url_rule(r, view=_aview)
+
+    app = make_app(_add_rule_setup, 'test_output')
+
+    assert _has_rule(app.map, '/', 'ep')
+    assert app.get_view(None, 'ep', {}) == 1
+
 
 # Templating
 

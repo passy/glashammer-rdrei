@@ -221,9 +221,22 @@ class GlashammerApplication(object):
         Register a url for an endpoint, optionally register a view with it.
         """
         rule = Rule(url, endpoint=endpoint, **kw)
-        if view is not None:
-            self.views[endpoint] = view
+        self.add_url_rule(rule, view)
+
+    def add_url_rule(self, rule, view=None):
+        """
+        Add a url rule with optional view
+        """
         self.map.add(rule)
+        if view is not None:
+            self.views[rule.endpoint] = view
+
+    def add_url_rules(self, rules):
+        """
+        Add a list of rules to the map
+        """
+        for rule in rules:
+            self.map.add(rule)
 
     @_prefinalize_only
     def add_view(self, endpoint, view):
