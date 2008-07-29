@@ -19,7 +19,9 @@ def url_for(endpoint, **args):
     return rv
 
 def get_request():
+    """Get the currently running request"""
     return local.request
 
 def get_app():
+    """Get the currently running applications"""
     return local.application
