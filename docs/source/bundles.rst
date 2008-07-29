@@ -12,10 +12,6 @@ function is called during application setup and the functionality.
 
 .. automethod:: glashammer.application.GlashammerApplication.add_setup
 
-
-Builtin bundles
----------------
-
 The following bundles are shipped with Glashammer, expect this list to increase,
 as we are adding functionality as required.
 
