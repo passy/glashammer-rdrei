@@ -47,3 +47,18 @@ Tarballs
     http://www.bitbucket.org/prencher/wtforms
 Source
     ``hg clone https://bitbucket.org/prencher/wtforms/``
+
+
+SQLAlchemy
+----------
+
+Home Page
+    http://www.sqlalchemy.org/
+Documentation
+    http://www.sqlalchemy.org/docs/
+Easy Install
+    ``easy_install SQLAlchemy``
+Tarballs
+    http://www.sqlalchemy.org/download.html
+Source
+    ``svn checkout http://svn.sqlalchemy.org/sqlalchemy/trunk sqlalchemy``
