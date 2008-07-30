@@ -2,3 +2,7 @@
 Ali Afshar <aafshar@gmail.com>
 Tassilo Schweyer <dev@welterde.de>
 Armin Ronacher <armin.ronacher@active-4.com>
+
+
+These authors are referred to when describing "Glashammer Developers" in module
+docstrings (except where some names have additionally been added).

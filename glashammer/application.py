@@ -1,5 +1,11 @@
 
 """
+glashammer.application
+~~~~~~~~~~~~~~~~~~~~~~
+
+:copyright: 2008 Glashammer Developers
+:license: MIT
+
 The Glashammer Application.
 """
 
