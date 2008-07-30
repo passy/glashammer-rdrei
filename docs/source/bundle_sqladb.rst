@@ -16,7 +16,7 @@ the application setup phase like so::
 The bundle will create a database engine and bind it to the configured URI.
 
 Additionally a metadata instance is provided
-`glashammer.bundles.sqladb.metadata` which can be used to add ORM mapped objects
+:data:`glashammer.bundles.sqladb.metadata` which can be used to add ORM mapped objects
 and tables.
 
 The module also provides django-like database mappers, and these are explained
@@ -87,7 +87,7 @@ can be sure that code requiring this bundle's initialization has been called.
 The generated db module
 -----------------------
 
-glashammer.bundles.sqladb.db is a generated module which contains all the API
+:data:`glashammer.bundles.sqladb.db` is a generated module which contains all the API
 from the bundle as well as all the API that is imported from SQLAlchemy. This is
 very useful as a quick shortcut.
 
