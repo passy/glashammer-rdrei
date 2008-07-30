@@ -2,16 +2,62 @@
 
 # -*- coding: utf-8 -*-
 
-import os
+import os, xmlrpclib
 
 from werkzeug import script
 
+from glashammer.version import glashammer_version
+
+
 def action_version():
-    """Print the version of Glashammer and exit"""
-    print 'Glashammer, v0.1'
+    """
+    Print the version of Glashammer and exit
+    """
+    print 'Glashammer, version %s' % glashammer_version
+
+
+def action_checkversion():
+    """
+    Check the installed version against the latest at PyPi
+    """
+    server = xmlrpclib.Server('http://pypi.python.org/pypi')
+    latest = server.package_releases('Glashammer')[0]
+    print 'Installed version:\t\t%s' % glashammer_version
+    print 'Latest PyPi version:\t\t%s' % latest
+    print '--------'
+    if latest == glashammer_version:
+        print 'The latest version of Glashammer is installed.'
+    else:
+        print 'Update available. "easy_install -U Glashammer" to upgrade.'
+
 
 def action_dependencies():
-    print 'Checking'
+    """
+    Check the required dependencies are available
+    """
+    print 'Checking dependencies'
+
+    print 'Werkzeug...\t\t',
+
+    try:
+        import werkzeug
+        print 'Installed'
+    except ImportError:
+        print 'Missing! "easy_install Werkzeug" to fix.'
+
+    print 'Jinja2...\t\t',
+    try:
+        import jinja2
+        print 'Installed'
+    except ImportError:
+        print 'Missing! "easy_install Jinja2" to fix.'
+
+    print 'WTForms...\t\t',
+    try:
+        import wtforms
+        print 'Installed'
+    except ImportError:
+        print 'Missing! "easy_install WTForms" to fix.'
 
 if __name__ == '__main__':
     exit(script.run())

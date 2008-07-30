@@ -4,12 +4,14 @@ Setup script for Glashammer.
 
 from distutils.core import setup
 
+from glashammer.version import glashammer_version
+
 
 setup(
 
     # Required metadata
     name='Glashammer',
-    version='0.1.1',
+    version=glashammer_version,
 
     # package information
     packages = [
