@@ -465,9 +465,7 @@ def make_app(setup_func, instance_dir=None, **kw):
     """
     application = local('application')
     application = GlashammerApplication(setup_func,
-        instance_dir, config_name, config_factory,
-        url_map, view_map, template_searchpaths,
-        template_filters, template_globals)
+        instance_dir, **kw)
     application = local_manager.make_middleware(application)
     return application
 
