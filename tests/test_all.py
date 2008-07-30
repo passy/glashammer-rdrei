@@ -251,6 +251,20 @@ class TestTemplating(object):
 
         app = make_app(_add_template_global, 'test_output')
         assert app.template_env.get_template('variables.html').render() == 'byebye'
+    
+    def test_add_template_tests(self):
+        """
+        Add template tests and ensure they are available for rendering
+        """
+        def _template_test(n):
+            return True
+        
+        def _add_template_tests(app):
+            app.add_template_test('asdf', _template_test)
+            app.add_template_searchpath('test_output/templates')
+        
+        app = make_app(_add_template_tests, 'test_output')
+        assert app.template_env.tests['asdf'] == _template_test
 
     def test_render_template(self):
         """

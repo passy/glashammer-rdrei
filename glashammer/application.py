@@ -81,6 +81,7 @@ class GlashammerApplication(object):
         config_name='config.ini', config_factory=Configuration,
         url_map=None, view_map=None,
         template_searchpaths=None, template_filters=None, template_globals=None,
+        template_tests=None,
         ):
         # just for playing in the shell
         local.application = self
@@ -131,6 +132,11 @@ class GlashammerApplication(object):
             self._template_filters = template_filters
         else:
             self._template_filters = {}
+        
+        if template_tests:
+            self._template_tests = template_tests
+        else:
+            self._template_tests = {}
 
         self._layout_template = None
 
@@ -183,6 +189,7 @@ class GlashammerApplication(object):
             searchpaths=self._template_searchpaths,
             globals=self._template_globals,
             filters=self._template_filters,
+            tests=self._template_tests,
         )
 
         del self._template_searchpaths
@@ -388,6 +395,14 @@ class GlashammerApplication(object):
         self._ensure_not_finalized()
 
         self._template_filters[name] = f
+    
+    def add_template_test(self, name, f):
+        """
+        Add a template filter.
+        """
+        self._ensure_not_finalized()
+        
+        self._template_tests[name] = f
 
     def connect_event(self, event, callback, position='after'):
         """
