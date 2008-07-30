@@ -36,6 +36,9 @@ The Glashammer User Manual
     ready-made bundles available with Glashammer, and explains how to create
     your own reusable compoents.
 
+:ref:`bundle_forms`
+    Using the form framework with Glashammer.
+
 :ref:`bundle_sqladb`
     Using databases with SQLAlchemy.
 

@@ -17,6 +17,7 @@ as we are adding functionality as required.
 
 .. toctree::
 
+    bundle_forms
     bundle_sessions
     bundle_auth
     bundle_i18n
