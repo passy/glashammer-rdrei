@@ -16,6 +16,7 @@ The following bundles are shipped with Glashammer, expect this list to increase,
 as we are adding functionality as required.
 
 .. toctree::
+    :maxdepth: 1
 
     bundle_forms
     bundle_sessions

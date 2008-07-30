@@ -9,7 +9,7 @@ setup(
 
     # Required metadata
     name='Glashammer',
-    version='0.1.0',
+    version='0.1.1',
 
     # package information
     packages = [
