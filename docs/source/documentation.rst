@@ -29,27 +29,27 @@ The Glashammer User Manual
 
 :ref:`statics`
     This chapter will describe how to serve static files through WSGI, and then
-    how to override that with real web server sharing.
+    how to override that with real web server serving.
 
 :ref:`bundles`
     Glashammer is extended by the way of "bundles". This chapter describes the
     ready-made bundles available with Glashammer, and explains how to create
     your own reusable compoents.
 
-:ref:`sqladb`
+:ref:`bundle_sqladb`
     Using databases with SQLAlchemy.
 
-:ref:`sessions`
+:ref:`bundle_sessions`
     Use Glashammer sessions to store session data.
 
-:ref:`i18n`
+:ref:`bundle_i18n`
     Using Glashammer's internationalization framework to translate you
     applications.
 
-:ref:`auth`
+:ref:`bundle_auth`
     Using and extending the simple authentication framework.
 
-:ref:`htmlhelpers`
+:ref:`bundle_htmlhelpers`
     Helpers for generating html on the fly.
 
 :ref:`api`

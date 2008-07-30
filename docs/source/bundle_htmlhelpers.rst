@@ -1,5 +1,5 @@
 
-.. _htmlhelpers:
+.. _bundle_htmlhelpers:
 
 HTML Helpers
 ============

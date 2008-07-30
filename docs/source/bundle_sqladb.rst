@@ -1,5 +1,5 @@
 
-.. _sqladb:
+.. _bundle_sqladb:
 
 SQLAlchemy Integration
 ======================
