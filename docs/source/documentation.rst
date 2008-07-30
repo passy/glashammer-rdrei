@@ -49,6 +49,9 @@ The Glashammer User Manual
 :ref:`auth`
     Using and extending the simple authentication framework.
 
+:ref:`htmlhelpers`
+    Helpers for generating html on the fly.
+
 :ref:`api`
     The complete Glashammer API.
 
