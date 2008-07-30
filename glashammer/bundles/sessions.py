@@ -1,4 +1,11 @@
+# -*- coding: utf-8 -*-
+"""
+    glashammer.bundles.sessions
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+    :copyright: 2007 by Armin Ronacher, Glashammer Developers
+    :license: MIT
+"""
 from werkzeug.contrib.securecookie import SecureCookie
 from glashammer.utils import local, get_app, get_request
 

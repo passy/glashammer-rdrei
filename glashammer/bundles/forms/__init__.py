@@ -1,4 +1,11 @@
+# -*- coding: utf-8 -*-
+"""
+    glashammer.bundles.forms
+    ~~~~~~~~~~~~~~~~~~~~~~~~
 
+    :copyright: 2008 by Glashammer Developers
+    :license: MIT
+"""
 
 from wtforms import HiddenField
 

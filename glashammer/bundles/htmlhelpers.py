@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 """
-    glashammer.htmlhelpers
-    ~~~~~~~~~~~~~~~~~~~~~~
+    glashammer.bundles.htmlhelpers
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     This module povides helpers for the templates but can be useful for
     the views and modules too. In the template it's available as "h".
 
     :copyright: 2007 by Armin Ronacher.
-    :license: GNU GPL.
+    :license: MIT
 """
 import sys
 

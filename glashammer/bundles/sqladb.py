@@ -1,7 +1,11 @@
-
-
-
 # -*- coding: utf-8 -*-
+"""
+    glashammer.bundles.sqladb
+    ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    :copyright: 2007 by Armin Ronacher
+    :license: MIT
+"""
 
 import os
 

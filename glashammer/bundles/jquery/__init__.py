@@ -1,4 +1,11 @@
+# -*- coding: utf-8 -*-
+"""
+    glashammer.bundles.jquery
+    ~~~~~~~~~~~~~~~~~~~~~~~~~
 
+    :copyright: 2008 by Glashammer Developers
+    :license: MIT
+"""
 from glashammer.utils import sibpath
 
 def setup_jquery(app):

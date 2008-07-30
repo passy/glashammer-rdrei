@@ -1,4 +1,13 @@
+# -*- coding: utf-8 -*-
+"""
+    glashammer.bundles.gae
+    ~~~~~~~~~~~~~~~~~~~~~~
 
+    Google Appengine integration
+
+    :copyright: 2007 by Glashammer Developers
+    :license: MIT
+"""
 
 from wsgiref.handlers import CGIHandler
 

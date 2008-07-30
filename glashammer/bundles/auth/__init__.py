@@ -1,3 +1,11 @@
+# -*- coding: utf-8 -*-
+"""
+    glashammer.bundles.auth
+    ~~~~~~~~~~~~~~~~~~~~~~~
+
+    :copyright: 2008 by Glashammer Developers
+    :license: MIT
+"""
 import os
 
 from werkzeug.exceptions import NotFound

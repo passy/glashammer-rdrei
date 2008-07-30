@@ -6,8 +6,8 @@
     i18n tools for Glashammer.
 
     :copyright: Copyright 2008 by Armin Ronacher.
-    :license: GNU GPL.
-"""
+    :license: MIT
+    """
 import os
 from datetime import datetime
 from time import strptime
