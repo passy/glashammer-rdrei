@@ -4,6 +4,10 @@
 SQLAlchemy Integration
 ======================
 
+.. seealso::
+
+   `SQLALchemy Documentation <http://www.sqlalchemy.org/docs/04/index.html>`_
+
 Glashammer comes ready with SQLAlchemy integration.
 
 You can enable the support by adding the setup function for the bundle during
