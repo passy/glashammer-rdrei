@@ -1,4 +1,11 @@
+# -*- coding: utf-8 -*-
+"""
+    glashammer.crypto
+    ~~~~~~~~~~~~~~~~~
 
+    :copyright: 2007-2008 by Armin Ronacher
+    :license: MIT
+"""
 import sha, string
 from random import choice
 

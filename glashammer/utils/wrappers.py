@@ -1,4 +1,11 @@
+# -*- coding: utf-8 -*-
+"""
+    glashammer.utils.wrappers
+    ~~~~~~~~~~~~~~~~~~~~~~~~~
 
+    :copyright: 2007-2008 by Armin Ronacher, Ali Afshar
+    :license: MIT
+"""
 from werkzeug import run_simple, Request as wzRequest, Response as wzResponse, redirect
 
 from glashammer.utils import local

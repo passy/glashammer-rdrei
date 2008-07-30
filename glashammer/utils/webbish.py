@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-    Useful things for paging and navigation
+    glashammer.utils.webbish
+    ~~~~~~~~~~~~~~~~~~~~~~~~
+
+    :copyright: 2007-2008 by Armin Ronacher, Ali Afshar
+    :license: MIT
 """
 from glashammer.utils.local import url_for
 

@@ -1,4 +1,11 @@
+# -*- coding: utf-8 -*-
+"""
+    glashammer.utils.events
+    ~~~~~~~~~~~~~~~~~~~~~~~
 
+    :copyright: 2007-2008 by Armin Ronacher
+    :license: MIT
+"""
 # Events
 
 from collections import deque

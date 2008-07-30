@@ -1,4 +1,11 @@
+# -*- coding: utf-8 -*-
+"""
+    glashammer.utils.fileutils
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+    :copyright: 2007-2008 by Ali Afshar
+    :license: MIT
+"""
 import os
 
 # File utilities

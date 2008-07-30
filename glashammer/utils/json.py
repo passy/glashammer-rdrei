@@ -1,4 +1,11 @@
+# -*- coding: utf-8 -*-
+"""
+    glashammer.utils.json
+    ~~~~~~~~~~~~~~~~~~~~~
 
+    :copyright: 2007-2008 by Ali Afshar
+    :license: MIT
+"""
 
 from simplejson import dumps as dump_json, loads as load_json
 
