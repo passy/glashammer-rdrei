@@ -23,7 +23,50 @@ def default_setup_func(app):
 
 
 class GlashammerApplication(object):
-    """WSGI Application"""
+    """WSGI Application
+
+    This should usually be made using the :func:`make_app` function, which
+    additionally wraps the application in threadlocal session cleaning code.
+
+    `setup_func`
+        The callable to be called to initialize the application
+
+    `instance_dir`
+        The directory to use for instance-specific information
+
+    `config_name`
+        The name of the configuration file in the instance directory
+
+    `config_factory`
+        The dict-like class that will be used for configuration. This is
+        provided in situations where a file-based configuration file is not
+        suitable, such as AppEngine.
+
+    `url_map`
+        A werkzeug.routing.Map instance. Additional application rules will
+        be added to this. If this is not provided a new Map will be created
+        by default.
+
+    `view_map`
+        A map of endpoints to view callables. Views added during setup will
+        be added to this map. If it is not provided, a new dict is created.
+
+    `template_searchpaths`
+        A list of paths to search for templates. Additional paths added
+        during application setup will be added to this list. If none is
+        provided a new list will be created (default).
+
+    `template_filters`
+        A mapping of name to callable which are template filters. Additional
+        filters will be added to this map before the template environment is
+        created. If none is provided a new dict is created (default).
+
+    `template_globals`
+        A mapping of name to variable which will be available in the
+        template's global namespace. Additional variables added during
+        application setup will be added to this map. If this is not provided
+        a new dict will be created.
+    """
 
     default_setup = default_setup_func
 
@@ -389,13 +432,21 @@ class GlashammerApplication(object):
 def make_app(setup_func, instance_dir=None, **kw):
     """Create an application instance.
 
-    `setup_func`   The callable used by the application to set itself up. This
-                   is the main entry point into the application.
+    `setup_func`
+        The callable used by the application to set itself up. This
+        is the main entry point into the application.
 
-    `instance_dir` The directory where instance-related files will be stored.
+    `instance_dir`
+        The directory to use for instance-specific information
+
+    `kw`
+        See :class:`GlashammerApplication`
     """
     application = local('application')
-    application = GlashammerApplication(setup_func, instance_dir)
+    application = GlashammerApplication(setup_func,
+        instance_dir, config_name, config_factory,
+        url_map, view_map, template_searchpaths,
+        template_filters, template_globals)
     application = local_manager.make_middleware(application)
     return application
 
