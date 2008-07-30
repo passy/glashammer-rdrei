@@ -5,8 +5,8 @@ SQLAlchemy Integration
 ======================
 
 .. seealso::
-
-   `SQLALchemy Documentation <http://www.sqlalchemy.org/docs/04/index.html>`_
+   
+   :ref:`external-references`
 
 Glashammer comes ready with SQLAlchemy integration.
 

@@ -55,7 +55,7 @@ SQLAlchemy
 Home Page
     http://www.sqlalchemy.org/
 Documentation
-    http://www.sqlalchemy.org/docs/
+    http://www.sqlalchemy.org/docs/04/index.html
 Easy Install
     ``easy_install SQLAlchemy``
 Tarballs
