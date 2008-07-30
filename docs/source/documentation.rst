@@ -36,6 +36,19 @@ The Glashammer User Manual
     ready-made bundles available with Glashammer, and explains how to create
     your own reusable compoents.
 
+:ref:`sqladb`
+    Using databases with SQLAlchemy.
+
+:ref:`sessions`
+    Use Glashammer sessions to store session data.
+
+:ref:`i18n`
+    Using Glashammer's internationalization framework to translate you
+    applications.
+
+:ref:`auth`
+    Using and extending the simple authentication framework.
+
 :ref:`api`
     The complete Glashammer API.
 

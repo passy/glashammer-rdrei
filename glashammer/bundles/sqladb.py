@@ -3,7 +3,8 @@
     glashammer.bundles.sqladb
     ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    :copyright: 2007 by Armin Ronacher
+    :copyright: 2007 by Armin Ronacher, Ali Afshar, Christopher Grebs, Pedro
+                Algarvio
     :license: MIT
 """
 
@@ -17,7 +18,7 @@ import sqlalchemy
 from sqlalchemy import orm
 from sqlalchemy.util import to_list
 
-from glashammer.utils import local, local_manager
+from glashammer.utils import local, local_manager, get_app
 
 
 def mapper(*args, **kwargs):
@@ -70,9 +71,23 @@ class ManagerExtension(orm.MapperExtension):
 class DatabaseManager(object):
     """
     Baseclass for the database manager which you can also subclass to add
-    more methods to it and attach to models by hand.
+    more methods to it and attach to models by hand.  An instance of this
+    manager is added to model classes automatically as `objects` unless there
+    is at least one model manager specified on the class.
 
-    A database manager works like a limited queryset.
+    Example for custom managers::
+
+        class UserManager(DatabaseManager):
+
+            def authors(self):
+                return self.filter(User.role >= ROLE_AUTHOR)
+
+
+        class User(object):
+            objects = UserManager()
+
+    :meth:`bind` is called with the reference to the model automatically by
+    the mapper extension to bind the manager to the model.
     """
 
     def __init__(self):
@@ -198,14 +213,15 @@ def _get_default_db_uri(app):
     db_file = os.path.join(app.instance_dir, 'gh.sqlite')
     return 'sqlite:///' + db_file
 
+def get_engine():
+    """Get the SQLA DB Engine"""
+    return get_app().sqla_db_engine
 
 def data_init(app):
-    from glashammer.database import metadata
     metadata.create_all()
 
 
 def setup_sqladb(app):
-    from glashammer.database import db, metadata
     app.add_config_var('sqla_db_uri', str, _get_default_db_uri(app))
     app.sqla_db_engine = db.create_engine(app.cfg['sqla_db_uri'],
                                           convert_unicode=True)

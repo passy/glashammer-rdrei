@@ -20,6 +20,7 @@ as we are adding functionality as required.
     bundle_sessions
     bundle_auth
     bundle_i18n
+    bundle_sqladb
 
 .. note::
 
