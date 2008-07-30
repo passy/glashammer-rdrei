@@ -6,7 +6,7 @@ from nose.tools import assert_raises
 
 from werkzeug.test import Client
 
-from glashammer.application import GlashammerApplication
+from glashammer.application import GlashammerApplication, make_app
 from glashammer.utils import render_response, Response, local, \
     render_template, sibpath, get_request, get_app, url_for, \
     gen_pwhash, check_pwhash, Configuration
@@ -15,12 +15,18 @@ from glashammer.utils.json import json_view, JsonRestService
 
 from glashammer.bundles import i18n
 
+
+
+def test_make_app():
+    make_app(lambda a: None)
+
 def make_app(setup_func, instance_dir=None):
     return GlashammerApplication(setup_func, instance_dir)
 
 
 
 # Basics
+
 
 def _setup_empty(app):
     return
