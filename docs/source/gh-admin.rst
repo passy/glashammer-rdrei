@@ -1,5 +1,5 @@
 
-.. gh-admin
+.. _gh-admin:
 
 gh-admin utility
 ================
