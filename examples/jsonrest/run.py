@@ -1,4 +1,6 @@
 
+from os.path import dirname
+
 from glashammer import make_app, run_very_simple, render_response
 
 from glashammer.utils import sibpath
@@ -35,7 +37,10 @@ def setup(app):
     app.add_url('/', endpoint='index', view=hello_view)
     app.add_url('/svc', endpoint='service', view=HelloService())
 
+# Used by gh-admin
+def create_app():
+    return make_app(setup, dirname(__file__))
+
 if __name__ == '__main__':
-    from os.path import dirname
-    app =  make_app(setup, dirname(__file__))
+    app =  create_app()
     run_very_simple(app)
