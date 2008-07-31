@@ -9,7 +9,11 @@ def hello_view(req):
 def setup(app):
     app.add_url('/', endpoint='hello/index', view=hello_view)
 
-if __name__ == '__main__':
+def create_app():
     from os.path import dirname
     app =  make_app(setup, dirname(__file__))
+    return app
+
+if __name__ == '__main__':
+    app = create_app()
     run_very_simple(app)

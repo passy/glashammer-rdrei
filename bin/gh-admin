@@ -2,23 +2,70 @@
 
 # -*- coding: utf-8 -*-
 
-import os, xmlrpclib
+import os, sys, imp, xmlrpclib
 
 from werkzeug import script
+from werkzeug.serving import run_simple
 
 from glashammer.version import glashammer_version
 
 
+def action_run(modulepath='',
+               application_factory_name='create_app',
+               hostname=('h', 'localhost'), port=('p', 6060),
+               reloader=True, debugger=True,
+               evalex=True, threaded=False, processes=1):
+    """
+    Run a WSGI Debug server with an application
+
+    gh-admin runserver <modulepath> [application_factory_name] [ options ]
+
+    Modulepath is the path to a Python module which contains the callable
+    named in the application_factory_name variable. This callable is called
+    and expects to receive a WSGI application (eg a GlashammerApplication)
+    instance.
+    """
+
+    if not modulepath:
+        script.fail('Must provide a module path')
+    else:
+        modulepath = os.path.abspath(modulepath)
+
+    filename = os.path.basename(modulepath)
+    modulename = os.path.splitext(filename)[0]
+    dirpath = os.path.dirname(modulepath)
+
+    mfile, mpath, mdesc = imp.find_module(modulename, [dirpath])
+
+    mod = imp.load_module('gh_runner', mfile, mpath, mdesc)
+
+    mfile.close()
+
+    if application_factory_name:
+        factory = getattr(mod, application_factory_name, None)
+        if factory is None:
+            script.fail('Application factory %s not found' %
+                        application_factory_name)
+        app = factory()
+        run_simple(hostname, port, app, reloader, debugger, evalex,
+                   None, 1, threaded, processes)
+    else:
+        fail('Application factory name must be provided')
+
+
 def action_version():
     """
-    Print the version of Glashammer and exit
+    Print the version of Glashammer and exit.
     """
     print 'Glashammer, version %s' % glashammer_version
 
 
-def action_checkversion():
+def action_checkversion(upgrade=False):
     """
-    Check the installed version against the latest at PyPi
+    Check the installed version against the latest at PyPi.
+
+    If --upgrade is passed, glashammer will attempt to upgrade
+    from PyPi.
     """
     server = xmlrpclib.Server('http://pypi.python.org/pypi')
     latest = server.package_releases('Glashammer')[0]
@@ -28,7 +75,11 @@ def action_checkversion():
     if latest == glashammer_version:
         print 'The latest version of Glashammer is installed.'
     else:
-        print 'Update available. "easy_install -U Glashammer" to upgrade.'
+        if upgrade:
+            print 'Upgrading...'
+            os.system('easy_install Glashammer==%s' % latest)
+        else:
+            print 'Update available. "easy_install -U Glashammer" to upgrade.'
 
 
 def action_dependencies():

@@ -13,6 +13,8 @@ setup(
     name='Glashammer',
     version=glashammer_version,
 
+    # Scripts
+    scripts = ['bin/gh-admin'],
     # package information
     packages = [
         'glashammer', 'glashammer.bundles', 'glashammer.bundles.auth',
