@@ -1,5 +1,7 @@
 
 
+from os.path import dirname
+
 from glashammer import make_app, run_very_simple, Response
 
 
@@ -10,7 +12,6 @@ def setup(app):
     app.add_url('/', endpoint='hello/index', view=hello_view)
 
 def create_app():
-    from os.path import dirname
     app =  make_app(setup, dirname(__file__))
     return app
 

@@ -13,6 +13,9 @@ The Glashammer User Manual
     Describes the details of using Glashammer's core features to create a WSGI
     application.
 
+:ref:`gh-admin`
+    Information about the gh-admin administration script.
+
 :ref:`endpoints`
     Set up how URL's are served in your application.
 
@@ -71,8 +74,8 @@ Full table of contents
 
     gettingstarted
     introduction
-    concepts
     application
+    gh-admin
     endpoints
     templating
     events
