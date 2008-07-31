@@ -95,6 +95,29 @@ to attempt to upgrade Glashammer using `easy_install`.
 
 .. note:: You may need super-user capabilities to upgrade.
 
+
+.. gh-admin_staticaliases
+
+Generating a static file Alias map
+----------------------------------
+
+Static files served through WSGI are generally slow, process-intensive and lacks
+a load of web-server features that "real" web servers take for granted. For
+this reason we like to serve them with a real web server.
+
+.. seealso::
+
+    :ref:`statics`
+
+The `staticaliases` action reads the application and generates the map. This can then
+be placed in your web server configuration file, for example with an example
+Glashammer application::
+
+    $ gh-admin staticaliases examples/jsonrest/run.py
+    Alias /_shared/glashammer /home/ali/working/glashammer-main/glashammer/shared
+
+
+
 Showing the Glashammer version
 ------------------------------
 

@@ -36,12 +36,18 @@ directories added to Glashammer (for URL lookup) but additionally to alias the
 directories in the web server so that the requests never actually reach
 Glashammer.
 
+.. seealso::
+
+   The :ref:`gh-admin` script offers the staticaliases function that can be run
+   on an application to automatically create the rules you need for your web
+   server configuration.
+
 This is an example from an Apache2 configuration illustrating how to do this
 with mod_wsgi::
 
     Alias /_shared/files /var/static
     WSGIScriptAlias / /home/ali/my_glashammer_app.py
 
-This will improve the perfgormance significantly, while not forcing you to
+This will improve the performance significantly, while not forcing you to
 change anything between development and deployment.
 

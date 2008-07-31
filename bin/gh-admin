@@ -10,21 +10,7 @@ from werkzeug.serving import run_simple
 from glashammer.version import glashammer_version
 
 
-def action_run(modulepath='',
-               application_factory_name='create_app',
-               hostname=('h', 'localhost'), port=('p', 6060),
-               reloader=True, debugger=True,
-               evalex=True, threaded=False, processes=1):
-    """
-    Run a WSGI Debug server with an application
-
-    gh-admin runserver <modulepath> [application_factory_name] [ options ]
-
-    Modulepath is the path to a Python module which contains the callable
-    named in the application_factory_name variable. This callable is called
-    and expects to receive a WSGI application (eg a GlashammerApplication)
-    instance.
-    """
+def _get_app(modulepath, application_factory_name):
 
     if not modulepath:
         script.fail('Must provide a module path')
@@ -47,11 +33,49 @@ def action_run(modulepath='',
             script.fail('Application factory %s not found' %
                         application_factory_name)
         app = factory()
-        run_simple(hostname, port, app, reloader, debugger, evalex,
-                   None, 1, threaded, processes)
+        return app
     else:
         fail('Application factory name must be provided')
 
+
+
+
+def action_run(modulepath='',
+               application_factory_name='create_app',
+               hostname=('h', 'localhost'), port=('p', 6060),
+               reloader=True, debugger=True,
+               evalex=True, threaded=False, processes=1):
+    """
+    Run a WSGI Debug server with an application
+
+    gh-admin runserver <modulepath> [application_factory_name] [options]
+
+    Modulepath is the path to a Python module which contains the callable
+    named in the application_factory_name variable. This callable is called
+    and expects to receive a WSGI application (eg a GlashammerApplication)
+    instance.
+    """
+    app = _get_app(modulepath, application_factory_name)
+    run_simple(hostname, port, app, reloader, debugger, evalex,
+                None, 1, threaded, processes)
+
+
+def action_staticaliases(modulepath='',
+                         application_factory_name='create_app'):
+    """
+    Generate a list of static aliases for insertion into your web server
+    config.
+
+    gh-admin staticaliases <modulepath> [application_factory_name]
+
+    Modulepath is the path to a Python module which contains the callable
+    named in the application_factory_name variable. This callable is called
+    and expects to receive a WSGI application (eg a GlashammerApplication)
+    instance.
+    """
+    app = _get_app(modulepath, application_factory_name)
+    for url, path in app.shared_export_map.items():
+        print 'Alias %s %s' % (url, path)
 
 def action_version():
     """
@@ -109,6 +133,8 @@ def action_dependencies():
         print 'Installed'
     except ImportError:
         print 'Missing! "easy_install WTForms" to fix.'
+
+
 
 if __name__ == '__main__':
     exit(script.run())
