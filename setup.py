@@ -17,22 +17,32 @@ setup(
     scripts = ['bin/gh-admin'],
     # package information
     packages = [
-        'glashammer', 'glashammer.bundles', 'glashammer.bundles.auth',
-        'glashammer.bundles.forms', 'glashammer.bundles.i18n',
-        'glashammer.bundles.jquery', 'glashammer.utils'
+        'glashammer',
+        'glashammer.bundles',
+        'glashammer.bundles.auth',
+        'glashammer.bundles.forms',
+        'glashammer.bundles.i18n',
+        'glashammer.bundles.jquery',
+        'glashammer.utils'
     ],
 
     package_dir = {
-        'glashammer': 'glashammer'
+        'glashammer': 'glashammer',
     },
 
     package_data = {
         'glashammer': [
             'shared/jquery/*',
-            'bundles/auth/templates/*',
-            'bundles/forms/templates/macros/*',
-            'bundles/jquery/templates/includes/*'
             'templates/*'
+        ],
+        'glashammer.bundles.auth' : [
+            'templates/*',
+        ],
+        'glashammer.bundles.jquery': [
+            'templates/includes/*'
+        ],
+        'glashammer.bundles.forms' : [
+            'templates/macros/*',
         ]
     },
 
