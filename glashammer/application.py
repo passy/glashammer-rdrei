@@ -200,6 +200,12 @@ class GlashammerApplication(object):
         self.add_shared('glashammer', sibpath(__file__, 'shared'))
         self.add_middleware(SharedDataMiddleware, self._shared_exports)
 
+        # now the middleware for cleaning up things
+        self.add_middleware(local_manager.make_middleware)
+
+        # Keep this hanging around for introspection
+        self.shared_export_map = self._shared_exports
+
         del self._shared_exports
 
         # finalize the setup
@@ -465,8 +471,7 @@ def make_app(setup_func, instance_dir=None, **kw):
     """
     application = local('application')
     application = GlashammerApplication(setup_func,
-        instance_dir, **kw)
-    application = local_manager.make_middleware(application)
+                                        instance_dir, **kw)
     return application
 
 
