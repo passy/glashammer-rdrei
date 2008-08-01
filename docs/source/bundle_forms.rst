@@ -92,9 +92,12 @@ field by name. for example:
 
     {{ form.username }}
 
-Calling the field will render an actual HTML element. While this is probably
-not flexible enough to use all the time, it is at least excellent for
-debugging.
+This is the simple way. In reality it is actually calling the form.username() function.
+Any html parameter can be passed into this call, for example:
+
+.. code-block:: jinja
+
+   {{ form.password(style="width: 200px;" max_length=15) }}
 
 
 Rendering each field label
