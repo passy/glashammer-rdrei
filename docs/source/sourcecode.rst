@@ -5,7 +5,7 @@ Source code
 ===========
 
 We keep our source code in bzr on http://launchpad.net/. They provide a number
-of services to make our livees easier, listed below.
+of services to make our lives easier, listed below.
 
 
 Checking out the source code
