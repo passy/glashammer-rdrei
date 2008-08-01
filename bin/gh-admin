@@ -77,6 +77,28 @@ def action_staticaliases(modulepath='',
     for url, path in app.shared_export_map.items():
         print 'Alias %s %s' % (url, path)
 
+
+def action_endpoints(modulepath='',
+                     application_factory_name='create_app'):
+    """
+    Generate a list of endpoints and urls for the application.
+
+    Modulepath is the path to a Python module which contains the callable
+    named in the application_factory_name variable. This callable is called
+    and expects to receive a WSGI application (eg a GlashammerApplication)
+    instance.
+    """
+    print
+    print 'Generating list of endpoints and urls...'
+    print
+    app = _get_app(modulepath, application_factory_name)
+    print 'Endpoint'.ljust(30) + 'URL Rule'
+    print '-' * 75
+    for rule in app.map.iter_rules():
+        print rule.endpoint.ljust(30) + rule.rule
+    print '-' * 75
+
+
 def action_version():
     """
     Print the version of Glashammer and exit.
