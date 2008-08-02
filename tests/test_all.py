@@ -627,7 +627,34 @@ class TestConfig(object):
         self.conf.change_single('voo', 'goo')
         assert self.conf['voo'] == 'goo'
 
+from glashammer.utils.log import debug, info, warning, error
 
+def test_debug():
+    debug('testing debug')
+
+def test_info():
+    info('testing info')
+
+def test_warning():
+    warning('testing warning')
+
+def test_errror():
+    error('testing error')
+
+def test_event_log_handler():
+    
+    logs = []
+
+    def log(level, record):
+        logs.append((level, record))
+
+    def setup_app(app):
+        app.connect_event('log', log)
+
+    app = make_app(setup_app, 'test_output')
+    c = Client(app)
+    c.open()
+    assert len(logs) > 5
 
 
 
