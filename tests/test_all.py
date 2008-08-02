@@ -681,5 +681,33 @@ def test_check_username_password():
     c.open()
 
 
+def test_check_login():
+    from glashammer.bundles.auth import setup_auth, login
+    from glashammer.bundles.sessions import get_session
+
+    called = []
+
+    def check(u, p):
+        called.append((u, p))
+        return u == p
+
+    def view(req):
+        login('a')
+        return Response()
+
+    def setup_app(app):
+        app.add_setup(setup_auth)
+        app.connect_event('password-check', check)
+        app.add_url('/', 'a/b', view=view)
+
+    app = make_app(setup_app, 'test_output')
+    c = Client(app)
+    c.open()
+
+    session = get_session()
+    token_key = get_app().conf['auth/token_key']
+    assert token_key in session
+    assert session[token_key] == 'a'
+
 
 
