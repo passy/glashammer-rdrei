@@ -14,7 +14,7 @@ from glashammer.utils.log import add_log_handler
 LEVEL_MAP = {'DEBUG': 'LOG', 'WARNING': 'WARN', 'CRITICAL': 'ERROR'}
 PREFIX = 'X-FirePHP-Data-'
 
-def init_firephp(req):
+def init_firephp():
     # one-time initialisation per request
     local.firephp_log = []
 
