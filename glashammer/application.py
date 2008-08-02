@@ -434,14 +434,14 @@ class GlashammerApplication(object):
     def add_shared(self, name, path):
         """
         Add a shared export for name that points to a given path and
-        creates an url rule for <name>/shared that takes a filename
+        creates an url rule for shared/<name> that takes a filename
         parameter.
         """
         self._ensure_not_finalized()
 
         self._shared_exports['/_shared/' + name] = path
         self.add_url('/_shared/%s/<string:filename>' % name,
-                     endpoint=name + '/shared', build_only=True)
+                     endpoint='shared/' + name, build_only=True)
 
     def add_middleware(self, middleware_factory, *args, **kwargs):
         """
