@@ -734,6 +734,37 @@ def test_check_role():
     c = Client(app)
     c.open()
 
+# examples
 
+
+
+from glashammer.utils.system import load_app_from_path
+
+class TestHelloWorld(object):
+
+    def setup(self):
+        app = load_app_from_path('examples/helloworld/run.py')
+        self.c = Client(app)
+
+    def test_index(self):
+        iter, status, headers = self.c.open()
+        assert ' '.join(iter) == '<h1>Hello World</h1>'
+        assert status == '200 OK'
+
+    def test_notfound(self):
+        iter, status, headers = self.c.open('/blah')
+        assert status == '404 NOT FOUND'
+        assert '404 Not Found' in ' '.join(iter)
+
+
+class TestNotes(object):
+
+    def setup(self):
+        app = load_app_from_path('examples/notes/notes.py')
+        self.c = Client(app)
+
+    def test_index(self):
+        iter, status, headers = self.c.open()
+        assert 'form action="/add" method="post"' in ''.join(iter)
 
 

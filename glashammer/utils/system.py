@@ -1,4 +1,4 @@
-import os, _ast, linecache
+import os, _ast, linecache, imp
 
 from werkzeug import run_simple
 
@@ -81,4 +81,28 @@ def build_eventmap(app):
                                                          lineno, help))
 
     return result
+
+
+def load_app_from_path(modulepath, factory_name='create_app'):
+    """
+    Load the module containg the application and create it.
+    """
+
+    modulepath = os.path.abspath(modulepath)
+    filename = os.path.basename(modulepath)
+    modulename = os.path.splitext(filename)[0]
+    dirpath = os.path.dirname(modulepath)
+
+    mfile, mpath, mdesc = imp.find_module(modulename, [dirpath])
+
+    mod = imp.load_module('gh_runner', mfile, mpath, mdesc)
+
+    mfile.close()
+
+    factory = getattr(mod, factory_name, None)
+    if factory is None:
+        raise AttributeError('Application factory %s not found' %
+                             factory_name)
+    app = factory()
+    return app
 
