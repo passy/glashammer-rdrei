@@ -22,6 +22,8 @@ from glashammer.utils.templating import create_template_environment
 from glashammer.utils import local, local_manager, EventManager, emit_event, \
     url_for, sibpath, Request
 
+from glashammer.utils.log import debug, warning
+
 
 
 def default_setup_func(app):
@@ -214,11 +216,12 @@ class GlashammerApplication(object):
         emit_event('app-setup', self)
 
     def __call__(self, environ, start_response):
+        local.application = self
+        emit_event('wsgi-call', environ)
         return ClosingIterator(self.dispatch_request(environ, start_response),
                                [local_manager.cleanup])
 
     def dispatch_request(self, environ, start_response):
-        local.application = self
         local.url_adapter = adapter = self.map.bind_to_environ(environ)
         local.request = request = Request(self, environ)
         emit_event('request-start', request)
@@ -229,24 +232,28 @@ class GlashammerApplication(object):
             emit_event('request-end', request)
             response = self.get_view(request, endpoint, values)
         except HTTPException, e:
-            response = e
+            emit_event('request-error', e)
+            response = e.get_response(environ)
         emit_event('response-start', response)
         resp = response(environ, start_response)
-        emit_event('response-end', response)
+        emit_event('response-end', resp)
         return resp
 
     def get_view(self, request, endpoint, values):
+        emit_event('view-dispatch', endpoint, values)
         # try looking up by view first
         view = self.views.get(endpoint)
         if view:
+            emit_event('view-match', view)
             return view(request, **values)
         elif '/' in endpoint:
             # fallback to controller->view
             base, target = endpoint.split('/', 1)
             controller = self.controllers.get(base)
             if controller is not None and hasattr(controller, target):
+                emit_event('controller-match' % (controller, target))
                 return getattr(controller, target)(request, **values)
-        return NotFound()
+        raise NotFound()
 
     def _ensure_not_finalized(self):
         if self.finalized:
