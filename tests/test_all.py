@@ -388,7 +388,7 @@ def test_resp_processor():
         resp.data = 'byebye'
 
     def _setup_proc(app):
-        app.connect_event('response-end', _process_response)
+        app.connect_event('response-start', _process_response)
         app.add_url('/', '', view=_a_view)
 
     app = make_app(_setup_proc, 'test_output')

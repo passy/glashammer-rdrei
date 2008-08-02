@@ -251,7 +251,7 @@ class GlashammerApplication(object):
             base, target = endpoint.split('/', 1)
             controller = self.controllers.get(base)
             if controller is not None and hasattr(controller, target):
-                emit_event('controller-match' % (controller, target))
+                emit_event('controller-match', controller, target)
                 return getattr(controller, target)(request, **values)
         raise NotFound()
 
