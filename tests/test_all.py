@@ -710,4 +710,28 @@ def test_check_login():
     assert session[token_key] == 'a'
 
 
+def test_check_role():
+    from glashammer.bundles.auth import setup_auth, check_role
+    from glashammer.bundles.sessions import get_session
+
+    called = []
+
+    def check(u, p):
+        called.append((u, p))
+        return u == p
+
+    def view(req):
+        assert check_role('a', 'a')
+        assert not check_role('c', 'd')
+        return Response()
+
+    def setup_app(app):
+        app.add_setup(setup_auth)
+        app.connect_event('role-check', check)
+        app.add_url('/', 'a/b', view=view)
+
+    app = make_app(setup_app, 'test_output')
+    c = Client(app)
+    c.open()
+
 
