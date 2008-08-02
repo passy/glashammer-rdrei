@@ -128,6 +128,48 @@ def action_checkversion(upgrade=False):
             print 'Update available. "easy_install -U Glashammer" to upgrade.'
 
 
+def action_quickstart():
+    name = raw_input('Name of project directory? ').strip()
+    if not name:
+        print 'Must give a project name.'
+        exit(1)
+    module = raw_input('Name of main module? (main.py) ').strip()
+    if not module:
+        module = 'main.py'
+
+    os.mkdir(name)
+    os.mkdir(os.path.join(name, 'templates'))
+    os.mkdir(os.path.join(name, 'shared'))
+
+    module_content = """# -*- coding: utf-8 -*-
+from os.path import dirname
+
+from glashammer import make_app, run_very_simple, sibpath
+
+TEMPLATES_DIRECTORY = sibpath(__file__, 'templates')
+SHARED_DIRECTORY = sibpath(__file__, 'shared')
+
+# Main application setup
+def setup(app):
+    app.add_template_searchpath(TEMPLATES_DIRECTORY)
+    app.add_shared('main', SHARED_DIRECTORY)
+
+# Hook for gh-admin
+def create_app():
+    app =  make_app(setup, dirname(__file__))
+    return app
+
+if __name__ == '__main__':
+    app = create_app()
+    run_very_simple(app)
+
+"""
+    f = open(os.path.join(name, module), 'w')
+    f.write(module_content)
+
+
+
+
 def action_dependencies():
     """
     Check the required dependencies are available
