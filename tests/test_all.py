@@ -656,6 +656,30 @@ def test_event_log_handler():
     c.open()
     assert len(logs) > 5
 
+# Auth
+def test_check_username_password():
+    from glashammer.bundles.auth import setup_auth, check_username_password
+
+    called = []
+
+    def check(u, p):
+        called.append((u, p))
+        return u == p
+
+    def view(req):
+        assert check_username_password('a', 'a')
+        assert not check_username_password('a', 'b')
+        return Response()
+
+    def setup_app(app):
+        app.add_setup(setup_auth)
+        app.connect_event('password-check', check)
+        app.add_url('/', 'a/b', view=view)
+
+    app = make_app(setup_app, 'test_output')
+    c = Client(app)
+    c.open()
+
 
 
 

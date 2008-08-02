@@ -129,6 +129,9 @@ def action_checkversion(upgrade=False):
 
 
 def action_quickstart():
+    """
+    Create a quickstart application
+    """
     name = raw_input('Name of project directory? ').strip()
     if not name:
         print 'Must give a project name.'
