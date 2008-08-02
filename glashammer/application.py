@@ -217,7 +217,8 @@ class GlashammerApplication(object):
 
     def __call__(self, environ, start_response):
         local.application = self
-        emit_event('wsgi-call', environ)
+        emit_event('wsgi-call')
+        emit_event('wsgi-env', environ)
         return ClosingIterator(self.dispatch_request(environ, start_response),
                                [local_manager.cleanup])
 
