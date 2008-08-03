@@ -18,11 +18,7 @@ from threading import Lock
 
 
 #: header for the config file
-CONFIG_HEADER = '''\
-# Configuration file
-#
-# This file can be updated programmatically, your comments will be lost.
-'''
+CONFIG_HEADER = '# Generated Configuration file'
 
 
 

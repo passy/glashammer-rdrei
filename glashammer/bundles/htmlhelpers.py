@@ -14,9 +14,8 @@ import sys
 from xml.sax.saxutils import escape, quoteattr
 
 
-jinja_allowed_attributes = __all__ = [
-    'input_field', 'checkbox', 'radio_button', 'textarea'
-]
+jinja_allowed_attributes = __all__ = ['input_field',
+    'checkbox', 'radio_button', 'textarea']
 
 _binary = object()
 

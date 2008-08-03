@@ -492,6 +492,8 @@ def test_h_link():
 def test_h_jinjaallowed():
     assert h.jinja_allowed_attributes == ['input_field', 'checkbox',
                                           'radio_button', 'textarea']
+    assert h.__all__ == ['input_field', 'checkbox',
+                                          'radio_button', 'textarea']
 
 # Json Stuff
 
@@ -802,6 +804,12 @@ class TestConfig(object):
         t.update([('voo', 'hoo')])
         t.commit()
         assert self.conf['voo'] == 'hoo'
+
+    def test_uncommitted_commit(self):
+        self.conf.config_vars['voo'] = (str, 'noo')
+        t = self.conf.edit()
+        t.commit()
+        assert self.conf['voo'] == 'noo'
 
 
 
