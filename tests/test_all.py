@@ -594,6 +594,9 @@ def test_time():
 
 # config
 
+from glashammer.utils.config import unquote_value, quote_value, from_string, \
+    get_converter_name
+
 class TestConfig(object):
 
     def setup(self):
@@ -602,6 +605,51 @@ class TestConfig(object):
         except OSError:
             pass
         self.conf = Configuration('test_output/config.ini')
+
+    def test_read(self):
+        f = open('test_output/config.ini', 'w')
+        f.write('[main]\n')
+        f.write('a = b\n')
+        f.write('123\n')
+        f.close()
+        conf = Configuration('test_output/config.ini')
+
+    def test_unquote_none(self):
+        assert unquote_value(None) == ''
+        assert unquote_value(0) == ''
+        assert unquote_value(False) == ''
+
+    def test_unquote_quoted(self):
+        assert unquote_value("'a'") == 'a'
+        assert unquote_value('"a"') == 'a'
+        assert unquote_value('"a\'') == '"a\''
+
+    def test_quote_none(self):
+        assert quote_value(None) == ''
+        assert quote_value(0) == ''
+        assert quote_value(False) == ''
+
+    def test_quote_word(self):
+        assert quote_value('hello') == 'hello'
+
+    def test_quote_complex(self):
+        assert quote_value('"hello"') == '"\\"hello\\""'
+        assert quote_value('hello\t') == '"hello\\t"'
+        assert quote_value('hello\nhello') == '"hello\\nhello"'
+
+    def test_from_string(self):
+        assert from_string('True', bool, True)
+        assert not from_string('true', bool, True)
+
+    def test_bad_from_string(self):
+        assert from_string('a', int, 'crazy_default') == 'crazy_default'
+
+    def test_converter_name(self):
+        assert get_converter_name(bool) == 'boolean'
+        assert get_converter_name(int) == 'integer'
+        assert get_converter_name(float) == 'float'
+        assert get_converter_name(str) == 'string'
+        assert get_converter_name('banana') == 'string'
 
     def test_not_write(self):
         assert not os.path.exists('test_output/config.ini')
@@ -621,11 +669,102 @@ class TestConfig(object):
         self.conf2.config_vars['voo'] = (str, 'noo')
         assert self.conf2['voo'] == 'goo'
 
+    def test_change_error(self):
+        self.conf.config_vars['voo'] = (str, 'noo')
+        assert self.conf['voo'] == 'noo'
+        assert self.conf.change_single('voo', 'goo')
+        # change the mode of the file so we can't write to it
+        os.chmod('test_output/config.ini', 0)
+        assert not self.conf.change_single('voo', 'roo')
+
+    def test_touch(self):
+        self.conf.config_vars['voo'] = (str, 'noo')
+        assert self.conf['voo'] == 'noo'
+        assert self.conf.change_single('voo', 'goo')
+        self.conf.touch()
+
     def test_save(self):
         self.conf.config_vars['voo'] = (str, 'noo')
         assert self.conf['voo'] == 'noo'
         self.conf.change_single('voo', 'goo')
         assert self.conf['voo'] == 'goo'
+
+    def test_change_external(self):
+        assert not self.conf.changed_external
+        self.conf.config_vars['voo'] = (str, 'noo')
+        assert self.conf['voo'] == 'noo'
+        self.conf.change_single('voo', 'goo')
+        assert self.conf['voo'] == 'goo'
+        assert self.conf.changed_external
+
+        f = open('test_output/config.ini', 'a')
+        f.write('\n\n\n')
+        f.close()
+
+        assert self.conf.changed_external
+
+    def test_iter(self):
+        self.conf.config_vars['voo'] = (str, 'noo')
+        assert list(self.conf) == ['voo']
+
+    def test_contains(self):
+        self.conf.config_vars['voo'] = (str, 'noo')
+        assert 'voo' in self.conf
+        assert 'noo' not in self.conf
+
+    def test_itervalues(self):
+        self.conf.config_vars['voo'] = (str, 'noo')
+        assert list(self.conf.itervalues()) == ['noo']
+
+    def test_iteritems(self):
+        self.conf.config_vars['voo'] = (str, 'noo')
+        assert list(self.conf.iteritems()) == [('voo', 'noo')]
+
+    def test_repr(self):
+        self.conf.config_vars['voo'] = (str, 'noo')
+        assert repr(self.conf) == "<Configuration {'voo': 'noo'}>"
+
+    def test_trans_revert(self):
+        self.conf.config_vars['voo'] = (str, 'noo')
+        self.conf.change_single('voo', 'goo')
+        assert self.conf['voo'] == 'goo'
+        t = self.conf.edit()
+        t.revert_to_default('voo')
+        assert t['voo'] == 'noo'
+        t.commit()
+        assert self.conf['voo'] == 'noo'
+
+    def test_trans_keyerror(self):
+        def bad_get():
+            return self.conf.edit()['hoo']
+        assert_raises(KeyError, bad_get)
+
+    def test_trans_converted_values(self):
+        self.conf.config_vars['voo'] = (str, 'noo')
+        t = self.conf.edit()
+        t['voo'] = 'woo'
+        assert t['voo'] == 'woo'
+        assert self.conf['voo'] == 'noo'
+        t.commit()
+        assert self.conf['voo'] == 'woo'
+
+    def test_set_from_string(self):
+        self.conf.config_vars['voo'] = (str, 'noo')
+        t = self.conf.edit()
+        t.set_from_string('voo', 'ioo', True)
+        t.commit()
+        assert self.conf['voo'] == 'ioo'
+
+    def test_trans_update(self):
+        self.conf.config_vars['voo'] = (str, 'noo')
+        t = self.conf.edit()
+        t.update([('voo', 'hoo')])
+        t.commit()
+        assert self.conf['voo'] == 'hoo'
+
+
+
+
 
 from glashammer.utils.log import debug, info, warning, error
 
@@ -765,7 +904,6 @@ class TestPagination(object):
 </span><a href="/?page=49">49</a><span class="commata">,
 </span><a href="/?page=50">50</a> <a href="/?page=4">Next &raquo;</a>
 """.strip()
-
 
 # functional tests for examples
 
