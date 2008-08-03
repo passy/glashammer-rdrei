@@ -237,8 +237,6 @@ class ConfigTransaction(object):
     def set_from_string(self, key, value, override=False):
         """Set the value for a key from a string."""
         self._assert_uncommitted()
-        if key.startswith('textpress/'):
-            key = key[10:]
         conv, default = self.cfg.config_vars[key]
         new = from_string(value, conv, default)
         old = self._converted_values.get(key, None) or self.cfg[key]
