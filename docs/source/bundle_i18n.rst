@@ -8,8 +8,8 @@ Glashammer provides internationalization out of the box using the Babel
 library. You can enable it by adding the i18n bundle during application
 setup::
 
-    from glashammer.bundles.i18n import setup_app
-    app.add_setup(setup_app)
+    from glashammer.bundles.i18n import setup_i18n
+    app.add_setup(setup_i18n)
 
 The language is decided by the configuration variable 'language'.
 
@@ -24,7 +24,7 @@ can be used in a template like so for a date object::
 
     {{ d|formatdate('long') }}
 
-For API for the actual functions, if you want or need to use them outsode
+For API for the actual functions, if you want or need to use them outside
 templates are as so:
 
 .. autofunction:: glashammer.bundles.i18n.format_datetime

@@ -11,7 +11,7 @@ to extend. Essentially it splits authentication up into 3 sections:
 2. Storing user information
 3. Protecting views
 
-The authentication bundle only deals with brining the various components that
+The authentication bundle only deals with bringing the various components that
 you choose together. It's remit is merely adding a token that is unique per user
 (such as a username) to the request's local variable. This token should then be
 used by other implementors to store user information (say in a database).
@@ -24,13 +24,13 @@ How to use
 
 During application setup::
 
-    from glashammer.bundles.auth import setup_app
-    app.add_setup(setup_app)
+    from glashammer.bundles.auth import setup_auth
+    app.add_setup(setup_auth)
 
 An additional argument can be passed to the setup function, which determines
 whether views are created at /login and /logout.
 
-.. autofunction:: glashammer.bundles.auth.setup_app
+.. autofunction:: glashammer.bundles.auth.setup_auth
 
 Available API
 -------------
@@ -46,12 +46,12 @@ And logged out by using the logout function:
 Password Checking
 -----------------
 
-Password chacking is a service that should be provided by connecting the
+Password checking is a service that should be provided by connecting the
 'password-check' event. (see the :ref:`events` documentation for how this
 works). The password check event passes a username and password (as a
 credential) to all callables connected to the event.
 
-A True return from any of theevent handlers will indicate that the credentials
+A True return from any of the event handlers will indicate that the credentials
 were correct, and that the user should be logged in.
 
 The bundle has a reference implementation for doing this in a view, but can very

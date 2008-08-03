@@ -273,13 +273,13 @@ class GlashammerApplication(object):
         For example, plugin A can load plugin B by importing and adding it's
         setup func like so::
 
-            >>> from a import setup
-            >>> app.add_setup(setup)
+            >>> from a import setup_a
+            >>> app.add_setup(setup_a)
 
         Or in a real example::
 
-            >>> from glashammer.bundles.auth import setup_app
-            >>> app.add_setup(setup_app)
+            >>> from glashammer.bundles.auth import setup_auth
+            >>> app.add_setup(setup_auth)
 
         Will initialize the auth bundle for the application.
         """

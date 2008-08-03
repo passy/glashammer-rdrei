@@ -13,9 +13,9 @@ Glashammer comes ready with SQLAlchemy integration.
 You can enable the support by adding the setup function for the bundle during
 the application setup phase like so::
 
-    from glashammer.bundles.sqladb import setup_app
+    from glashammer.bundles.sqladb import setup_sqladb
 
-    app.add_setup(setup_app)
+    app.add_setup(setup_sqladb)
 
 The bundle will create a database engine and bind it to the configured URI.
 
@@ -68,11 +68,11 @@ the Glashammer database engine::
         metadata.create_all(get_engine())
 
     # The application setup callable
-    def setup_app(app):
+    def setup(app):
         app.add_data_func(setup_data)
 
     # Now create your application, and run it how you like
-    app = make_app(setup_app, '/my/instance/directory')
+    app = make_app(setup, '/my/instance/directory')
 
 This code is modified from the examples/notes application, to which you may
 refer for more examples.
@@ -80,7 +80,7 @@ refer for more examples.
 Database initialization
 -----------------------
 
-Any callable to do some databse initialization, such as creating tables, should
+Any callable to do some database initialization, such as creating tables, should
 be added to the application during setup phase using app.add_data_func
 
 .. automethod:: glashammer.application.GlashammerApplication.add_data_func

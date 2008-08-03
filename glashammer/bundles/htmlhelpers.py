@@ -96,5 +96,7 @@ def link(rel, href, type=None, title=None, charset=None, media=None, **attr):
     return _generate_tag('link', attr)
 
 
-def setup_app(app):
+def setup_htmlhelpers(app):
     app.add_template_global('h', sys.modules['glashammer.bundles.htmlhelpers'])
+
+setup_app = setup_htmlhelpers
