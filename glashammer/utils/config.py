@@ -164,8 +164,6 @@ class Configuration(object):
 
     def __contains__(self, key):
         """Check if a given key exists."""
-        if key.startswith('textpress/'):
-            key = key[10:]
         return key in self.config_vars
 
     def itervalues(self):
