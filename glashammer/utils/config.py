@@ -188,46 +188,6 @@ class Configuration(object):
         """Return a list of all key, value tuples."""
         return list(self.iteritems())
 
-    def get_detail_list(self):
-        """Return a list of categories with keys and some more
-        details for the advanced configuration editor.
-        """
-        categories = {}
-
-        for key, (conv, default) in self.config_vars.iteritems():
-            if key in self._values:
-                use_default = False
-                value = unicode(from_string(self._values[key], conv, default))
-            else:
-                use_default = True
-                value = unicode(default)
-            if '/' in key:
-                category, name = key.split('/', 1)
-            else:
-                category = 'textpress'
-                name = key
-            categories.setdefault(category, []).append({
-                'name':         name,
-                'key':          key,
-                'type':         get_converter_name(conv),
-                'value':        value,
-                'use_default':  use_default,
-                'default':      default
-            })
-
-        def sort_func(item):
-            """Sort by key, case insensitive, ignore leading underscores and
-            move the implicit "textpress" to the index.
-            """
-            if item[0] == 'textpress':
-                return 1
-            return item[0].lower().lstrip('_')
-
-        return [{
-            'items':    sorted(children, key=lambda x: x['name']),
-            'name':     key
-        } for key, children in sorted(categories.items(), key=sort_func)]
-
     def __len__(self):
         return len(self.config_vars)
 
@@ -260,8 +220,6 @@ class ConfigTransaction(object):
     def __setitem__(self, key, value):
         """Set the value for a key by a python value."""
         self._assert_uncommitted()
-        if key.startswith('textpress/'):
-            key = key[10:]
         if key not in self.cfg.config_vars:
             raise KeyError(key)
         if isinstance(value, str):
