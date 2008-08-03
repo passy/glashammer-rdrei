@@ -6,6 +6,8 @@
     :copyright: 2007-2008 by Armin Ronacher, Ali Afshar
     :license: MIT
 """
+import math
+
 from glashammer.utils.local import url_for
 
 

@@ -734,9 +734,40 @@ def test_check_role():
     c = Client(app)
     c.open()
 
-# examples
+# Pagination Helper
+
+from glashammer.utils.webbish import Pagination
+
+class TestPagination(object):
+
+    def setup(self):
+
+        def view(req):
+            return Response(self.p.generate(next_link=True, prev_link=True))
+
+        def setup_app(app):
+            app.add_url('/', 'app/page', view=view)
+
+        app = make_app(setup_app, 'test_output')
+        self.c = Client(app)
+        self.p = Pagination('app/page', 3, 10, 500)
+
+    def test_generate(self):
+        iter, status, heaaders = self.c.open()
+        s = ''.join(iter)
+        print s
+        assert s == """
+<a href="/?page=2">&laquo; Prev</a> <a href="/?page=1">1</a><span class="commata">,
+</span><a href="/?page=2">2</a><span class="commata">,
+</span><strong>3</strong><span class="commata">,
+</span><a href="/?page=4">4</a><span class="commata">,
+</span><a href="/?page=5">5</a><span class="ellipsis">...
+</span><a href="/?page=49">49</a><span class="commata">,
+</span><a href="/?page=50">50</a> <a href="/?page=4">Next &raquo;</a>
+""".strip()
 
 
+# functional tests for examples
 
 from glashammer.utils.system import load_app_from_path
 
@@ -766,5 +797,43 @@ class TestNotes(object):
     def test_index(self):
         iter, status, headers = self.c.open()
         assert 'form action="/add" method="post"' in ''.join(iter)
+
+from simplejson import loads
+
+class TestJsonRest(object):
+
+    def setup(self):
+        app = load_app_from_path('examples/jsonrest/run.py')
+        self.c = Client(app)
+
+    def test_index(self):
+        iter, status, headers = self.c.open()
+        s = ''.join(iter)
+        assert  """
+    <a href="#" id="get_link">GET</a>
+    <a href="#" id="post_link">POST</a>
+    <a href="#" id="put_link">PUT</a>
+    <a href="#" id="delete_link">DELETE</a>
+""".strip('\n') in s
+
+    def test_get(self):
+        iter, status, headers = self.c.open('/svc')
+        d = loads(''.join(iter))
+        assert d['type'] == 'GET'
+
+    def test_put(self):
+        iter, status, headers = self.c.put('/svc')
+        d = loads(''.join(iter))
+        assert d['type'] == 'PUT'
+
+    def test_delete(self):
+        iter, status, headers = self.c.delete('/svc')
+        d = loads(''.join(iter))
+        assert d['type'] == 'DELETE'
+
+    def test_post(self):
+        iter, status, headers = self.c.post('/svc')
+        d = loads(''.join(iter))
+        assert d['type'] == 'POST'
 
 
