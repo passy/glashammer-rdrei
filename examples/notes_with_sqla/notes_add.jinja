@@ -1,0 +1,13 @@
+{% extends "notes_layout.jinja" %}
+
+{% block title %}Create new note{% endblock %}
+
+{% block content %}
+    <h1>Create new Note</h1>
+    <form action="{{ url_for('example/add') }}" method="post">
+    <fieldset>
+      <legend>Add Note:</legend>
+        {% include "notes_form.jinja" %}
+    </fieldset>
+    </form>
+{% endblock %}

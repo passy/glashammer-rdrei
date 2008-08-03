@@ -1,0 +1,29 @@
+{% extends "notes_layout.jinja" %}
+
+{% block title %}Index{% endblock %}
+
+{% block content %}
+    <h1>Notes:</h1>
+    {% for note in notes %}
+    <div>
+        <h2 id="note-{{ note.id }}">{{ note.title }}</h2>
+        <p>{{ note.note }}</p>
+        {%- if note.importance %}
+        <p>Importance: {{ note.importance }}</p>
+        {%- endif %}
+        <p><a href="/edit/{{ note.id }}">Edit</a></p>
+    </div>
+    {%- else -%}
+        <p>Nothing in here...</p>
+    {% endfor %}
+
+    <form action="{{ url_for('example/add') }}" method="post">
+    <fieldset>
+      <legend>Add Note:</legend>
+        <p>{{ form.title.label }} {{ form.title(class='text') }}</p>
+        <p>{{ form.note.label }} {{ form.note(rows='10', cols='50') }}</p>
+        <p>{{ form.importance.label }} {{ form.importance(class='text') }}</p>
+        <p><input type="submit" class="button" value="Submit" /></p>
+    </fieldset>
+    </form>
+{% endblock %}

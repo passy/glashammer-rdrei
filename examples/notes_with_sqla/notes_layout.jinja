@@ -1,0 +1,13 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+  <head>
+    <title>Notes &mdash; {% block title %}{% endblock %}</title>
+    {{ h.link('stylesheet', url_for('shared/files', filename='css/style.css')) }}
+  </head>
+  <body>
+    <div id="content">
+    {% block content %}{% endblock %}
+    </div>
+  </body>
+</html>

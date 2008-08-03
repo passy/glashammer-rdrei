@@ -1,0 +1,28 @@
+        <p>
+            {{ form.title.label }}
+            {%- if form.title.errors %}
+            {% for error in form.title.errors %}
+            <span class="error">{{ error }}</span>
+            {% endfor %}
+            {%- endif %}
+            {{ form.title(class='text') }}
+        </p>
+        <p>
+            {{ form.note.label }}
+            {%- if form.note.errors %}
+            {% for error in form.note.errors %}
+            <span class="error">{{ error }}</span>
+            {% endfor %}
+            {%- endif %}
+            {{ form.note(rows='10', cols='50') }}
+        </p>
+        <p>
+            {{ form.importance.label }}
+            {%- if form.importance.errors %}
+            {% for error in form.importance.errors %}
+            <span class="error">{{ error }}</span>
+            {% endfor %}
+            {%- endif %}
+            {{ form.importance(class='text') }}
+        </p>
+        <p><input type="submit" class="button" value="Submit" /></p>

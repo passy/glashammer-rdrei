@@ -1,0 +1,9 @@
+{% extends "notes_layout.jinja" %}
+
+{% block title %}Success!{% endblock %}
+
+{% block content %}
+    <h1>Success!</h1>
+    <p>Whatever you did... it worked!</p>
+    <p><a href="{{ url_for('example/index') }}">Index</a></p>
+{% endblock %}
