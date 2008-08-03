@@ -116,8 +116,6 @@ class Configuration(object):
 
     def __getitem__(self, key):
         """Return the value for a key."""
-        if key.startswith('textpress/'):
-            key = key[10:]
         try:
             return self._converted_values[key]
         except KeyError:
