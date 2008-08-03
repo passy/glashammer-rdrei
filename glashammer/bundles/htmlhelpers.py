@@ -38,11 +38,12 @@ def _generate_tag(name, attr=None, contents=''):
                 tmp.append(u'%s=%s' % (key, quoteattr(value)))
         if tmp:
             buf.append(' ' + u' '.join(tmp))
-    buf.append('>')
     if name in SELF_CLOSING_TAGS:
         if contents:
             raise RuntimeError('got contents for empty tag')
+        buf.append(' />')
     else:
+        buf.append('>')
         if contents:
             buf.append(escape(contents))
         buf.append(u'</%s>' % name)

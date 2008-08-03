@@ -450,7 +450,48 @@ def test_htmlhelpers_setup():
 
     # now test you can actually use the thing
     h = app.template_env.globals['h']
-    assert h.meta() == '<meta>'
+    assert h.meta() == '<meta />'
+
+import glashammer.bundles.htmlhelpers as h
+
+def test_generate_tag():
+    assert h._generate_tag('br') == '<br />'
+
+def test_binary():
+    assert h._generate_tag('br', attr={'class':h._binary}) == '<br class />'
+
+def test_h_meta():
+    assert h.meta() == '<meta />'
+    assert h.meta(name='banana') == '<meta name="banana" />'
+
+def test_h_input():
+    assert h.input_field('banana') == '<input type="text" name="banana" value="" id="banana" />'
+
+def test_h_div():
+    assert h._generate_tag('div', contents='Hello World') == '<div>Hello World</div>'
+
+def test_h_textarea():
+    assert h.textarea('a', 'hi') == '<textarea id="a" rows="10" cols="50" name="a">hi</textarea>'
+
+def test_h_checkbox():
+    assert h.checkbox('a') == '<input type="checkbox" name="a" value="yes" id="a" />'
+    assert h.checkbox('a', checked=True) == ('<input checked type="checkbox" '
+                                            'name="a" value="yes" id="a" />')
+
+def test_h_radio():
+    assert h.radio_button('a') == '<input type="radio" name="a" value="yes" id="a" />'
+    assert h.radio_button('a', checked=True) == ('<input checked type="radio" '
+                                            'name="a" value="yes" id="a" />')
+
+def test_h_script():
+    assert h.script('a') == '<script src="a" type="text/javascript"></script>'
+
+def test_h_link():
+    assert h.link('a', 'b') == '<link href="b" rel="a" />'
+
+def test_h_jinjaallowed():
+    assert h.jinja_allowed_attributes == ['input_field', 'checkbox',
+                                          'radio_button', 'textarea']
 
 # Json Stuff
 
