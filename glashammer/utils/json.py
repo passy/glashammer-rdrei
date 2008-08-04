@@ -12,6 +12,9 @@ from simplejson import dumps as dump_json, loads as load_json
 from werkzeug import Response as wzResponse
 from werkzeug.exceptions import NotFound
 
+from glashammer.utils.rest import RestService
+
+
 class JsonResponse(wzResponse):
     default_mimetype = 'text/javascript'
 
@@ -19,31 +22,13 @@ class JsonResponse(wzResponse):
         wzResponse.__init__(self, dump_json(data), *args, **kw)
 
 
-class JsonRestService(object):
+class JsonRestService(RestService):
 
-    def __call__(self, req, **kw):
-        if req.method == 'GET':
-            return self.get(req, **kw)
-        elif req.method == 'POST':
-            return self.post(req, **kw)
-        elif req.method == 'PUT':
-            return self.put(req, **kw)
-        elif req.method == 'DELETE':
-            return self.delete(req, **kw)
+    def modifier(self, response):
+        if callable(response):
+            return response
         else:
-            return NotFound()
-
-    def post(self, req, **kw):
-        return NotFound()
-
-    def get(self, req, **kw):
-        return NotFound()
-
-    def put(self, req, **kw):
-        return NotFound()
-
-    def delete(self, req, **kw):
-        return NotFound()
+            return JsonResponse(response)
 
 
 def json_view(f):
@@ -57,3 +42,4 @@ def json_view(f):
         else:
             return JsonResponse(res)
     return _wrapped
+

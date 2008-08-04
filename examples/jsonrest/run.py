@@ -14,19 +14,15 @@ def hello_view(req):
 
 class HelloService(JsonRestService):
 
-    @json_view
     def get(self, req):
         return {'url':req.url, 'type': 'GET'}
 
-    @json_view
     def post(self, req):
         return {'url':req.url, 'type': 'POST'}
 
-    @json_view
     def put(self, req):
         return {'url':req.url, 'type': 'PUT'}
 
-    @json_view
     def delete(self, req):
         return {'url':req.url, 'type': 'DELETE'}
 
