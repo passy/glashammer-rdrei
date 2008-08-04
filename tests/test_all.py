@@ -957,7 +957,8 @@ class TestPagination(object):
 
 #sqla
 
-from glashammer.bundles.sqladb import setup_sqladb, db, metadata
+from glashammer.bundles.sqladb import setup_sqladb, db, metadata, \
+    JsonSqlaRestService
 
 class TestSQLA(object):
 
@@ -988,6 +989,11 @@ class TestSQLA(object):
         db.mapper(Note, notes)
 
 
+        class NotesService(JsonSqlaRestService):
+
+            def get_table(self):
+                return Note
+
         def setup_db(app):
             #metadata.create_all(app.sqla_db_engine)
             #print metadata.tables
@@ -997,10 +1003,10 @@ class TestSQLA(object):
         def setup_app(app):
             app.add_setup(setup_sqladb)
             app.add_data_func(setup_db)
+            app.add_url('/notes', 'notes/svc', view=NotesService())
 
         self.app = make_app(setup_app, 'test_output')
-        c = Client(self.app)
-        c.open()
+        self.c = Client(self.app)
 
     def test_engine(self):
         assert get_app().sqla_db_engine
@@ -1012,6 +1018,13 @@ class TestSQLA(object):
             n.title = n.note = n.importance = t
         db.commit()
         assert self.Note.objects.count() == 6
+
+    def test_rest_get(self):
+        for t in 'abcdef':
+            n = self.Note()
+            n.title = n.note = n.importance = t
+        db.commit()
+        self.c.open('/notes')
 
 
 # functional tests for examples

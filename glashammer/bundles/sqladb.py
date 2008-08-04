@@ -201,7 +201,15 @@ class JsonSqlaRestService(JsonRestService):
         return NotImplementedError
 
     def query(self, **kw):
-        return self.get_table().objects.filter_by(**kw)
+        objs = [self._serialize(o) for o in self.get_table().objects.filter_by(**kw)]
+        return objs
+
+    def get(self, req, **kw):
+        return self.query(**kw)
+
+    def _serialize(self, obj):
+        for c in self.get_table.c:
+            print c
 
 
 
