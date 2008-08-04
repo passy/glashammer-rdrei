@@ -943,7 +943,6 @@ class TestPagination(object):
     def test_generate(self):
         iter, status, heaaders = self.c.open()
         s = ''.join(iter)
-        print s
         assert s == """
 <a href="/?page=2">&laquo; Prev</a> <a href="/?page=1">1</a><span class="commata">,
 </span><a href="/?page=2">2</a><span class="commata">,
@@ -1024,7 +1023,35 @@ class TestSQLA(object):
             n = self.Note()
             n.title = n.note = n.importance = t
         db.commit()
-        self.c.open('/notes')
+        iter, status, header = self.c.open('/notes')
+        resp = loads(''.join(iter))
+        res = resp['results']
+        assert resp['total'] == 6
+        for i, l in enumerate('abcdef'):
+            assert res[i]['title'] == l
+            assert res[i]['note'] == l
+            assert res[i]['importance'] == l
+            assert res[i]['id'] == (i + 1)
+
+    def test_rest_post(self):
+        for t in 'abcdef':
+            n = self.Note()
+            n.title = n.note = n.importance = t
+        db.commit()
+        iter, status, header = self.c.post('/notes',
+            data={
+                'title': 'g',
+                'note': 'g',
+                'importance':'g'
+            }
+        )
+        resp = loads(''.join(iter))
+        res = resp['results']
+        assert resp['total'] == 1
+        assert resp['results'][0]['title'] == 'g'
+        assert resp['results'][0]['note'] == 'g'
+        assert resp['results'][0]['importance'] == 'g'
+        assert resp['results'][0]['id'] > 0
 
 
 # functional tests for examples

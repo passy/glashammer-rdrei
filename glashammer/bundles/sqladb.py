@@ -194,23 +194,47 @@ from glashammer.utils.json import JsonRestService
 class JsonSqlaRestService(JsonRestService):
 
     def modify(self, response):
-        self.get_table().c
         return response
 
     def get_table(self):
         return NotImplementedError
 
+    def create_results_set(self, q):
+        res = {}
+        objs = [self._serialize(o) for o in q]
+        res['results'] = objs
+        res['total'] = len(objs)
+        return res
+
     def query(self, **kw):
-        objs = [self._serialize(o) for o in self.get_table().objects.filter_by(**kw)]
-        return objs
+        return self.create_results_set(self.get_table().objects.filter_by(**kw))
 
     def get(self, req, **kw):
         return self.query(**kw)
 
-    def _serialize(self, obj):
-        for c in self.get_table.c:
-            print c
+    def post(self, req, **kw):
+        o = self.get_table()()
+        for k in req.form:
+            setattr(o, k, req.form.get(k))
+        db.commit()
+        return self.create_results_set([o])
 
+
+    def _serialize(self, obj):
+        if hasattr(obj, 'json_serializer'):
+            pass
+        else:
+            # naive
+            d = {}
+            for a in dir(obj):
+                attr = getattr(obj, a)
+                if (isinstance(attr, (basestring, int, float)) and
+                    not a.startswith('_')):
+                    d[a] = attr
+            return d
+
+class JsonSqlaSerializer(object):
+    pass
 
 
 def init_database(engine):
@@ -242,12 +266,13 @@ def get_engine():
 def data_init(app):
     metadata.create_all()
 
-def cleanup_sqla_session(resp):
+def cleanup_sqla_session(arg):
     session.remove()
 
 def setup_sqladb(app):
     app.add_config_var('sqla_db_uri', str, _get_default_db_uri(app))
     app.connect_event('response-end', cleanup_sqla_session)
+    app.connect_event('app-setup', cleanup_sqla_session)
     app.sqla_db_engine = db.create_engine(app.cfg['sqla_db_uri'],
                                           convert_unicode=True)
     metadata.bind = app.sqla_db_engine
