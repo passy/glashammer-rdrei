@@ -954,6 +954,66 @@ class TestPagination(object):
 </span><a href="/?page=50">50</a> <a href="/?page=4">Next &raquo;</a>
 """.strip()
 
+
+#sqla
+
+from glashammer.bundles.sqladb import setup_sqladb, db, metadata
+
+class TestSQLA(object):
+
+    def setup(self):
+        if os.path.exists('test_output/gh.sqlite'):
+            os.unlink('test_output/gh.sqlite')
+
+
+        metadata.drop_all()
+
+
+        # The SQLA tables
+        notes = db.Table('notes', metadata,
+            db.Column('id', db.Integer, primary_key=True),
+            db.Column('title', db.Text),
+            db.Column('note', db.Text),
+            db.Column('importance', db.Text),
+            useexisting=True,
+        )
+
+        # The ORM mapped class
+        class Note(object):
+            """ Represents a note """
+
+        self.Note = Note
+
+        # Make a mapper which gives you the objects manager
+        db.mapper(Note, notes)
+
+
+        def setup_db(app):
+            #metadata.create_all(app.sqla_db_engine)
+            #print metadata.tables
+            #print dir(notes)
+            notes.create(app.sqla_db_engine)
+
+        def setup_app(app):
+            app.add_setup(setup_sqladb)
+            app.add_data_func(setup_db)
+
+        self.app = make_app(setup_app, 'test_output')
+        c = Client(self.app)
+        c.open()
+
+    def test_engine(self):
+        assert get_app().sqla_db_engine
+
+    def test_objects(self):
+        assert self.Note.objects.count() == 0
+        for t in 'abcdef':
+            n = self.Note()
+            n.title = n.note = n.importance = t
+        db.commit()
+        assert self.Note.objects.count() == 6
+
+
 # functional tests for examples
 
 from glashammer.utils.system import load_app_from_path
@@ -1022,5 +1082,6 @@ class TestJsonRest(object):
         iter, status, headers = self.c.post('/svc')
         d = loads(''.join(iter))
         assert d['type'] == 'POST'
+
 
 
