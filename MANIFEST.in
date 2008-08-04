@@ -4,4 +4,5 @@ recursive-include bin *
 recursive-include tests *.py
 recursive-include examples *.py *.html *.jinja
 recursive-include docs *.py *.rst *.css *.png
+recursive-include glashammer *.jinja *.js *.html
 prune docs/build
