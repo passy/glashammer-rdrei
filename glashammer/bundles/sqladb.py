@@ -189,6 +189,20 @@ cleanup_session = session.remove
 metadata = db.MetaData()
 
 
+from glashammer.utils.json import JsonRestService
+
+class JsonSqlaRestService(JsonRestService):
+
+    def modify(self, response):
+        self.get_table().c
+        return response
+
+    def get_table(self):
+        return NotImplementedError
+
+    def query(self, **kw):
+        return self.get_table().objects.filter_by(**kw)
+
 
 
 def init_database(engine):
@@ -220,9 +234,12 @@ def get_engine():
 def data_init(app):
     metadata.create_all()
 
+def cleanup_sqla_session(resp):
+    session.remove()
 
 def setup_sqladb(app):
     app.add_config_var('sqla_db_uri', str, _get_default_db_uri(app))
+    app.connect_event('response-end', cleanup_sqla_session)
     app.sqla_db_engine = db.create_engine(app.cfg['sqla_db_uri'],
                                           convert_unicode=True)
     metadata.bind = app.sqla_db_engine
