@@ -23,15 +23,15 @@ During each of these phases we must create and bind an instance of the
 and clean it up at the end. This is achieved using the Glashammer system
 events:
 
-* `app-start`
+`app-start`
     After the application setup functions have been called, but no data has been
     initialised. Thus the store manager is available during data initialization.
-* `app-setup`
+`app-setup`
     At the end of the application setup phase, the store manager is cleaned up.
-* `wsgi-call`
+`wsgi-call`
     This is emitted at the very start of the request as the WSGI application is
     called. We use it here to initialize the store manager.
-* `response-end`
+`response-end`
     This is emitted at the end of the request, and is used to clean up the store
     manager.
 """
