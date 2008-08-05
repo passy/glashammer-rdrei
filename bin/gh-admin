@@ -60,6 +60,14 @@ def action_run(modulepath='',
                 None, 1, threaded, processes)
 
 
+def action_init(modulepath='', init_function_name='init_app'):
+    """
+    Run the application's initialization script. This is one time to "install"
+    the application.
+    """
+    _get_app(modulepath, init_function_name)
+
+
 def action_staticaliases(modulepath='',
                          application_factory_name='create_app'):
     """
