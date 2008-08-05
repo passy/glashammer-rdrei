@@ -17,8 +17,6 @@ from glashammer.utils.log import debug
 def emit_event(event, *args, **kwargs):
     """Emit a event and return a `EventResult` instance."""
     app = local.application
-    if not app.finalized:
-        raise RuntimeError('You cannot emit events before the app is set up')
     if event != 'log':
         debug('Emit: %s (%s)' % (event, ', '.join(map(repr, args))))
     return [x(*args, **kwargs) for x in

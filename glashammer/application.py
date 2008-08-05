@@ -165,9 +165,9 @@ class GlashammerApplication(object):
 
         del self._setup_funcs
 
+        emit_event('app-start', self)
+
         # Now the database
-
-
         for data_func in self._odata_funcs:
             data_func(self)
 
