@@ -23,6 +23,7 @@ as we are adding functionality as required.
     bundle_auth
     bundle_i18n
     bundle_sqladb
+    bundle_stormdb
     bundle_htmlhelpers
 
 .. note::

@@ -42,8 +42,8 @@ The Glashammer User Manual
 :ref:`bundle_forms`
     Using the form framework with Glashammer.
 
-:ref:`bundle_sqladb`
-    Using databases with SQLAlchemy.
+:ref:`databases`
+    Using databases with SQLAlchemy, Storm, or others.
 
 :ref:`bundle_sessions`
     Use Glashammer sessions to store session data.
@@ -81,6 +81,7 @@ Full table of contents
     events
     config
     statics
+    databases
     bundles
     forms
     utilities
