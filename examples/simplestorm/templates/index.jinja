@@ -1,0 +1,21 @@
+
+<html>
+<head>
+</head>
+
+<body>
+
+<ul>
+    {% for person in persons %}
+        <li>{{ person.name }}</li>
+    {% endfor %}
+</ul>
+
+<form action="{{ url_for('person/save') }}" method="post">
+    <input name="name" />
+    <input type="submit" value="Add person" />
+</form>
+
+</body>
+
+</html>
