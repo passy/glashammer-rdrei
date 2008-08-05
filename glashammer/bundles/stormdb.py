@@ -127,9 +127,9 @@ def setup_stormdb(app, default_uri=None):
 
     app.add_config_var('stormdb/dburi', str, default_uri)
 
-    app.connect_event('app-start', setup_manager)
+    app.connect_event('app-start', initialize_manager)
     app.connect_event('app-setup', close_all)
-    app.connect_event('wsgi-call', setup_manager)
+    app.connect_event('wsgi-call', initialize_manager)
     app.connect_event('response-end', close_all)
 
 setup_app = setup_stormdb
