@@ -49,11 +49,6 @@ class EventManager(object):
         self._last_listener += 1
         return listener_id
 
-    def remove(self, listener_id):
-        """Remove a callback again."""
-        for event in self._listeners:
-            event.pop(listener_id, None)
-
     def iter(self, event):
         """Return an iterator for all listeners of a given name."""
         if event not in self._listeners:
