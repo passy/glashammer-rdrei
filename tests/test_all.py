@@ -1054,6 +1054,23 @@ class TestSQLA(object):
         assert resp['results'][0]['id'] > 0
 
 
+# openid
+
+def test_openid():
+
+    def setup_openid(app):
+        from glashammer.bundles.openidauth import setup_openid
+        app.add_setup(setup_openid)
+
+    app = make_app(setup_openid, 'test_output')
+
+    c = Client(app)
+    iter, status, headers = c.post('/openid/login', data={'openid':''})
+
+    print status, headers
+    assert 0
+
+
 # functional tests for examples
 
 from glashammer.utils.system import load_app_from_path
