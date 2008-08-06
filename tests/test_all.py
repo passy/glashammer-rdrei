@@ -1065,10 +1065,10 @@ def test_openid():
     app = make_app(setup_openid, 'test_output')
 
     c = Client(app)
-    iter, status, headers = c.post('/openid/login', data={'openid':''})
+    iter, status, headers = c.post('/openid/login',
+        data={'openid':'http://unpythonic.blogspot.com'})
 
-    print status, headers
-    assert 0
+    assert '302' in status
 
 
 # functional tests for examples
