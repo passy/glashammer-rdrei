@@ -5,6 +5,7 @@ options(
 
 depends(
     sdist ['clean']
+    upload ['clean']
     install ['build']
 )
 
@@ -22,6 +23,9 @@ targets(
 
     sdist
         $ python setup.py sdist
+
+    upload
+        $ python setup.py sdist upload
 
     build
         $ python setup.py build
