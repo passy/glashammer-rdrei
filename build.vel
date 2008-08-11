@@ -1,9 +1,12 @@
 
 options(
-    default "tests"
+    default "build"
 )
 
-depends()
+depends(
+    sdist ['clean']
+    install ['build']
+)
 
 targets(
     tests
@@ -13,6 +16,18 @@ targets(
 
     docs
         $ cd docs && make html
+
+    clean
+        $ rm -rf build dist MANIFEST
+
+    sdist
+        $ python setup.py sdist
+
+    build
+        $ python setup.py build
+
+    install
+        $ sudo python setup.py install
 
     helloworld_example
         $ PYTHONPATH=. python examples/helloworld/run.py
