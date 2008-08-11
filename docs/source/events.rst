@@ -103,7 +103,7 @@ These are the built-in events for Glashammer:
     response-start
         Emitted when the response has been create, but not called.
 
-    resonse-end
+    response-end
         Emitted after the response has been called, before it is returned back
         to the server to return to the client.
 
@@ -111,4 +111,4 @@ These are the built-in events for Glashammer:
 Additional notes
 ----------------
 
-* In Glashammer, events do not need to be predetefined, and so there is no dependency between event emitter and event connector. If you connect to an event that doesn't ever get emitted, your handler will never get emitted.
+* In Glashammer, events do not need to be predefined, and so there is no dependency between event emitter and event connector. If you connect to an event that doesn't ever get emitted, your handler will never get emitted.
