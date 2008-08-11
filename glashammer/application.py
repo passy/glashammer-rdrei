@@ -247,9 +247,12 @@ class GlashammerApplication(object):
         if view:
             emit_event('view-match', view)
             return view(request, **values)
-        elif '/' in endpoint:
+        elif '/' in endpoint or '.' in endpoint:
             # fallback to controller->view
-            base, target = endpoint.split('/', 1)
+            if '/' in endpoint:
+                base, target = endpoint.split('/', 1)
+            else:
+                base, target = endpoint.split('.', 1)
             controller = self.controllers.get(base)
             if controller is not None and hasattr(controller, target):
                 emit_event('controller-match', controller, target)
