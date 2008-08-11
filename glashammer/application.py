@@ -346,7 +346,7 @@ class GlashammerApplication(object):
 
     def add_views_controller(self, endpoint_base, controller):
         """
-        Add a an instance or module which contains functions for a number of
+        Add an instance or module which contains functions for a number of
            views.
 
         'endpoint_base` The base end point
