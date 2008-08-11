@@ -13,6 +13,7 @@ free to choose whichever you like or even others.
 
    bundle_sqladb
    bundle_stormdb
+   bundle_couchdb
 
 The one frameworkish thing supplied by Glashammer is the ability to run a data
 initialization callable during application setup. These are independent of setup
