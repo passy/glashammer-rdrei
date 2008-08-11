@@ -23,7 +23,7 @@ is available to fire that event at the moment. So during application setup::
     def build_index():
         """Build some index"""
 
-    app.connect_event('content-added')
+    app.connect_event('content-added', build_index)
 
 Now later in your application, be it a blog or a wiki or something, when you
 write the content add/update code, you can ensure that indexing takes place by
