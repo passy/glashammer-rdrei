@@ -1,5 +1,6 @@
 examples/*/config.ini
 examples/*/gh.sqlite
+examples/*/gh.zodb*
 docs/build
 docs/build/*
 build
