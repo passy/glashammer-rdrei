@@ -29,11 +29,15 @@ Browsing the repository online
 ------------------------------
 
 List of changes
+    http://www.bitbucket.org/aafshar/glashammer-main/changesets/
 
 List of files and directories
-
+    http://www.bitbucket.org/aafshar/glashammer-main/src/
 
 Alternatives to Mercurial
 -------------------------
 
+If you hate Mercurial, you can get the code using bzr (an automated mirror) with::
+
+    bzr branch lp:launchpad
 
