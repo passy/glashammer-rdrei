@@ -994,9 +994,6 @@ class TestSQLA(object):
                 return Note
 
         def setup_db(app):
-            #metadata.create_all(app.sqla_db_engine)
-            #print metadata.tables
-            #print dir(notes)
             notes.create(app.sqla_db_engine)
 
         def setup_app(app):

@@ -19,6 +19,12 @@ the application setup phase like so::
 
 The bundle will create a database engine and bind it to the configured URI.
 
+The default URI can be passed in like so::
+
+    app.add_setup(setup_sqladb, 'sqlite:////tmp/testdb.sqlite')
+
+And this is then overridable by the configuration file.
+
 Additionally a metadata instance is provided
 :data:`glashammer.bundles.sqladb.metadata` which can be used to add ORM mapped objects
 and tables.

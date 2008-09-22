@@ -269,8 +269,10 @@ def data_init(app):
 def cleanup_sqla_session(arg):
     session.remove()
 
-def setup_sqladb(app):
-    app.add_config_var('sqla_db_uri', str, _get_default_db_uri(app))
+def setup_sqladb(app, default_db_uri=None):
+    if default_db_uri is None:
+        default_db_uri = _get_default_db_uri(app)
+    app.add_config_var('sqla_db_uri', str, default_db_uri)
     app.connect_event('response-end', cleanup_sqla_session)
     app.connect_event('app-setup', cleanup_sqla_session)
     app.sqla_db_engine = db.create_engine(app.cfg['sqla_db_uri'],
