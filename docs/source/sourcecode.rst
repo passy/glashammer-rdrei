@@ -11,49 +11,29 @@ of services to make our lives easier, listed below.
 Checking out the source code
 ----------------------------
 
-Get the source using bzr like::
+Get the source using Mercurial like::
 
-    bzr branch lp:glashammer
+    hg clone http://bitbucket.org/aafshar/glashammer-main
 
-or the more verbose version::
+*You can use https if you prefer*
 
-    bzr branch https://launchpad.net/~glashammer-devs/glashammer/glashammer-main
+To make changes or features in the source code, browse the repository at
+http://www.bitbucket.org/aafshar/glashammer-main/overview/ and click the fork
+button.
+
+Once you are happy with the changes and code has been reviewed we can pull
+into the main branch.
 
 
 Browsing the repository online
 ------------------------------
 
 List of changes
-    http://bazaar.launchpad.net/~glashammer-devs/glashammer/glashammer-main/changes
 
 List of files and directories
-    http://bazaar.launchpad.net/~glashammer-devs/glashammer/glashammer-main/files
 
 
-Feeds of the repository
------------------------
-
-Feed of a history of changes to the repository
-    http://bazaar.launchpad.net/~glashammer-devs/glashammer/glashammer-main/atom
+Alternatives to Mercurial
+-------------------------
 
 
-Search the repository
----------------------
-
-.. raw:: html
-
-   <form action="http://bazaar.launchpad.net/%7Eglashammer-devs/glashammer/glashammer-main/changes"><input type="text" name="q" /><input type="submit" value="Search"></form>
-
-
-Alternatives to bzr
--------------------
-
-If you can't stand bzr, we keep a semi up-to-date Mercurial repository at
-http://bitbucket.org which you can get with::
-
-    hg clone https://btbucket.org/aafshar/glashammer-main
-
-.. note::
-
-   If the mercurial mirror is not up to date, please let one of the
-   developers know to update it.
