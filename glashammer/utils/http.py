@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """
     glashammer.utils.http
+    ~~~~~~~~~~~~~~~~~~~~~
 
     from zine.utils.http
-    ~~~~~~~~~~~~~~~~~~~~
 
     Various HTTP related helpers.
 
