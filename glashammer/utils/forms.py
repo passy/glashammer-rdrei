@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 """
-    zine.utils.forms
-    ~~~~~~~~~~~~~~~~
+    glashammer.utils.forms
+    ~~~~~~~~~~~~~~~~~~~~~~
 
     This module implements a sophisticated form validation and rendering
     system that is based on diva with concepts from django newforms and
     wtforms incorporated.
 
     It can validate nested structures and works in both ways.  It can also
-    handle intelligent backredirects (via :mod:`zine.utils.http`) and supports
+    handle intelligent backredirects (via :mod:`glashammer.utils.http`) and supports
     basic CSRF protection.
 
     For usage informations see :class:`Form`
@@ -329,7 +329,7 @@ class Widget(_Renderable):
         >>> username.name
         'username'
 
-        Please keep in mind that the name is not always that obvious.  Zine
+        Please keep in mind that the name is not always that obvious.  Glashammer
         supports nested form fields so it's a good idea to always use the
         name attribute.
 
