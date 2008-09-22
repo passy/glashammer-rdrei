@@ -16,7 +16,10 @@ from urlparse import urlparse, urljoin
 from werkzeug import redirect as _redirect
 from werkzeug.exceptions import BadRequest
 
-from glashammer.utils.local import get_application, get_request, url_for
+from glashammer.utils.local import get_app, get_request, url_for
+
+# zine compat
+get_application = get_app
 
 def check_external_url(*args):
     pass
