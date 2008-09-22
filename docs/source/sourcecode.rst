@@ -7,7 +7,6 @@ Source code
 We keep our source code in Mercurial on http://bitbucket.org/. They provide a number
 of services to make our lives easier, listed below.
 
-
 Checking out the source code
 ----------------------------
 
