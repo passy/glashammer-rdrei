@@ -7,6 +7,7 @@ depends(
     sdist ['clean']
     upload ['clean']
     install ['build']
+    docsup ['docs']
 )
 
 targets(
@@ -17,6 +18,9 @@ targets(
 
     docs
         $ cd docs && make html
+
+    docsup
+        $ scp -r docs/build/html/* ecdr:/var/www/glashammer.org
 
     clean
         $ rm -rf build dist MANIFEST
