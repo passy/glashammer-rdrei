@@ -1589,3 +1589,8 @@ class Form(object):
             return False
         self.data.update(data)
         return True
+
+    def populate(self, obj):
+        for k in self.data:
+            setattr(obj, k, self.data[k])
+
