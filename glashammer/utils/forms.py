@@ -29,13 +29,29 @@ from werkzeug import html, escape, MultiDict
 
 from glashammer.utils.local import get_request, url_for
 from glashammer.bundles.sqladb import db
-from glashammer.utils.i18n import _, ngettext, lazy_gettext, parse_datetime, \
-     format_system_datetime
+from glashammer.bundles.i18n import _, ngettext, parse_datetime, \
+     format_datetime
 from glashammer.utils.http import get_redirect_target, redirect
 from glashammer.utils.crypto import gen_random_identifier
 
-class ValidationError(Exception):
-    pass
+lazy_gettext = lambda a: a
+
+
+class ValidationError(ValueError):
+    """Exception raised when invalid data is encountered."""
+
+    def __init__(self, message):
+        if not isinstance(message, (list, tuple)):
+            messages = [message]
+        # make all items in the list unicode (this also evaluates
+        # lazy translations in there)
+        messages = map(unicode, messages)
+        Exception.__init__(self, messages[0])
+
+        self.messages = ErrorList(messages)
+
+    def unpack(self, key=None):
+        return {key: self.messages}
 
 
 class DataIntegrityError(ValueError):
@@ -1009,7 +1025,7 @@ class DateTimeField(Field):
     >>> field = DateTimeField()
     >>> field('1970-01-12 00:00')
     datetime.datetime(1970, 1, 12, 0, 0)
-    
+
     >>> field('foo')
     Traceback (most recent call last):
       ...
@@ -1543,9 +1559,11 @@ class Form(object):
                                  'to request')
         path = self.request.path
         user_id = -1
-        if self.request.user.is_somebody:
-            user_id = self.request.user.user_id
-        key = self.request.app.cfg['secret_key']
+        #XXX
+        #if self.request.user.is_somebody:
+        #    user_id = self.request.user.user_id
+        #key = self.request.app.cfg['secret_key']
+        key = 'I am secret'
         return sha1(('%s|%s|%s' % (path, user_id, key))
                      .encode('utf-8')).hexdigest()
 

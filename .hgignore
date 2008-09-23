@@ -1,4 +1,9 @@
 (^|/)\.bzr($|/)
 (^|/)\.hg($|/)
 (^|/)\.hgtags($|/)
-docs
+docs/build
+build
+dist
+^.+\.pyc$
+^.+\.swp$
+

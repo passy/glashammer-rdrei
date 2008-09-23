@@ -70,3 +70,11 @@ def check_pwhash(pwhash, password):
     h.update(password)
     return h.hexdigest() == hashval
 
+def gen_random_identifier(length=8):
+    """Generate a random identifier."""
+    if length <= 0:
+        raise ValueError('requested key of length <= 0')
+    return choice(IDENTIFIER_START) + \
+           ''.join(choice(IDENTIFIER_CHAR) for _ in xrange(length - 1))
+
+
