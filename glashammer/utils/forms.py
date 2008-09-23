@@ -453,6 +453,11 @@ class TextInput(Input):
     type = 'text'
 
 
+class SubmitInput(Input):
+    """A submit button field"""
+    type = 'submit'
+
+
 class PasswordInput(TextInput):
     """A widget that holds a password."""
     type = 'password'
