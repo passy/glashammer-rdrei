@@ -30,11 +30,10 @@ from werkzeug import html, escape, MultiDict
 from glashammer.utils.local import get_request, url_for
 from glashammer.bundles.sqladb import db
 from glashammer.bundles.i18n import _, ngettext, parse_datetime, \
-     format_datetime
+     format_system_datetime
+lazy_gettext = lambda s: s
 from glashammer.utils.http import get_redirect_target, redirect
 from glashammer.utils.crypto import gen_random_identifier
-
-lazy_gettext = lambda a: a
 
 
 class ValidationError(ValueError):
@@ -453,10 +452,6 @@ class TextInput(Input):
     type = 'text'
 
 
-class SubmitInput(Input):
-    """A submit button field"""
-    type = 'submit'
-
 
 class PasswordInput(TextInput):
     """A widget that holds a password."""
@@ -614,16 +609,26 @@ class MappingWidget(Widget):
         subwidget = self._subwidgets.get(name)
         if subwidget is None:
             # this could raise a KeyError we pass through
-            subwidget = _make_widget(self._field.fields[name],
+            field = self._field.fields[name]
+            subwidget = _make_widget(field,
                                      _make_name(self.name, name),
-                                     self._value.get(name),
+                                     self._value.get(name) or field.default,
                                      self._all_errors)
             self._subwidgets[name] = subwidget
         return subwidget
 
     def as_dl(self, **attrs):
         return html.dl(*(html.dt(key.title()) + html.dd(self[key]())
-                         for key in self), **attrs)
+                         for key in self.get_input_fields()), **attrs)
+
+    def actions_container(self, **attrs):
+        return html.div(*(self[key]() for key in self.get_action_fields()), **attrs)
+
+    def get_input_fields(self):
+        return [key for key in self if self._field.fields[key].is_input]
+
+    def get_action_fields(self):
+        return [key for key in self if not self._field.fields[key].is_input]
 
     def __call__(self, *args, **kwargs):
         return self.as_dl(*args, **kwargs)
@@ -676,6 +681,8 @@ class FormWidget(MappingWidget):
         else:
             body = self.as_dl()
 
+        body = body + self.actions_container()
+
         hidden = self.hidden_fields
         if hidden:
             # if there are hidden fields we put an invisible div around
@@ -709,7 +716,7 @@ class ListWidget(Widget, _ListSupport):
             except IndexError:
                 # return an widget without value if we try
                 # to access a field not in the list
-                value = None
+                value = self._field.field.default
             subwidget = _make_widget(self._field.field,
                                      _make_name(self.name, index), value,
                                      self._all_errors)
@@ -781,8 +788,9 @@ class Field(object):
     widget = TextInput
     messages = dict(required=lazy_gettext('This field is required.'))
     form = None
+    is_input = True
 
-    def __init__(self, validators=None, widget=None, messages=None):
+    def __init__(self, validators=None, widget=None, messages=None, default=None):
         if validators is None:
             validators = []
         self.validators = validators
@@ -792,6 +800,7 @@ class Field(object):
         if messages:
             self.messages = self.messages.copy()
             self.messages.update(messages)
+        self.default = default
         assert not issubclass(self.widget, InternalWidget), \
             'can\'t use internal widgets as widgets for fields'
 
@@ -1617,3 +1626,22 @@ class Form(object):
         for k in self.data:
             setattr(obj, k, self.data[k])
 
+
+# glashammer extras
+
+
+
+class SubmitButton(Input):
+    """A submit button field"""
+    type = 'submit'
+
+class ResetButton(Input):
+    type = 'submit'
+
+class SubmitField(Field):
+    widget = SubmitButton
+    is_input = False
+
+class ResetField(Field):
+    widget = ResetButton
+    is_input = False
