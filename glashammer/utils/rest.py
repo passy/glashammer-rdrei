@@ -12,6 +12,8 @@ class RestService(object):
     def __call__(self, req, **kw):
         if req.method == 'GET':
             c = self.get
+            for arg in req.args:
+                kw[arg] = req.args[arg][0]
         elif req.method == 'POST':
             c = self.post
         elif req.method == 'PUT':
@@ -21,7 +23,7 @@ class RestService(object):
         else:
             c = None
         if c:
-            return self.modifier(c(req, **kw))
+            return self.modifier(c(req, **req.args))
         else:
             return NotFound()
 
