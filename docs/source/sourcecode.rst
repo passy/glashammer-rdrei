@@ -38,5 +38,5 @@ Alternatives to Mercurial
 
 If you hate Mercurial, you can get the code using bzr (an automated mirror) with::
 
-    bzr branch lp:launchpad
+    bzr branch lp:glashammer
 
