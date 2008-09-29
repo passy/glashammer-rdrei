@@ -19,6 +19,7 @@
 import re
 from datetime import datetime
 from unicodedata import normalize
+from time import strptime
 from itertools import chain
 try:
     from hashlib import sha1
@@ -1048,11 +1049,11 @@ class DateTimeField(Field):
 
     messages = dict(invalid_date=lazy_gettext('Please enter a valid date.'))
 
-    def __init__(self, required=False, rebase=True,
+    def __init__(self, required=False, format='%m/%d/%Y',
                  validators=None, widget=None, messages=None):
         Field.__init__(self, validators, widget, messages)
         self.required = required
-        self.rebase = rebase
+        self.format = format
 
     def convert(self, value):
         if isinstance(value, datetime):
@@ -1063,13 +1064,13 @@ class DateTimeField(Field):
                 raise ValidationError(self.messages['required'])
             return None
         try:
-            return parse_datetime(value, rebase=self.rebase)
+            return datetime(*strptime(value, self.format)[:7])
         except ValueError:
             raise ValidationError(self.messages['invalid_date'])
 
     def to_primitive(self, value):
         if isinstance(value, datetime):
-            value = format_system_datetime(value, rebase=self.rebase)
+            value = value.strftime(self.format)
         return value
 
 
