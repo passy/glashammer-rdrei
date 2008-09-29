@@ -8,3 +8,5 @@ dist
 MANIFEST
 .coverage
 *.pidaproject
+convert.sh
+.hg
