@@ -200,11 +200,12 @@ class JsonSqlaRestService(JsonRestService):
         return NotImplementedError
 
     def create_results_set(self, q):
-        res = {}
+        """Reference implementation.
+
+        Override for specific behaviour
+        """
         objs = [self._serialize(o) for o in q]
-        res['results'] = objs
-        res['total'] = len(objs)
-        return res
+        return objs
 
     def query(self, **kw):
         return self.create_results_set(self.get_table().objects.filter_by(**kw))

@@ -21,7 +21,7 @@ class RestService(object):
         else:
             c = None
         if c:
-            return self.modifier(c(req, **kw))
+            return self.modifier(c(req, **req.args))
         else:
             return NotFound()
 

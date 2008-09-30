@@ -35,33 +35,14 @@ def get_redirect_target(invalid_targets=(), request=None):
                    request.args.get('next') or \
                    request.environ.get('HTTP_REFERER')
 
+    print check_target
+
     # if there is no information in either the form data
     # or the wsgi environment about a jump target we have
     # to use the target url
     if not check_target:
         return
 
-    blog_url = request.app.cfg['blog_url']
-    blog_parts = urlparse(blog_url)
-    check_parts = urlparse(urljoin(blog_url, check_target))
-
-    # if the jump target is on a different server we probably have
-    # a security problem and better try to use the target url.
-    if blog_parts[:2] != check_parts[:2]:
-        return
-
-    # if the jump url is the same url as the current url we've had
-    # a bad redirect before and use the target url to not create a
-    # infinite redirect.
-    current_parts = urlparse(urljoin(blog_url, request.path))
-    if check_parts[:5] == current_parts[:5]:
-        return
-
-    # if the `check_target` is one of the invalid targets we also
-    # fall back.
-    for invalid in invalid_targets:
-        if check_parts[:5] == urlparse(urljoin(blog_url, invalid))[:5]:
-            return
 
     return check_target
 
