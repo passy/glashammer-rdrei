@@ -17,6 +17,13 @@ from glashammer.utils import render_response, sibpath, emit_event, redirect, \
 
 from glashammer.bundles.sessions import setup_sessions, get_session
 
+def get_username():
+    session = get_session()
+    app = get_app()
+    return session.get(app.conf['auth/token_key'])
+
+def get_user():
+    pass
 
 def check_username_password(username, password):
     tokens = emit_event('password-check', username, password)
