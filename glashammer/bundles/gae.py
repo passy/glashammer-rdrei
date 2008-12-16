@@ -9,12 +9,12 @@
     :license: MIT
 """
 
-from wsgiref.handlers import CGIHandler
 
 from werkzeug.contrib.cache import MemcachedCache, BaseCache
 
 from google.appengine.api import users, memcache
 from google.appengine.ext import db
+from google.appengine.ext.webapp.util import run_wsgi_app
 
 from glashammer.utils import local, get_request, redirect
 from glashammer.application import make_app
@@ -81,6 +81,6 @@ def make_gae_app(setup_func):
 
 def make_and_run_gae_app(setup_func):
     app = make_gae_app(setup_func)
-    CGIHandler().run(app)
+    run_wsgi_app(app)
 
 
