@@ -23,7 +23,8 @@ setup(
         'glashammer.bundles.forms',
         'glashammer.bundles.i18n',
         'glashammer.bundles.jquery',
-        'glashammer.utils'
+        'glashammer.utils',
+        'glashammer.tools'
     ],
 
     package_dir = {

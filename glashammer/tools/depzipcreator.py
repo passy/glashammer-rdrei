@@ -68,8 +68,7 @@ def main():
     z = ZipCreator()
     z.run()
     os.system('ls -alh ' + z.wd + '/lib/')
-    #z.teardown()
-    print z.wd
+    z.teardown()
 
 if __name__ == '__main__':
     main()

@@ -2,7 +2,7 @@
 
 # -*- coding: utf-8 -*-
 
-import os, sys, imp, xmlrpclib
+import os, sys, imp, xmlrpclib, shutil
 
 from werkzeug import script
 from werkzeug.serving import run_simple
