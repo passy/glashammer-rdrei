@@ -153,6 +153,7 @@ def action_quickstart():
     os.mkdir(os.path.join(name, 'shared'))
 
     module_content = """# -*- coding: utf-8 -*-
+
 from os.path import dirname
 
 from glashammer import make_app, run_very_simple, sibpath
@@ -165,20 +166,78 @@ def setup(app):
     app.add_template_searchpath(TEMPLATES_DIRECTORY)
     app.add_shared('main', SHARED_DIRECTORY)
 
-# Hook for gh-admin
-def create_app():
-    app =  make_app(setup, dirname(__file__))
-    return app
 
 if __name__ == '__main__':
-    app = create_app()
-    run_very_simple(app)
+    main()
 
 """
     f = open(os.path.join(name, module), 'w')
     f.write(module_content)
+    f.close()
+
+def action_quickstart_gae(create_deps_zip=True):
+    """
+    Create a quickstart application
+    """
+    name = raw_input('Name of project directory? ').strip()
+    if not name:
+        print 'Must give a project name.'
+        exit(1)
+    module = 'main.py'
+
+    os.mkdir(name)
+    os.mkdir(os.path.join(name, 'templates'))
+    os.mkdir(os.path.join(name, 'shared'))
+
+    module_content = """# -*- coding: utf-8 -*-
+
+from glashammer import make_app
+from glashammer.bundles import gae
+
+TEMPLATES_DIRECTORY = 'templates'
+
+# Main application setup
+def setup(app):
+    # add the gae init function
+    app.add_setup(gae.setup_gae)
+
+    # setup templates
+    app.add_template_searchpath(TEMPLATES_DIRECTORY)
+
+def main():
+    gae.make_and_run_gae_app(setup)
+
+if __name__ == '__main__':
+    main()
+"""
+    f = open(os.path.join(name, module), 'w')
+    f.write(module_content)
+    f.close()
+
+    app_yaml = """
+application: %s
+version: 1
+runtime: python
+api_version: 1
 
 
+handlers:
+
+- url: /static
+  static_dir: static
+
+- url: .*
+  script: main.py
+    """ % name
+
+    f = open(os.path.join(name, 'app.yaml'), 'w')
+    f.write(app_yaml)
+    f.close()
+
+    if create_deps_zip:
+        from glashammer.tools.depzipcreator import main
+        main()
+        shutil.move('glashammer_deps.zip', name)
 
 
 def action_dependencies():
