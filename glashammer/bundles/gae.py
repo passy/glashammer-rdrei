@@ -75,12 +75,17 @@ def make_gae_app(setup_func):
     app = make_app(setup_func, '.')
     return app
 
-GLASHAMMER_ZIP_PATH = 'glashammer_deps.zip'
-sys.path.insert(0, GLASHAMMER_ZIP_PATH)
+# issue 772
+sys_path = None
+def fix_sys_path():
+    global sys_path
+    if sys_path is None:
+        sys_path = list(sys.path)
+    else:
+        sys.path[:] = sys_path
 
 def make_and_run_gae_app(setup_func):
-    if GLASHAMMER_ZIP_PATH not in sys.path:
-        sys.path.insert(0, GLASHAMMER_ZIP_PATH)
+    fix_sys_path()
     app = make_gae_app(setup_func)
     run_wsgi_app(app)
 
