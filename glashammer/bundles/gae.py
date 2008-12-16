@@ -9,6 +9,7 @@
     :license: MIT
 """
 
+import sys
 
 from werkzeug.contrib.cache import MemcachedCache, BaseCache
 
@@ -58,7 +59,6 @@ def redirect_gae_login_url():
     return redirect(users.create_login_url(req.url))
 
 
-from google.appengine.api import memcache
 
 class GaeMemcachedCache(MemcachedCache):
     """A werkzeug memcached object for GAE"""
@@ -68,18 +68,19 @@ class GaeMemcachedCache(MemcachedCache):
         self._client = memcache.Client()
 
 
-def setup_gae(app, cache_manage_url=None):
+def setup_gae(app):
     app.connect_event('request-start', gae_local_processor)
-
-    if cache_url
-
 
 def make_gae_app(setup_func):
     app = make_app(setup_func, '.')
     return app
 
+GLASHAMMER_ZIP_PATH = 'glashammer_deps.zip'
+sys.path.insert(0, GLASHAMMER_ZIP_PATH)
 
 def make_and_run_gae_app(setup_func):
+    if GLASHAMMER_ZIP_PATH not in sys.path:
+        sys.path.insert(0, GLASHAMMER_ZIP_PATH)
     app = make_gae_app(setup_func)
     run_wsgi_app(app)
 
