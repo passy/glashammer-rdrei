@@ -191,8 +191,6 @@ def action_quickstart_gae(create_deps_zip=True):
 
     module_content = """# -*- coding: utf-8 -*-
 
-import sys
-sys.path.insert(0, 'glashammer_deps.zip')
 from glashammer import make_app
 from glashammer.bundles import gae
 
@@ -240,6 +238,8 @@ handlers:
         from glashammer.tools.depzipcreator import main
         main()
         shutil.move('glashammer_deps.zip', name)
+        os.chdir(name)
+        os.system('unzip glashammer_deps.zip; rm glashammer_deps.zip')
 
 
 def action_dependencies():
