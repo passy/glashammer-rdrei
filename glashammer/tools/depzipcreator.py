@@ -2,7 +2,7 @@
 import os, tempfile, shutil, subprocess, uuid, sys
 
 
-OWD = os.getcwd()
+OWD = os.path.abspath(os.getcwd())
 
 GH_URL = 'http://bitbucket.org/aafshar/glashammer-main'
 J2_URL = 'http://dev.pocoo.org/hg/jinja2-main'
@@ -69,6 +69,7 @@ def main():
     z.run()
     os.system('ls -alh ' + z.wd + '/lib/')
     z.teardown()
+    os.chdir(OWD)
 
 if __name__ == '__main__':
     main()
