@@ -48,18 +48,12 @@ def get_redirect_target(invalid_targets=(), request=None):
 
 
 def redirect(url, code=302, allow_external_redirect=False):
-    """Return a redirect response.  Like Werkzeug's redirect but this
-    one checks for external redirects too.  If a redirect to an external
-    target was requested `BadRequest` is raised unless
-    `allow_external_redirect` was explicitly set to `True`.
+    """Return a redirect response.  Like Werkzeug's redirect.
     """
-    if not allow_external_redirect:
-        #: check if the url is on the same server
-        #: and make it an external one
-        try:
-            url = check_external_url(get_application(), url, True)
-        except ValueError:
-            raise BadRequest()
+    if allow_external_redirect:
+        import warnings
+        warnings.warn('allow_external_redirect argument is depracated',
+            category=DeprecationWarning)
     return _redirect(url, code)
 
 
