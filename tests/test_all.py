@@ -1,5 +1,6 @@
 
-import os, shutil
+import os, shutil, urlparse
+
 from datetime import datetime, date, time
 
 from nose.tools import assert_raises
@@ -10,6 +11,8 @@ from glashammer.application import GlashammerApplication, make_app
 from glashammer.utils import render_response, Response, local, \
     render_template, sibpath, get_request, get_app, url_for, \
     gen_pwhash, check_pwhash, Configuration
+
+from glashammer.utils.http import redirect, redirect_to
 
 from glashammer.utils.json import json_view, JsonRestService
 
@@ -1066,6 +1069,48 @@ def test_openid():
         data={'openid':'http://unpythonic.blogspot.com'})
 
     assert '302' in status
+
+
+# http redirects
+
+def _boo_view(req):
+    return redirect('/home')
+
+def _foo_view(req):
+    return redirect_to('test/home')
+
+def _home_view(req):
+    return Response('hello')
+
+def _setup_redirect_app(app):
+    app.add_url('/home', 'test/home', _home_view)
+    app.add_url('/foo', 'test/foo', _foo_view)
+    app.add_url('/boo', 'test/boo', _boo_view)
+
+
+
+def _test_redirect_helper(getpath):
+    app = make_app(_setup_redirect_app, 'test_output')
+
+    c = Client(app)
+    appiter, status, headers = c.open('/foo')
+
+    s = list(appiter)[0]
+
+    location = dict(headers).get('Location')
+
+    assert location
+
+    path = urlparse.urlparse(location)[2]
+
+    assert path == '/home'
+
+def test_redirect():
+    _test_redirect_helper('/foo')
+
+def test_redirect_to():
+    _test_redirect_helper('/boo')
+
 
 
 # functional tests for examples
