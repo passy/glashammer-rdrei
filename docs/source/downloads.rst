@@ -11,13 +11,14 @@ to the latest version from pypi::
 
 Or you can download the source releases of Glashammer here.
 
-Latest Version 0.1.2
+Latest Version 0.1.4
 --------------------
 
-Tarball
-    http://launchpad.net/glashammer/0.1/0.1.2/+download/Glashammer-0.1.2.tar.gz
+Tarballs
+    http://launchpad.net/glashammer/0.1/0.1.4/+download/Glashammer-0.1.4.tar.gz
+    http://launchpad.net/glashammer/0.1/0.1.4/+download/Glashammer-0.1.4.zip
 Release Information
-    https://launchpad.net/glashammer/0.1/0.1.2
+    https://launchpad.net/glashammer/0.1/0.1.4
 Series Information
     https://launchpad.net/glashammer/0.1
 
