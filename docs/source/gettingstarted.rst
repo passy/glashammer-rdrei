@@ -10,10 +10,9 @@ look, and the following chapters will describe more detailed usage.
 Downloading
 -----------
 
-While there are no official releases, you can check out the source code using
-Bazaar, with::
+Refer to our downloads section at:
 
-    bzr branch lp:glashammer
+    :ref:`downloads`
 
 
 Requirements
