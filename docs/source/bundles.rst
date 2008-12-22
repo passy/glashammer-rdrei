@@ -25,6 +25,7 @@ as we are adding functionality as required.
     bundle_sqladb
     bundle_stormdb
     bundle_htmlhelpers
+    bundle_gae
 
 .. note::
 
