@@ -1,6 +1,12 @@
 
 .. _bundle_auth:
 
+.. note::
+
+   The authentication system is being replaced by repoze.who integration, and
+   will become depracated in later releases of Glashammer. Please see
+   `bundle_repozwho`.
+
 Authentication
 ==============
 

@@ -20,6 +20,7 @@ as we are adding functionality as required.
 
     bundle_forms
     bundle_sessions
+    bundle_repozewho
     bundle_auth
     bundle_i18n
     bundle_sqladb
