@@ -52,9 +52,6 @@ The Glashammer User Manual
     Using Glashammer's internationalization framework to translate you
     applications.
 
-:ref:`bundle_auth`
-    Using and extending the simple authentication framework.
-
 :ref:`bundle_htmlhelpers`
     Helpers for generating html on the fly.
 
