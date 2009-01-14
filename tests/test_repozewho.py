@@ -37,21 +37,20 @@ mdproviders = []
 from repoze.who.classifiers import default_request_classifier
 from repoze.who.classifiers import default_challenge_decider
 log_stream = None
+import logging
 import os, sys
 log_stream = sys.stdout
 
-dict(
+
+kw=dict(
     identifiers=identifiers,
     authenticators=authenticators,
     challengers=challengers,
     mdproviders=mdproviders,
-    default_request_classifier=default_request_classifier,
-    default_challenge_decider=default_challenge_decider,
-    log_stream = log_stream,
-    log_level = logging.DEBUG
+    classifier=default_request_classifier,
+    challenge_decider=default_challenge_decider,
 )
 
-import logging
 
 def _authd_view(req):
     if not req.environ.get('repoze.who.identity'):
@@ -59,10 +58,9 @@ def _authd_view(req):
     else:
         return Response('ok')
 
-
 def _setup(app):
     from glashammer.bundles.repozewho import setup_repozewho
-    app.add_setup(setup_repozewho)
+    app.add_setup(setup_repozewho, **kw)
     app.add_url('/', 'home', _authd_view)
 
 

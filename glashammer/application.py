@@ -160,10 +160,10 @@ class GlashammerApplication(object):
         setup_func(self)
 
         # run the additional setup funcions
-        for setup_func, args in self._osetup_funcs:
-            setup_func(self, *args)
+        for setup_func, args, kw in self._osetup_funcs:
+            setup_func(self, *args, **kw)
 
-        del self._setup_funcs
+        del self._osetup_funcs
 
         emit_event('app-start', self)
 
@@ -263,7 +263,7 @@ class GlashammerApplication(object):
         if self.finalized:
             raise RuntimeError('You cannot do this. The application has been finalized.')
 
-    def add_setup(self, setup_func, *args):
+    def add_setup(self, setup_func, *args, **kw):
         """Add a setup callable to be called on startup by the application.
 
         `setup_func`
@@ -271,6 +271,9 @@ class GlashammerApplication(object):
 
         `*args`
             Arguments that will be passed to the setup function
+
+        `**kw`
+            Keyword arguments that will be passed to the setup function
 
         This method is used to add pluggable capability to the application.
         For example, plugin A can load plugin B by importing and adding it's
@@ -288,9 +291,9 @@ class GlashammerApplication(object):
         """
         self._ensure_not_finalized()
 
-        vals = (setup_func, args)
-        if vals not in self._setup_funcs:
-            self._setup_funcs.add(vals)
+        vals = (setup_func, args, kw)
+
+        if vals not in self._osetup_funcs:
             self._osetup_funcs.append(vals)
 
     def add_data_func(self, data_func):
