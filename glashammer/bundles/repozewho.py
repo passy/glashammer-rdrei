@@ -1,10 +1,12 @@
 
 
-
-def middleware_factory(app, configfile=None, **repozekw):
+def middleware_factory(app, realapp, configfile=None, **repozekw):
     if configfile is not None:
         from repoze.who.config import make_middleware_with_config
-        middleware = make_middleware_with_config(app, configfile)
+        global_config = dict(
+            here = realapp.instance_dir
+        )
+        middleware = make_middleware_with_config(app, global_config, configfile)
     elif repozekw:
         from repoze.who.middleware import PluggableAuthenticationMiddleware
         middleware = PluggableAuthenticationMiddleware(app, **repozekw)
@@ -37,6 +39,6 @@ def setup_repozewho(app, configfile=None, **repozekw):
 
     And defaults will be used if arguments are missing.
     """
-    app.add_middleware(middleware_factory, configfile, **repozekw)
+    app.add_middleware(middleware_factory, app, configfile, **repozekw)
 
 
