@@ -1,7 +1,8 @@
 
 from unittest import TestCase
 
-from glashammer import make_app, Response
+from glashammer import make_app
+from glashammer.utils import Response
 
 from werkzeug.test import Client
 
