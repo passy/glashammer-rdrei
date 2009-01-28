@@ -28,8 +28,8 @@ class Pagination(object):
                  active='<strong>%(page)d</strong>',
                  commata='<span class="commata">,\n</span>',
                  ellipsis=u'<span class="ellipsis">...\n</span>',
-                 threshold=3, prev_link=False,
-                 next_link=False, gray_prev_link=True, gray_next_link=True):
+                 threshold=3, prev_link=True,
+                 next_link=True, gray_prev_link=True, gray_next_link=True):
         was_ellipsis = False
         result = []
         prev = None
