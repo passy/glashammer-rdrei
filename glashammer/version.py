@@ -1,3 +1,3 @@
 
-glashammer_version = '0.2.0b2'
+glashammer_version = '0.2.0b3'
 
