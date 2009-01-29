@@ -8,7 +8,7 @@
 """
 import math
 
-from glashammer.utils.local import url_for
+from glashammer.utils.local import url_for, local
 
 
 
@@ -100,6 +100,6 @@ def flash(msg, type='info'):
     assert type in ('info', 'add', 'remove', 'error', 'ok', 'configure')
     if type == 'error':
         msg = (u'<strong>%s:</strong> ' % _('Error')) + msg
-    local.request.session.setdefault('admin/flashed_messages', []).\
+    local.session.setdefault('admin/flashed_messages', []).\
             append((type, msg))
 

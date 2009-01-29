@@ -13,6 +13,7 @@ def get_session():
     return local.session
 
 def tag_session(req):
+    print 'tagggg;'
     app = get_app()
     cookie_name = app.conf['sessions/cookie_name']
     session = SecureCookie.load_cookie(req, cookie_name,
@@ -39,6 +40,8 @@ def setup_sessions(app):
 
     app.connect_event('request-start', tag_session)
     app.connect_event('response-start', cleanup_sessions)
+
+    app.add_template_global('session', local('session'))
 
 setup_app = setup_sessions
 
