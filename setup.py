@@ -1,5 +1,14 @@
 """
-Setup script for Glashammer.
+Glashammer
+==========
+
+Glashammer is a Python web framework with an emphasis
+on simplicity, flexibility, and extensibility. It is built atop excellent
+components and reinvents zero wheels.
+
+The `Glashammer tip
+<http://butbucket.org/aafshar/glashammer-main#egg=Glashammer-main>`_ is
+installable via ``easy_install Glashammer==dev``
 """
 
 from distutils.core import setup
@@ -50,11 +59,9 @@ setup(
     # Additional pypi metadata
     description = 'Full stack web framework',
 
-    long_description = ('Glashammer is a Python web framework with an emphasis'
-    ' on simplicity, flexibility, and extensibility. It is built atop excellent'
-    ' components and reinvents zero wheels.'),
+    long_description = __doc__,
 
-    url = 'http://glashammer.welterde.de',
+    url = 'http://glashammer.org',
 
     author='Ali Afshar',
     author_email='aafshar@gmail.com',
