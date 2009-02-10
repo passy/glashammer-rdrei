@@ -7,7 +7,7 @@ on simplicity, flexibility, and extensibility. It is built atop excellent
 components and reinvents zero wheels.
 
 The `Glashammer tip
-<http://bitbucket.org/aafshar/glashammer-main#egg=Glashammer-dev>`_ is
+<http://bitbucket.org/aafshar/glashammer-main/get/tip.zip#egg=Glashammer-dev>`_ is
 installable via ``easy_install Glashammer==dev``
 """
 
