@@ -58,7 +58,7 @@ def search_catalog(**terms):
 
 
 
-def setup_repozecatalog(app, default_dbpath='catalog/repozecatalog.db',
+def setup_repozecatalog(app, default_dbpath='repozecatalog.db',
                              default_dbname='catalog'):
     """Set up full text searching with repoze.catalog"""
     # if its not an absolute path, make it relative to the instance dir
