@@ -10,7 +10,7 @@
 
 from collections import deque
 
-from glashammer.utils import local
+from glashammer.utils.local import local
 
 from glashammer.utils.log import debug
 
