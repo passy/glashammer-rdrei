@@ -11,16 +11,21 @@ DBNAME_CONF = 'repozecatalog/dbname'
 
 
 def get_repozecatalog():
+    """Get this thread's catalog"""
     return local.repozecatalog
 
 
 def default_attr_getter_factory(attr_name):
+    """A factory to create a dumb index attr getter"""
     def f(item, default, attr_name=attr_name):
         return getattr(item, attr_name, default)
     return f
 
 
 def create_dumb_index(index_type, attr_name, catalog=None, override=False):
+    """Create a dumb index, ie one that just reads an attribute for the same
+    named index
+    """
     if catalog is None:
         catalog = get_repozecatalog()
     if override or attr_name not in catalog:
@@ -28,9 +33,16 @@ def create_dumb_index(index_type, attr_name, catalog=None, override=False):
 
 
 def index_document(docid, document, catalog=None):
+    """Index a document to the current application catalog"""
     if catalog is None:
         catalog = get_repozecatalog()
     catalog.index_doc(docid, document)
+
+
+def search_catalog(**terms):
+    """Search the catalog for the terms"""
+    catalog = get_repozecatalog()
+    return catalog.search(**terms)
 
 
 def setup_repozecatalog(app, default_dbpath='repozecatalog.db',
