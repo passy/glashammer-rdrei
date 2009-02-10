@@ -1,5 +1,6 @@
 
 import os
+from repoze.catalog.catalog import ConnectionManager
 from repoze.catalog.catalog import Catalog
 from repoze.catalog.catalog import FileStorageCatalogFactory
 from repoze.catalog.indexes.field import CatalogFieldIndex
@@ -46,9 +47,11 @@ def create_dumb_index(index_type, attr_name, catalog=None, override=False):
 
 def index_document(docid, document, catalog=None):
     """Index a document to the current application catalog"""
+    manager = ConnectionManager()
     if catalog is None:
         catalog = get_repozecatalog()
     catalog.index_doc(docid, document)
+    manager.commit()
 
 
 def search_catalog(**terms):
@@ -67,10 +70,12 @@ def setup_repozecatalog(app, default_dbpath='repozecatalog.db',
     app.add_config_var(DBPATH_CONF, str, default_dbpath)
     app.add_config_var(DBNAME_CONF, str, default_dbname)
 
+    manager = ConnectionManager()
     catalog_factory = FileStorageCatalogFactory(
         app.cfg[DBPATH_CONF], app.cfg[DBNAME_CONF])
     catalog = catalog_factory()
     app.repozecatalog = catalog
+    manager.commit()
 
     emit_event('repozecatalog-installed', catalog)
 
