@@ -21,7 +21,7 @@ INDEX_TYPES = {
 
 def get_repozecatalog():
     """Get this thread's catalog"""
-    return local.repozecatalog
+    return local.application.repozecatalog
 
 
 def default_attr_getter_factory(attr_name):
@@ -70,7 +70,7 @@ def setup_repozecatalog(app, default_dbpath='repozecatalog.db',
     catalog_factory = FileStorageCatalogFactory(
         app.cfg[DBPATH_CONF], app.cfg[DBNAME_CONF])
     catalog = catalog_factory()
-    local.repozecatalog = catalog
+    app.repozecatalog = catalog
 
     emit_event('repozecatalog-installed', catalog)
 
