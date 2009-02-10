@@ -45,16 +45,9 @@ def search_catalog(**terms):
     return catalog.search(**terms)
 
 
-def _on_document_added(document, docid=None):
-    if docid is None:
-        docid = getattr(document, id, None)
-    if docid is None:
-        raise ValueError('Must provide a docid or have doc.id')
-    index_document(docid, document)
-
 
 def setup_repozecatalog(app, default_dbpath='repozecatalog.db',
-                             default_dbname='catalog', auto_add=True):
+                             default_dbname='catalog'):
     """Set up full text searching with repoze.catalog"""
     # if its not an absolute path, make it relative to the instance dir
     if not os.path.isabs(default_dbpath):
@@ -69,8 +62,6 @@ def setup_repozecatalog(app, default_dbpath='repozecatalog.db',
 
     emit_event('repozecatalog-installed', catalog)
 
-    if auto_add:
-        app.connect_event('indexable-document-added', _on_document_added)
 
 
 
