@@ -18,7 +18,7 @@ from threading import Lock
 
 
 #: header for the config file
-CONFIG_HEADER = '# Generated Configuration file'
+CONFIG_HEADER = '# Generated Configuration file\n'
 
 
 
@@ -89,7 +89,7 @@ class Configuration(object):
         # `config_vars` dict to preserve variables of disabled plugins
         self._load_time = path.getmtime(self.filename)
         self.exists = True
-        section = 'textpress'
+        section = 'glashammer'
         f = file(self.filename)
         try:
             for line in f:
@@ -104,7 +104,7 @@ class Configuration(object):
                 else:
                     key, value = line.split('=', 1)
                     key = key.strip()
-                    if section != 'textpress':
+                    if section != 'glashammer':
                         key = section + '/' + key
                     self._values[key] = unquote_value(value.strip())
         finally:
@@ -240,8 +240,8 @@ class ConfigTransaction(object):
     def revert_to_default(self, key):
         """Revert a key to the default value."""
         self._assert_uncommitted()
-        if key.startswith('textpress'):
-            key = key[10:]
+        if key.startswith('glashammer'):
+            key = key[11:]
         self._remove.append(key)
 
     def update(self, *args, **kwargs):
@@ -270,7 +270,7 @@ class ConfigTransaction(object):
                 if '/' in key:
                     section, key = key.split('/', 1)
                 else:
-                    section = 'textpress'
+                    section = 'glashammer'
                 sections.setdefault(section, []).append((key, value))
             sections = sorted(sections.items())
             for section in sections:
