@@ -2,6 +2,10 @@
 import os
 from repoze.catalog.catalog import Catalog
 from repoze.catalog.catalog import FileStorageCatalogFactory
+from repoze.catalog.indexes.field import CatalogFieldIndex
+from repoze.catalog.indexes.text import CatalogTextIndex
+from repoze.catalog.indexes.keyword import CatalogKeywordIndex
+
 
 from glashammer.utils import emit_event
 from glashammer.utils.local import local
@@ -9,6 +13,11 @@ from glashammer.utils.local import local
 DBPATH_CONF = 'repozecatalog/dbpath'
 DBNAME_CONF = 'repozecatalog/dbname'
 
+INDEX_TYPES = {
+    'field': CatalogFieldIndex,
+    'text': CatalogTextIndex,
+    'keywords': CatalogKeywordIndex
+}
 
 def get_repozecatalog():
     """Get this thread's catalog"""
@@ -29,7 +38,10 @@ def create_dumb_index(index_type, attr_name, catalog=None, override=False):
     if catalog is None:
         catalog = get_repozecatalog()
     if override or attr_name not in catalog:
-        catalog[attr_name] = index_type(default_attr_getter_factory(attr_name))
+        index_factory = INDEX_TYPES.get(index_type)
+        if index_factory is None:
+            index_factory = index_type
+        catalog[attr_name] = index_factory(default_attr_getter_factory(attr_name))
 
 
 def index_document(docid, document, catalog=None):
@@ -46,7 +58,7 @@ def search_catalog(**terms):
 
 
 
-def setup_repozecatalog(app, default_dbpath='repozecatalog.db',
+def setup_repozecatalog(app, default_dbpath='catalog/repozecatalog.db',
                              default_dbname='catalog'):
     """Set up full text searching with repoze.catalog"""
     # if its not an absolute path, make it relative to the instance dir
