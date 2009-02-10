@@ -51,8 +51,8 @@ def setup_repozecatalog(app, default_dbpath='repozecatalog.db',
     # if its not an absolute path, make it relative to the instance dir
     if not os.path.isabs(default_dbpath):
         default_dbpath = os.path.join(app.instance_dir, default_dbpath)
-    app.add_config_var('repozecatalog/dbpath', str, default_dbpath)
-    app.add_config_var('repozecatalog/dbname', str, default_dbname)
+    app.add_config_var(DBPATH_CONF, str, default_dbpath)
+    app.add_config_var(DBNAME_CONF, str, default_dbname)
 
     catalog_factory = FileStorageCatalogFactory(
         app.cfg[DBPATH_CONF], app.cfg[DBNAME_CONF])
