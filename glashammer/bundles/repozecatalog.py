@@ -20,10 +20,11 @@ def default_attr_getter_factory(attr_name):
     return f
 
 
-def create_dumb_index(index_type, attr_name, catalog=None):
+def create_dumb_index(index_type, attr_name, catalog=None, override=False):
     if catalog is None:
         catalog = get_repozecatalog()
-    catalog[attr_name] = index_type(default_attr_getter_factory(attr_name))
+    if override or attr_name not in catalog:
+        catalog[attr_name] = index_type(default_attr_getter_factory(attr_name))
 
 
 def index_document(docid, document, catalog=None):
