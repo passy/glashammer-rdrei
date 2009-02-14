@@ -229,7 +229,7 @@ class GlashammerApplication(object):
         try:
             endpoint, values = adapter.match()
             request.endpoint = endpoint
-            request.values = values
+            request.endpoint_values = values
             emit_event('request-end', request)
             response = self.get_view(request, endpoint, values)
         except HTTPException, e:
