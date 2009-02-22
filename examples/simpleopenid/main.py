@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from os.path import dirname
 
-from glashammer import make_app, run_very_simple, sibpath, render_response
+from glashammer.application import make_app
+from glashammer.utils import run_very_simple, sibpath, render_response
 
 from glashammer.bundles.openidauth import setup_openid
 

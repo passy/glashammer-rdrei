@@ -2,7 +2,8 @@
 
 from os.path import dirname
 
-from glashammer import make_app, run_very_simple, Response
+from glashammer.application import make_app
+from glashammer.utils import run_very_simple, Response
 
 
 def hello_view(req):

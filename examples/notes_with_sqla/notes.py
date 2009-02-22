@@ -5,8 +5,9 @@ from sqlalchemy import create_engine, MetaData, Table, Column, Integer, \
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import create_session, scoped_session
 from wtforms import Form, TextField, TextAreaField, validators
-from glashammer import make_app, run_very_simple, render_response, Response
-from glashammer.utils import local, local_manager, get_app, redirect, url_for
+from glashammer.application import make_app
+from glashammer.utils import local, local_manager, get_app, redirect, \
+    url_for, run_very_simple, render_response, Response
 
 
 FOLDER = dirname(__file__)
@@ -36,8 +37,8 @@ class Note(Base):
 # The form
 class NotesForm(Form):
     """Add/edit form for notes"""
-    title = TextField(u'Title:', validators.length(min=4, max=150))
-    note = TextAreaField(u'Note:', validators.length(min=4, max=500))
+    title = TextField(u'Title:', [validators.length(min=4, max=150)])
+    note = TextAreaField(u'Note:', [validators.length(min=4, max=500)])
     importance = TextField(u'Importance:')
 
 

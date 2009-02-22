@@ -5,7 +5,8 @@ from storm.locals import *
 from werkzeug import redirect
 from wtforms import Form, TextField
 
-from glashammer import make_app, run_very_simple, sibpath, render_response
+from glashammer.application import make_app
+from glashammer.utils import run_very_simple, sibpath, render_response
 
 from glashammer.bundles.stormdb import setup_stormdb, get_store
 
