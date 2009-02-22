@@ -1,13 +1,16 @@
 
 from os.path import dirname
 
-from glashammer import make_app, run_very_simple, render_response
-from glashammer.bundles.sqladb import metadata, db, get_engine, setup_sqladb
+from glashammer.application import make_app
+from glashammer.utils import run_very_simple, render_response
+from glashammer.bundles.sqlalchdb import metadata, get_engine, \
+        setup_sqlalchdb, mapper, Table, Column, types, session
 
 FOLDER = dirname(__file__)
 
 def index_view(req):
-    return render_response('notes_index.jinja', notes=Note.objects.order_by(Note.id))
+    return render_response('notes_index.jinja',
+        notes=session.query(Note).order_by(Note.id))
 
 def add_view(req):
     # validate form
@@ -17,31 +20,33 @@ def add_view(req):
     if not text:
         text = "kT"
     note = Note(title, text, prio)
-    db.commit()
+    session.add(note)
+    session.commit()
     return render_response('notes_success.jinja')
 
 def edit_view(req, nid):
     # find note
-    note = Note.objects.get(nid)
+    note = session.query(Note).get(nid)
     # TODO: check if note exists
     return render_response('notes_edit.jinja', note=note)
 
 def edit_submit_view(req, nid):
     # find note
-    note = Note.objects.get(nid)
+    note = session.query(Note).get(nid)
     # TODO: check if note exists
     note.title = req.form.get('title')
     note.note = req.form.get('text')
     note.importance = req.form.get('importance')
-    db.commit()
+    session.add(note)
+    session.commit()
     return render_response('notes_success.jinja')
 
 # The SQLA tables
-notes = db.Table('notes', metadata,
-    db.Column('id', db.Integer, primary_key=True),
-    db.Column('title', db.Unicode),
-    db.Column('note', db.Unicode),
-    db.Column('importance', db.Unicode)
+notes = Table('notes', metadata,
+    Column('id', types.Integer, primary_key=True),
+    Column('title', types.Unicode),
+    Column('note', types.Unicode),
+    Column('importance', types.Unicode)
 )
 
 # The ORM mapped class
@@ -53,11 +58,11 @@ class Note(object):
         self.importance = importance
 
 # Make a mapper which gives you the objects manager
-db.mapper(Note, notes)
+mapper(Note, notes)
 
 def setup(app):
-    # Use the sqladb bundle
-    app.add_setup(setup_sqladb)
+    # Use the sqlalchdb bundle
+    app.add_setup(setup_sqlalchdb)
 
     # Function to be run during data setup phase
     app.add_data_func(init_data)

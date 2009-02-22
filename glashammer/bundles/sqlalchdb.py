@@ -10,8 +10,9 @@
 
 import os
 
-from sqlalchemy import create_engine, orm, MetaData
+from sqlalchemy import create_engine, orm, MetaData, Table, Column, types
 
+from glashammer.utils import get_app
 from glashammer.utils.local import local, local_manager
 from glashammer.utils.config import config_overriding_val
 from glashammer.utils.json import JsonRestService
@@ -23,6 +24,8 @@ session = orm.scoped_session(lambda: orm.create_session(
                              local_manager.get_ident)
 
 metadata = MetaData()
+
+mapper = orm.mapper
 
 
 
