@@ -306,13 +306,13 @@ class GlashammerApplication(object):
             self._data_funcs.add(data_func)
             self._odata_funcs.append(data_func)
 
-    def add_bundle(self, bundle):
+    def add_bundle(self, bundle, *args, **kw):
         """
         Add a bundle (a module or other thing with a setup_app callable
         """
         self._ensure_not_finalized()
 
-        self.add_setup(bundle.setup_app)
+        self.add_setup(bundle.setup_app, *args, **kw)
 
     def add_url(self, url, endpoint, view=None, **kw):
         """
