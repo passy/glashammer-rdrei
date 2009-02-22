@@ -53,3 +53,5 @@ def setup_sqlalchdb(app, default_uri=None):
     app.add_data_func(data_init)
 
 
+setup_app = setup_sqlalchdb
+
