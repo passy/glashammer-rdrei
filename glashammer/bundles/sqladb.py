@@ -222,7 +222,6 @@ class JsonSqlaRestService(JsonRestService):
         db.commit()
         return self.create_results_set([o])
 
-
     def _serialize(self, obj):
         if hasattr(obj, 'json_serializer'):
             pass
@@ -235,6 +234,7 @@ class JsonSqlaRestService(JsonRestService):
                     not a.startswith('_')):
                     d[a] = attr
             return d
+
 
 class JsonSqlaSerializer(object):
     pass
@@ -281,6 +281,7 @@ def setup_sqladb(app, default_db_uri=None):
     app.connect_event('app-setup', cleanup_sqla_session)
     app.sqla_db_engine = db.create_engine(app.cfg['sqla_db_uri'],
                                           convert_unicode=True)
+    print app.sqla_db_engine
     metadata.bind = app.sqla_db_engine
     app.add_data_func(data_init)
 

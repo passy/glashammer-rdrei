@@ -969,7 +969,8 @@ class TestSQLA(object):
             os.unlink('test_output/gh.sqlite')
 
 
-        metadata.drop_all()
+        if metadata.bind:
+            metadata.drop_all()
 
 
         # The SQLA tables
