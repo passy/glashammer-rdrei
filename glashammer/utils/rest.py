@@ -21,7 +21,7 @@ class RestService(object):
 
     @staticmethod
     def _nice_name(method):
-        return method.tolower().replace('-','_')
+        return method.lower().replace('-','_')
 
     def _get_methods(self):
         methods = []
