@@ -10,6 +10,8 @@
 
 import os
 
+import warnings
+
 from datetime import datetime, timedelta
 
 from types import ModuleType
@@ -271,6 +273,7 @@ def cleanup_sqla_session(arg):
     session.remove()
 
 def setup_sqladb(app, default_db_uri=None):
+    warnings.warn("The sqladb bundle is depracated. Use sqlalchdb", DeprecationWarning)
     if default_db_uri is None:
         default_db_uri = _get_default_db_uri(app)
     app.add_config_var('sqla_db_uri', str, default_db_uri)
