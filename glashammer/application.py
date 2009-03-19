@@ -22,8 +22,6 @@ from glashammer.utils.templating import create_template_environment
 from glashammer.utils import local, local_manager, EventManager, emit_event, \
     url_for, sibpath, Request
 
-from glashammer.utils.log import debug, warning
-
 
 
 def default_setup_func(app):
