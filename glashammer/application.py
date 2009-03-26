@@ -82,6 +82,7 @@ class GlashammerApplication(object):
         url_map=None, view_map=None,
         template_searchpaths=None, template_filters=None, template_globals=None,
         template_tests=None,
+        template_env_kw=None,
         ):
         # just for playing in the shell
         local.application = self
@@ -190,6 +191,7 @@ class GlashammerApplication(object):
             globals=self._template_globals,
             filters=self._template_filters,
             tests=self._template_tests,
+            env_kw=template_env_kw,
         )
 
         del self._template_searchpaths
