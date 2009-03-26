@@ -77,8 +77,10 @@ class Pagination(object):
 
 class NavigationItem(object):
     """An item that contains navigation information"""
-    def __init__(self, title, endpoint, rule_args={}, children=[],
+    def __init__(self, title, endpoint, rule_args={}, children=None,
                  nolink=False):
+        if children is None:
+            children = []
         self.title = title
         self.endpoint = endpoint
         self.children = children
