@@ -276,6 +276,13 @@ def action_dependencies():
     except ImportError:
         print 'Missing! "easy_install WTForms" to fix.'
 
+    print 'Simplejson...\t\t',
+    try:
+        import simplejson
+        print 'Installed'
+    except ImportError:
+        print 'Missing! "easy_install simplejson" to fix.'
+
 
 
 if __name__ == '__main__':
