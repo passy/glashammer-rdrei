@@ -415,7 +415,7 @@ class GlashammerApplication(object):
         self._ensure_not_finalized()
 
         self._template_filters[name] = f
-    
+
     def add_template_test(self, name, f):
         """
         Add a template filter.
@@ -445,9 +445,18 @@ class GlashammerApplication(object):
         """
         self._ensure_not_finalized()
 
-        self._shared_exports['/_shared/' + name] = path
-        self.add_url('/_shared/%s/<string:filename>' % name,
-                     endpoint='shared/' + name, build_only=True)
+        #Allow empty name
+        if name == '':
+            sep = ''
+        else:
+            sep = '/'
+
+        url = sep.join(['/_shared', name])
+        ep = sep.join(['shared', name])
+
+        self._shared_exports[url] = path
+        self.add_url('%s/<string:filename>' % url,
+                     endpoint=ep, build_only=True)
 
     def add_middleware(self, middleware_factory, *args, **kwargs):
         """

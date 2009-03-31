@@ -11,6 +11,7 @@ def _view(req):
 
 def _setup(app):
     app.add_shared('test', 'tests')
+    app.add_shared('', 'tests')
     app.add_url('/', 'test/main', _view)
 
 
@@ -33,4 +34,11 @@ def test_shared_dir():
     c = Client(app)
     appiter, code, headers = c.open('/_shared/test/')
     assert '404 NOT FOUND' == code
+
+def test_empty_name():
+    app = make_app(_setup, 'test_output')
+    c = Client(app)
+    appiter, code, headers = c.open('/_shared/test_shared.py')
+    assert 'add_shared' in ''.join(appiter)
+    assert dict(headers)['Content-Type'] == 'text/x-python'
 
