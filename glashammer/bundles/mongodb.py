@@ -22,8 +22,15 @@
 
 """MongoDB integration for Glashammer.
 
-MongoDB is a high-performance, open source, schema-free document-oriented
-data store that's easy to deploy, manage and use. It's network accessible.
+MongoDB is a document-oriented data store that is easy to deploy, manage
+and use. Any important features are:
+
+   - High performance
+   - Full index support
+   - Query profiling
+   - Replication and fail-over support
+   - Efficient storage of binary data including large objects
+   - Auto-sharding for cloud-level scalability
 
    http://www.mongodb.org/display/DOCS/Home
 
