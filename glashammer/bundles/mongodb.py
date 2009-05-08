@@ -25,13 +25,17 @@
 MongoDB is a high-performance, open source, schema-free document-oriented
 data store that's easy to deploy, manage and use. It's network accessible.
 
-http://www.mongodb.org/display/DOCS/Home
+   http://www.mongodb.org/display/DOCS/Home
 
-Here you have a little tutorial:
-http://www.mongodb.org/display/DOCS/Python+Tutorial
+* Installation:
+   http://www.mongodb.org/display/DOCS/Getting+Started
+   http://www.mongodb.org/display/DOCS/Python+Language+Center
 
-And the API for the Python driver:
-http://api.mongodb.org/python/
+* Tutorial:
+   http://www.mongodb.org/display/DOCS/Python+Tutorial
+
+* Python driver API:
+   http://api.mongodb.org/python/
 
 """
 __author__ = 'Jonás Melián <devel@jonasmelian.com>'
@@ -40,7 +44,10 @@ __license__ = 'MIT X11'
 __date__ = '2009-05-08'  # yyyy-mm-dd
 
 
-from pymongo import connection
+try:
+   from pymongo import connection
+except ImportError, err:
+   raise ImportError("%s\nRead about its installation in the docstring." % err)
 
 
 def setup_mongodb(app, host=None, port=None, pool_size=None,
