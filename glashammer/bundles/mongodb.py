@@ -34,10 +34,11 @@ And the API for the Python driver:
 http://api.mongodb.org/python/
 
 """
+__author__ = 'Jonás Melián <devel@jonasmelian.com>'
+__copyright__ = '(c) 2009 Glashammer Developers'
+__license__ = 'MIT X11'
+__date__ = '2009-05-08'  # yyyy-mm-dd
 
-__authors__ = [
-      '"Jonás Melián" <devel@jonasmelian.com>',
-]
 
 from pymongo import connection
 
@@ -67,35 +68,23 @@ def setup_mongodb(app, host=None, port=None, pool_size=None,
       pool_size = app.conf['mongodb/pool_size']
       auto_start_request = app.conf['mongodb/auto_start_request']
 
-      # !!!
-      # To delete when been modified the python driver to get values
-      # by default.
-      if not host:
-         host = 'localhost'
-      if not port:
-         port = 27017
-      if not pool_size:
-         pool_size = 1
-      if not auto_start_request:
-         auto_start_request = True
-
       try:
          db_connection = connection.Connection(
                host=host, port=port, pool_size=pool_size,
                auto_start_request=auto_start_request)
       except connection.ConnectionFailure:
+         # Gets the values that are used to connect to Mongo server.
          if not host:
-            host_port = 'localhost'
+            _host = connection.Connection.HOST
          else:
-            host_port = host
-         host_port += ':'
+            _host = host
          if not port:
-            host_port += '27017'
+            _port = connection.Connection.PORT
          else:
-            host_port += port
+            _port = port
 
-         print("Could not connect. Be sure that Mongo is running on %s" %
-               (host_port))
+         print("Could not connect. Be sure that Mongo is running on %s:%d" %
+               (_host, _port))
 
       # 'local' is 1 per thread, 'app' might be shared between thread.
       # So if the connection object is thread safe (Pymongo does),
