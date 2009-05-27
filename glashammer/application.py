@@ -242,11 +242,22 @@ class GlashammerApplication(object):
 
     def get_view(self, request, endpoint, values):
         emit_event('view-dispatch', endpoint, values)
+        view = self._find_view(endpoint)
+        if view:
+            return view(request, **values)
+        else:
+            raise NotFound()
+
+    def _find_view(self, endpoint):
+        """Find a view for an endpoint.
+
+        Checks views first, then controllers.  Returns the callable,
+        or None when no view is found.
+        """
         # try looking up by view first
         view = self.views.get(endpoint)
         if view:
             emit_event('view-match', view)
-            return view(request, **values)
         elif '/' in endpoint or '.' in endpoint:
             # fallback to controller->view
             if '/' in endpoint:
@@ -256,9 +267,10 @@ class GlashammerApplication(object):
             controller = self.controllers.get(base)
             if controller is not None and hasattr(controller, target):
                 emit_event('controller-match', controller, target)
-                return getattr(controller, target)(request, **values)
-        raise NotFound()
+                view = getattr(controller, target)
 
+        return view
+    
     def _ensure_not_finalized(self):
         if self.finalized:
             raise RuntimeError('You cannot do this. The application has been finalized.')
