@@ -265,9 +265,12 @@ class GlashammerApplication(object):
             else:
                 base, target = endpoint.split('.', 1)
             controller = self.controllers.get(base)
-            if controller is not None and hasattr(controller, target):
-                emit_event('controller-match', controller, target)
-                view = getattr(controller, target)
+            if controller is not None:
+                target_prefix = getattr(controller, 'target_prefix', '')
+                target = target_prefix + target
+                if hasattr(controller, target):
+                    emit_event('controller-match', controller, target)
+                    view = getattr(controller, target)
 
         return view
     

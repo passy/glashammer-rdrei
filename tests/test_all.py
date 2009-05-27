@@ -192,6 +192,37 @@ def test_add_controller():
     assert app.get_view(None, 'foo/index', {}) == 3
     assert app.get_view(None, 'foo/edit', {}) == 2
 
+class _PrefixedController(object):
+
+    target_prefix = 'view_'
+    
+    def view_index(self, req):
+        return 3
+
+    def view_edit(self, req):
+        return 2
+
+    def inaccessible(self, *a, **kw):
+        raise RuntimeError
+
+def test_add_prefixed_controller():
+    """
+    Add a controller with target_prefix attribute and check the views.
+    """
+    c = _PrefixedController()
+    def _add_controller(app):
+        app.add_views_controller('foo', c)
+
+    app = make_app(_add_controller, 'test_output')
+
+    for method, expected in [
+        ('index', c.view_index),
+        ('edit', c.view_edit),
+        ('inaccessible', None),
+        ]:
+        found = app._find_view('foo/' + method)
+        assert found == expected, "%s: %s != %s" % (method, found, expected)
+
 def test_endpoint_lookup():
     """
     Adding a rule, and that it's in the map
