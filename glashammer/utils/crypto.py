@@ -6,20 +6,20 @@
     :copyright: 2007-2008 by Armin Ronacher
     :license: MIT
 """
-import sha, string
+import hashlib, string
 from random import choice
 
 SALT_CHARS = string.ascii_lowercase + string.digits
 
-def gen_pwhash(password):
-    """Return a the password encrypted in sha format with a random salt."""
+def gen_pwhash(password, method='sha1'):
+    """Return a the password hashed with a random salt."""
     if isinstance(password, unicode):
         password = password.encode('utf-8')
     salt = gen_salt(6)
-    h = sha.new()
+    h = hashlib.new(method, '')
     h.update(salt)
     h.update(password)
-    return 'sha$%s$%s' % (salt, h.hexdigest())
+    return '%s$%s$%s' % (method, salt, h.hexdigest())
 
 def gen_salt(length=6):
     """Generate a random string of SALT_CHARS with specified ``length``."""
@@ -30,7 +30,7 @@ def gen_salt(length=6):
 def check_pwhash(pwhash, password):
     """Check a password against a given hash value. Since
     many forums save md5 passwords with no salt and it's
-    technically impossible to convert this to an sha hash
+    technically impossible to convert this to an hash
     with a salt we use this to be able to check for
     plain passwords::
 
@@ -44,9 +44,13 @@ def check_pwhash(pwhash, password):
 
         md5$123456$7faa731e3365037d264ae6c2e3c7697e
 
-    sha passwords::
+    sha(sha-0) passwords::
 
         sha$123456$118083bd04c79ab51944a9ef863efcd9c048dd9a
+
+    sha1 passwords::
+
+        sha1$123456$118083bd04c79ab51944a9ef863efcd9c048dd9a
 
     Note that the integral passwd column in the table is
     only 60 chars long. If you have a very large salt
@@ -60,15 +64,13 @@ def check_pwhash(pwhash, password):
     method, salt, hashval = pwhash.split('$', 2)
     if method == 'plain':
         return hashval == password
-    elif method == 'md5':
-        h = md5.new()
-    elif method == 'sha':
-        h = sha.new()
-    else:
+    try:
+        h = hashlib.new(method)
+        h.update(salt)
+        h.update(password)
+        return h.hexdigest() == hashval
+    except ValueError, e:
         return False
-    h.update(salt)
-    h.update(password)
-    return h.hexdigest() == hashval
 
 def gen_random_identifier(length=8):
     """Generate a random identifier."""
@@ -76,5 +78,3 @@ def gen_random_identifier(length=8):
         raise ValueError('requested key of length <= 0')
     return choice(IDENTIFIER_START) + \
            ''.join(choice(IDENTIFIER_CHAR) for _ in xrange(length - 1))
-
-
