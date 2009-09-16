@@ -50,7 +50,7 @@ def cleanup_sqla_session(arg):
 
 def setup_sqlalchdb(app, default_uri=None, metadata=metadata):
     default = 'sqlite:///%s' % os.path.join(app.instance_dir, 'gh.sqlite')
-    db_uri = config_overriding_val(app, default, default_uri, 'db.uri', str)
+    db_uri = config_overriding_val(app, default, default_uri, 'db/uri', str)
     app.connect_event('response-end', cleanup_sqla_session)
     app.connect_event('app-setup', cleanup_sqla_session)
     app.sqla_db_engine = create_engine(db_uri)
@@ -59,4 +59,3 @@ def setup_sqlalchdb(app, default_uri=None, metadata=metadata):
 
 
 setup_app = setup_sqlalchdb
-
