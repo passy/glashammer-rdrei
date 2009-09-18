@@ -49,7 +49,7 @@ setup(
             'shared/jquery/*',
             'templates/*'
         ],
-        'glashammer.bundles.auth' : [
+        'glashammer.bundles.depracated.auth' : [
             'templates/*',
         ],
         'glashammer.bundles.jquery': [
