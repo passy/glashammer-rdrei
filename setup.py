@@ -27,13 +27,17 @@ setup(
     # package information
     packages = [
         'glashammer',
+        'glashammer.utils',
+        'glashammer.tools',
         'glashammer.bundles',
-        'glashammer.bundles.auth',
         'glashammer.bundles.forms',
         'glashammer.bundles.i18n',
         'glashammer.bundles.jquery',
-        'glashammer.utils',
-        'glashammer.tools'
+        'glashammer.bundles.depracated',
+        'glashammer.bundles.depracated.auth',
+        'glashammer.bundles.contrib.db',
+        'glashammer.bundles.contrib.auth',
+        'glashammer.bundles.contrib.dev',
     ],
 
     package_dir = {
