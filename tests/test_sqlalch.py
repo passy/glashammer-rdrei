@@ -47,7 +47,7 @@ class TestSQLA(object):
             notes.create(app.sqla_db_engine)
 
         def setup_app(app):
-            app.add_setup(setup_sqlalchdb)
+            app.add_setup(setup_sqlalchdb, 'sqlite://')
             app.add_data_func(setup_db)
 
         self.app = make_app(setup_app, 'test_output')
