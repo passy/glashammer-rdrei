@@ -995,7 +995,7 @@ class TestPagination(object):
 def test_openid():
 
     def setup_openid(app):
-        from glashammer.bundles.openidauth import setup_openid
+        from glashammer.bundles.contrib.auth.openidauth import setup_openid
         app.add_setup(setup_openid)
 
     app = make_app(setup_openid, 'test_output')

@@ -60,7 +60,7 @@ def _authd_view(req):
         return Response('ok')
 
 def _setup(app):
-    from glashammer.bundles.repozewho import setup_repozewho
+    from glashammer.bundles.contrib.auth.repozewho import setup_repozewho
     app.add_setup(setup_repozewho, **kw)
     app.add_url('/', 'home', _authd_view)
 
