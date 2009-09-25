@@ -18,12 +18,12 @@ Refer to our downloads section at:
 Requirements
 ------------
 
-
 The following libraries should be installed:
 
 * Werkzeug
 * Jinja2
 * WTForms
+* Simplejson
 
 .. seealso::
 
@@ -36,8 +36,8 @@ Your First Application
 To get started using the application instance, please refer to
 examples/helloworld/__init__.py, from which this excerpt is taken::
 
-    from glashammer import make_app, run_very_simple, Response
-
+    from glashammer.application import make_app
+    from glashammer.utils import run_very_simple, Response
 
     def hello_view(req):
         return Response('<h1>Hello World</h1>')
@@ -46,8 +46,7 @@ examples/helloworld/__init__.py, from which this excerpt is taken::
         app.add_url('/', endpoint='hello/index', view=hello_view)
 
     if __name__ == '__main__':
-        from os.path import dirname
-        app =  make_app(setup, dirname(__file__))
+        app =  make_app(setup)
         run_very_simple(app)
 
 As you can see, this very simple application is composed of a single view
@@ -63,7 +62,7 @@ application is only geared to serve requests. Additional programmatic hooks
 are available during the request by means of events.
 
 You can run a debug server for this WSGI application instance using the
-run_very_simple() function. This is not suitable for a production environment.
+run_very_simple() function. (This is not suitable for a production environment.)
 
 If you have downloaded the source, you can run the example above using (from
 the source directory)::
