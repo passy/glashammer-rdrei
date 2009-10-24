@@ -27,12 +27,9 @@ session = orm.scoped_session(lambda: orm.create_session(
 
 metadata = MetaData()
 
-
-
+Base = declarative_base(metadata=metadata)
 
 mapper = orm.mapper
-
-
 
 
 def get_engine():
