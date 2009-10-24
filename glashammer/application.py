@@ -273,7 +273,7 @@ class GlashammerApplication(object):
                     view = getattr(controller, target)
 
         return view
-    
+
     def _ensure_not_finalized(self):
         if self.finalized:
             raise RuntimeError('You cannot do this. The application has been finalized.')

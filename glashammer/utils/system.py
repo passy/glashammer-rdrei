@@ -9,7 +9,6 @@ def run_very_simple(app):
 
 # system utilities
 
-can_build_eventmap = True
 def build_eventmap(app):
     """Walk through all the builtins and plugins for an application and
     look for `emit_event` calls. This is useful for plugin developers that
