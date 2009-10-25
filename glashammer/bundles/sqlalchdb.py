@@ -11,6 +11,7 @@
 import os
 
 from sqlalchemy import create_engine, orm, MetaData, Table, Column, types
+from sqlalchemy.ext.declarative import declarative_base
 
 from glashammer.utils import get_app
 from glashammer.utils.local import local, local_manager

@@ -9,9 +9,15 @@ glashammer.utils.appliance
 The Glashammer Application.
 """
 
-import sys
+import sys, os
 
 from werkzeug.routing import Rule, Submount, EndpointPrefix
+
+
+def expose(url, default=None):
+    def view(f):
+        return f
+    return view
 
 
 class Appliance(object):
@@ -33,9 +39,17 @@ class Appliance(object):
         # you don't want an Appliance.
         if self.__class__ is Appliance:
             raise ValueError('Appliance is strictly abstract.')
+        self._rules = []
         self.configure(self.default_config)
         self.configure(conf)
-        self._rules = []
+
+        if self.endpoint_prefix is None:
+            # I hat this crap too, but what are you going to do
+            self.endpoint_prefix = self.__class__.__name__.lower()
+
+        if self.mountpoint_path is None:
+            self.mountpoint_path = '/%s' % self.endpoint_prefix
+
 
     def configure(self, conf):
         for k in conf:
@@ -46,16 +60,16 @@ class Appliance(object):
         self._rules.append(Rule(url, endpoint=endpoint))
 
     def create_rule_factory(self):
-        return EndpointPrefix(self.endpoint + '/', [
-            Submount(self.mountpoint, self._rules)
+        return EndpointPrefix(self.endpoint_prefix + '/', [
+            Submount(self.mountpoint_path, self._rules)
         ])
 
     def setup(self, app):
         app.add_url_rule(self.create_rule_factory())
-        app.add_views_controller(self.endpoint, self)
+        app.add_views_controller(self.endpoint_prefix, self)
         app.add_template_searchpath(
             self.get_package_path(self.templates_path))
-        app.add_shared
+        app.add_shared(self.name, self.get_package_path(self.shared_path))
 
     @property
     def name(self):
@@ -69,7 +83,6 @@ class Appliance(object):
         return os.path.join(sys.modules[self.__module__].__file__, path)
 
     __call__ = setup
-
 
 
 

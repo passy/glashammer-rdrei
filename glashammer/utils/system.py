@@ -16,8 +16,6 @@ def build_eventmap(app):
     missing documentation. Speaking of documentation: This could help for
     that too.
     """
-    if not can_build_eventmap:
-        raise RuntimeError('this feature requires python 2.5')
     import glashammer
 
     textpress_root = os.path.realpath(os.path.dirname(glashammer.__file__))
