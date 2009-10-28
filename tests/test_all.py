@@ -45,6 +45,8 @@ def test_app_no_instance():
     """
     app = make_app(_setup_empty)
 
+    assert app.instance_dir == os.getcwd()
+
 
 def test_app_missing_instance():
     """

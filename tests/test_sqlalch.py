@@ -50,6 +50,8 @@ class TestSQLA(object):
             app.add_setup(setup_sqlalchdb, 'sqlite://')
             app.add_data_func(setup_db)
 
+        self._setup_app = setup_app
+
         self.app = make_app(setup_app, 'test_output')
         self.c = Client(self.app)
 
