@@ -14,8 +14,13 @@ import sys, os
 from werkzeug.routing import Rule, Submount, EndpointPrefix
 
 
-def expose(url, default=None):
-    def view(f):
+def expose(url, endpoint=None, **rule_kw):
+    def view(f, endpoint=endpoint, rule_kw=rule_kw):
+        f.url = url
+        if endpoint is None:
+            endpoint = f.func_name
+        f.endpoint = endpoint
+        f.rule_kw = rule_kw
         return f
     return view
 
@@ -24,7 +29,7 @@ class Appliance(object):
     """
     A mountable bundle of goodness.
     """
-    target_prefix = 'view_'
+    target_prefix = ''
 
     default_config = {
         'mountpoint_path': None,
@@ -50,14 +55,17 @@ class Appliance(object):
         if self.mountpoint_path is None:
             self.mountpoint_path = '/%s' % self.endpoint_prefix
 
-
     def configure(self, conf):
         for k in conf:
             if k in self.default_config:
                 setattr(self, k, conf[k])
 
-    def add_url(self, url, endpoint, view):
+    def add_url(self, url, endpoint, view, **rule_kw):
         self._rules.append(Rule(url, endpoint=endpoint))
+
+    def auto_add_urls(self):
+        for rule in self._find_rules():
+            self._rules.append(Rule)
 
     def create_rule_factory(self):
         return EndpointPrefix(self.endpoint_prefix + '/', [
@@ -81,6 +89,18 @@ class Appliance(object):
 
     def get_package_path(self, path):
         return os.path.join(sys.modules[self.__module__].__file__, path)
+
+    def _find_urls(self):
+        for name in dir(self):
+            attr = getattr(self, name)
+            if hasattr(attr, 'url'):
+                yield attr
+    
+    def _find_rules(self):
+        for method in self._find_urls():
+            yield Rule(method.url, method.endpoint, method, **method.rule_kw)
+            
+            
 
     __call__ = setup
 
