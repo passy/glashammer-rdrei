@@ -513,3 +513,13 @@ def make_app(setup_func, instance_dir=None, **kw):
     return application
 
 
+def declare_app(config_file, setup_func=None,
+                instance_dir=None, **kw):
+    """
+    Create an application instance from a config_file
+    """
+    from glashammer.utils.yconfig import yconfig_setup
+    app = make_app(yconfig_setup(config_file, setup_func),
+                   instance_dir, **kw)
+    return app
+
