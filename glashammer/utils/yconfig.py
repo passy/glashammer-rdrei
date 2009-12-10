@@ -14,9 +14,9 @@ For example::
 
     appliances:
         - import: glashammer.appliances.admin
-          mountpoint: /admin
+          mountpoint_path: /admin
         - import: glashammer.appliances.pages
-          mountpoint: /pages
+          mountpoint_path: /pages
 
     urls:
         - url: /blah/<int:id>
@@ -55,6 +55,7 @@ import yaml
 from werkzeug import import_string
 from flatland import Dict, String, List, String, Element
 from flatland.validation.scalars import Present
+from flatland import AdaptationError
 
 
 class Import(String):
@@ -64,8 +65,8 @@ class Import(String):
         if value is not None:
             try:
                 value = import_string(value)
-            except ImportError:
-                raise AdaptationError()
+            except ImportError, e:
+                raise AdaptationError(str(e))
             return value
 
 
@@ -90,6 +91,12 @@ SharedPath = Dict.of(
 
 SharedPaths = List.of(SharedPath)
 
+Appliance = Dict.of(
+    Import.named('import'),
+    String.named('mountpoint_path'),
+)
+
+Appliances = List.of(Appliance)
 
 def yconfig_setup(config_file, setup_func):
 
@@ -130,6 +137,14 @@ def yconfig_setup(config_file, setup_func):
         ):
             p = sharedpath.value
             app.add_shared(p['name'], p['path'])
+
+
+        for a in Appliances(
+            config.get('appliances', [])
+        ):
+            appliance = a.value['import'](
+                mountpoint_path=a.value['mountpoint_path'])
+            app.add_setup(appliance)
 
 
     return setup_app

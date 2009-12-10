@@ -3,6 +3,7 @@
 import os, tempfile
 
 from glashammer.application import declare_app
+from werkzeug.test import Client
 
 def _c(y):
     fd, fn = tempfile.mkstemp(suffix='_gh-yconfig-test')
@@ -77,6 +78,26 @@ shared:
 
     assert '/_shared/moo' in app.shared_export_map
     assert app.shared_export_map['/_shared/moo'] == '/gah'
+
+
+def test_appliance():
+    yaml = """
+appliances:
+    - import: glashammer.utils.appliance._JustForTestingAppliance
+      mountpoint_path: /pages
+    """.strip()
+    fn = _c(yaml)
+    app = declare_app(fn)
+
+    c = Client(app)
+
+    i, s, h = c.open('/')
+    assert '404' in s
+
+    i, s, h = c.open('/pages/')
+    print i, s, h
+    assert '200' in s
+    assert 'hello' in ''.join(i)
 
 
 
