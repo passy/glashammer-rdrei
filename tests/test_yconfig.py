@@ -61,8 +61,10 @@ template_searchpaths:
 def test_shared():
     yaml = """
 shared:
-    foo: /blah
-    moo: /gah
+    - name: foo
+      path: /blah
+    - name: moo
+      path: /gah
 """.strip()
 
     fn = _c(yaml)

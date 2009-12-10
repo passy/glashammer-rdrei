@@ -84,7 +84,12 @@ Settings = Dict.of(Element)
 
 TemplateSearchPaths = List.of(String)
 
-SharedPaths = Dict.of(String)
+SharedPath = Dict.of(
+    String.named('name'),
+    String.named('path'),
+)
+
+SharedPaths = List.of(SharedPath)
 
 
 def yconfig_setup(config_file, setup_func):
@@ -121,10 +126,13 @@ def yconfig_setup(config_file, setup_func):
         ):
             app.add_template_searchpath(searchpath.value)
 
-        for name, path in SharedPaths(
-            config.get('shared', {})
-        ).items():
-            app.add_shared(name, path)
+        print config.get('shared')
+        for sharedpath in SharedPaths(
+            config.get('shared', [])
+        ):
+            p = sharedpath.value
+            print p
+            app.add_shared(p['name'], p['path'])
 
 
     return setup_app
