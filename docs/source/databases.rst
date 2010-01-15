@@ -11,6 +11,7 @@ free to choose whichever you like or even others.
 .. toctree::
    :maxdepth: 1
 
+   bundle_sqlalchdb
    bundle_sqladb
    bundle_stormdb
    bundle_couchdb

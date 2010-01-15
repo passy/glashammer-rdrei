@@ -1,8 +1,8 @@
 
 .. _bundle_sqladb:
 
-SQLAlchemy Integration
-======================
+Old SQLAlchemy Integration (deprecated)
+=======================================
 
 .. seealso::
    

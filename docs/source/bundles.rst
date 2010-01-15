@@ -23,6 +23,7 @@ as we are adding functionality as required.
     bundle_repozewho
     bundle_auth
     bundle_i18n
+    bundle_sqlalchdb
     bundle_sqladb
     bundle_stormdb
     bundle_htmlhelpers
