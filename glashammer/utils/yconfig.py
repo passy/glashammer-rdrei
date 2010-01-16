@@ -50,12 +50,16 @@ For example::
 
 """
 
+import os, sys
+
 import yaml
 
 from werkzeug import import_string
 from flatland import Dict, String, List, String, Element
 from flatland.validation.scalars import Present
 from flatland import AdaptationError
+
+from glashammer.utils import sibpath
 
 
 class Import(String):
@@ -104,6 +108,8 @@ def yconfig_setup(config_file, setup_func):
     config = yaml.load(f)
     f.close()
 
+    sys.path.insert(0, os.path.dirname(config_file))
+
     def setup_app(app, config=config, setup_func=setup_func):
 
         # empty config file
@@ -121,6 +127,7 @@ def yconfig_setup(config_file, setup_func):
 
         if urls.validate():
             for url in urls.value:
+                print url
                 app.add_url(url['url'], url['endpoint'], url.get('view'))
         else:
             print 'failed'
@@ -130,7 +137,10 @@ def yconfig_setup(config_file, setup_func):
         for searchpath in TemplateSearchPaths(
             config.get('template_searchpaths', [])
         ):
-            app.add_template_searchpath(searchpath.value)
+            sp = searchpath.value
+            if not os.path.isabs(sp):
+                sp = sibpath(config_file, sp)
+            app.add_template_searchpath(sp)
 
         for sharedpath in SharedPaths(
             config.get('shared', [])
