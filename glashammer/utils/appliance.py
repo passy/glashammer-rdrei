@@ -6,7 +6,7 @@ glashammer.utils.appliance
 :copyright: 2008-2009 Glashammer Developers
 :license: MIT
 
-The Glashammer Application.
+The Glashammer Appliances.
 """
 
 import sys, os
@@ -65,7 +65,7 @@ class Appliance(object):
 
     def auto_add_urls(self):
         for rule in self._find_rules():
-            self._rules.append(Rule)
+            self._rules.append(rule)
 
     def create_rule_factory(self):
         return EndpointPrefix(self.endpoint_prefix + '/', [
@@ -73,6 +73,7 @@ class Appliance(object):
         ])
 
     def setup(self, app):
+        self.auto_add_urls()
         app.add_url_rule(self.create_rule_factory())
         app.add_views_controller(self.endpoint_prefix, self)
         app.add_template_searchpath(
@@ -95,14 +96,20 @@ class Appliance(object):
             attr = getattr(self, name)
             if hasattr(attr, 'url'):
                 yield attr
-    
+
     def _find_rules(self):
         for method in self._find_urls():
-            yield Rule(method.url, method.endpoint, method, **method.rule_kw)
-            
-            
+            yield Rule(method.url, endpoint=method.endpoint, **method.rule_kw)
 
     __call__ = setup
+
+
+#XXX Just For Testing
+class _JustForTestingAppliance(Appliance):
+    @expose('/')
+    def index(self, req):
+        from glashammer.utils import Response
+        return Response('hello')
 
 
 
