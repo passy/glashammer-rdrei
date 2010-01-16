@@ -3,7 +3,7 @@
     glashammer.utils.fileutils
     ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    :copyright: 2007-2008 by Ali Afshar
+    :copyright: 2007-2009-2008 by Ali Afshar
     :license: MIT
 """
 import os

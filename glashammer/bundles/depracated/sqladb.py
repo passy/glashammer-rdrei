@@ -3,7 +3,7 @@
     glashammer.bundles.sqladb
     ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    :copyright: 2007 by Armin Ronacher, Ali Afshar, Christopher Grebs, Pedro
+    :copyright: 2007-2009 by Armin Ronacher, Ali Afshar, Christopher Grebs, Pedro
                 Algarvio
     :license: MIT
 """

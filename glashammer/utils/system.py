@@ -9,7 +9,6 @@ def run_very_simple(app):
 
 # system utilities
 
-can_build_eventmap = True
 def build_eventmap(app):
     """Walk through all the builtins and plugins for an application and
     look for `emit_event` calls. This is useful for plugin developers that
@@ -17,8 +16,6 @@ def build_eventmap(app):
     missing documentation. Speaking of documentation: This could help for
     that too.
     """
-    if not can_build_eventmap:
-        raise RuntimeError('this feature requires python 2.5')
     import glashammer
 
     textpress_root = os.path.realpath(os.path.dirname(glashammer.__file__))

@@ -1,6 +1,6 @@
 
-Brainstorm 28.11.07
 
+* Mountable appliances - EndpointPrefix
 * Plugabble database setup
 * Authservice more abstract, with AuthBackend
 * Migrations

@@ -3,7 +3,7 @@
     glashammer.bundles.sessions
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    :copyright: 2007 by Armin Ronacher, Glashammer Developers
+    :copyright: 2007-2009 by Armin Ronacher, Glashammer Developers
     :license: MIT
 """
 from werkzeug.contrib.securecookie import SecureCookie

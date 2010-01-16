@@ -8,7 +8,7 @@
     changes the application is reloaded automatically.
 
 
-    :copyright: 2007-2008 by Armin Ronacher, Pedro Algarvio.
+    :copyright: 2007-2009-2008 by Armin Ronacher, Pedro Algarvio.
     :license: MIT
 """
 import os

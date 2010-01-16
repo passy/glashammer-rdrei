@@ -3,7 +3,7 @@
     glashammer.bundles.auth
     ~~~~~~~~~~~~~~~~~~~~~~~
 
-    :copyright: 2008 by Glashammer Developers
+    :copyright: 2008-2009 by Glashammer Developers
     :license: MIT
 """
 import os

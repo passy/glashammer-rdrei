@@ -11,6 +11,7 @@
 import os
 
 from sqlalchemy import create_engine, orm, MetaData, Table, Column, types
+from sqlalchemy.ext.declarative import declarative_base
 
 from glashammer.utils import get_app
 from glashammer.utils.local import local, local_manager
@@ -27,12 +28,9 @@ session = orm.scoped_session(lambda: orm.create_session(
 
 metadata = MetaData()
 
-
-
+Base = declarative_base(metadata=metadata)
 
 mapper = orm.mapper
-
-
 
 
 def get_engine():

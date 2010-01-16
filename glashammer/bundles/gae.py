@@ -5,7 +5,7 @@
 
     Google Appengine integration
 
-    :copyright: 2007 by Glashammer Developers
+    :copyright: 2007-2009 by Glashammer Developers
     :license: MIT
 """
 

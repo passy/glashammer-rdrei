@@ -1,6 +1,6 @@
 
 import os, shutil
-
+from glashammer.application import make_app
 
 def setup():
     try:
@@ -12,4 +12,7 @@ def setup():
 
 def teardown():
     shutil.rmtree('test_output')
+
+def gh_app(setup):
+    return make_app(setup, 'test_output')
 

@@ -3,7 +3,7 @@
     glashammer.utils.webbish
     ~~~~~~~~~~~~~~~~~~~~~~~~
 
-    :copyright: 2007-2008 by Armin Ronacher, Ali Afshar
+    :copyright: 2007-2009-2008 by Armin Ronacher, Ali Afshar
     :license: MIT
 """
 import math

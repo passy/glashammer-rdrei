@@ -3,7 +3,7 @@
     glashammer.crypto
     ~~~~~~~~~~~~~~~~~
 
-    :copyright: 2007-2008 by Armin Ronacher
+    :copyright: 2007-2009-2008 by Armin Ronacher
     :license: MIT
 """
 import hashlib, string
