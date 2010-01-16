@@ -98,7 +98,12 @@ class GlashammerApplication(object):
         self.config_file = os.path.join(self.instance_dir, config_name)
 
         if not os.path.exists(self.instance_dir):
-            raise RuntimeError('Application instance directory missing')
+            try:
+                os.mkdir(self.instance_dir)
+            except OSError, e:
+                raise RuntimeError('Application instance directory missing %r '
+                                   'And failed to create it %s' %
+                                    (self.instance_dir, e))
 
         self.conf = self.cfg = Configuration(self.config_file)
 
@@ -133,7 +138,7 @@ class GlashammerApplication(object):
             self._template_filters = template_filters
         else:
             self._template_filters = {}
-        
+
         if template_tests:
             self._template_tests = template_tests
         else:
@@ -519,6 +524,8 @@ def declare_app(config_file, setup_func=None,
     Create an application instance from a config_file
     """
     from glashammer.utils.yconfig import yconfig_setup
+    if instance_dir is None:
+        instance_dir = sibpath(config_file, 'instance')
     app = make_app(yconfig_setup(config_file, setup_func),
                    instance_dir, **kw)
     return app

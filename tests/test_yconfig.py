@@ -28,7 +28,6 @@ urls:
     app = declare_app(fn)
     assert app
     assert 'foo' in app.map._rules_by_endpoint
-    print dir(app.map._rules_by_endpoint['foo'][0].rule)
     assert app.map._rules_by_endpoint['foo'][0].rule == '/foo'
 
 
@@ -99,6 +98,13 @@ appliances:
     assert '200' in s
     assert 'hello' in ''.join(i)
 
+
+def test_instance_dir():
+    yaml = ''
+    fn = _c(yaml)
+    app = declare_app(fn)
+    assert  app.instance_dir == '/tmp/instance'
+    assert 0
 
 
 
