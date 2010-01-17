@@ -78,12 +78,8 @@ class GlashammerApplication(object):
     `request_cls`
         The base class that is used for requests. Inherit from
         glashammer.utils.Request to make your own. For more info on request and
-        response wrapper objects, see
-        http://werkzeug.pocoo.org/documentation/dev/wrappers.html.
-
-    `response_cls`
-        The base class for response objects. Defaults to
-        werkzeug.wrappers.Response. Only used for render_to_response so far.
+        response wrapper objects, see `here
+        <http://werkzeug.pocoo.org/documentation/dev/wrappers.html>`_.
 
     `view_finder`
         An instance of :class:`ViewFinder`. Defaults to a new instance.
@@ -99,7 +95,6 @@ class GlashammerApplication(object):
         template_tests=None,
         template_env_kw=None,
         request_cls=None,
-        response_cls=None,
         view_finder=None
         ):
         # just for playing in the shell
@@ -108,7 +103,6 @@ class GlashammerApplication(object):
         self.finalized = False
 
         self.request_cls = request_cls or Request
-        self.response_cls = response_cls or Response
         self.view_finder = view_finder or ViewFinder()
 
         # Start the setup
@@ -249,7 +243,7 @@ class GlashammerApplication(object):
 
     def dispatch_request(self, environ, start_response):
         local.url_adapter = adapter = self.map.bind_to_environ(environ)
-        local.request = request = Request(self, environ)
+        local.request = request = request_cls(self, environ)
         emit_event('request-start', request)
         try:
             endpoint, values = adapter.match()
