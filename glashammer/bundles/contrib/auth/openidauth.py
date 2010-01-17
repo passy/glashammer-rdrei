@@ -1,8 +1,11 @@
-
 """
-Open ID Support for Glashammer
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+glashammer.bundles.contrib.auth.openidauth
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+Open ID Support for Glashammer
+
+:copyright: 2010 Glashammer Developers
+:license: MIT
 """
 
 from openid.consumer.consumer import Consumer, SUCCESS, CANCEL

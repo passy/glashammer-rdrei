@@ -1,6 +1,17 @@
+"""
+glashammer.tests
+~~~~~~~~~~~~~~~~
 
-import os, shutil
+:copyright: 2010 Glashammer Developers
+:license: MIT
+
+Glashammer unit tests.
+"""
+
+import os
+import shutil
 from glashammer.application import make_app
+
 
 def setup():
     try:
@@ -15,4 +26,3 @@ def teardown():
 
 def gh_app(setup):
     return make_app(setup, 'test_output')
-

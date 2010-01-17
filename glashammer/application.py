@@ -441,7 +441,7 @@ class GlashammerApplication(object):
         Add a template filter.
         """
         self._ensure_not_finalized()
-        
+
         self._template_tests[name] = f
 
     def connect_event(self, event, callback, position='after'):
