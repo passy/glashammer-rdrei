@@ -1,0 +1,7 @@
+
+<h1>{{ page.name }}</h1>
+<div>
+    {{ page.revisions[-1].text|text2html }}
+</div>
+<a href="{{ url_for('edit', page_name=page.name) }}">Edit</a>
+

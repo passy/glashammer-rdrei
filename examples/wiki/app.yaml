@@ -1,0 +1,26 @@
+
+
+urls:
+
+ - url: /
+   endpoint: index
+   view: views.view_index
+
+ - url: /<string:page_name>
+   endpoint: show
+   view: views.view_show
+
+ - url: /<string:page_name>/edit
+   endpoint: edit
+   view: views.view_edit
+
+template_searchpaths:
+    - templates
+
+template_filters:
+    - name: text2html
+      filter: creoleparser.text2html
+
+bundles:
+    - sqlalchdb
+

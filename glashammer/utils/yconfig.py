@@ -73,6 +73,7 @@ class Import(String):
             try:
                 value = import_string(str(value))
             except ImportError, e:
+                print 'Warning, failed to import %r' % value
                 raise AdaptationError(str(e))
             return value
 
