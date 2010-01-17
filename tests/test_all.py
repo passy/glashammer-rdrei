@@ -222,7 +222,7 @@ def test_add_prefixed_controller():
         ('edit', c.view_edit),
         ('inaccessible', None),
         ]:
-        found = app._find_view('foo/' + method)
+        found = app.view_finder.find('foo/' + method)
         assert found == expected, "%s: %s != %s" % (method, found, expected)
 
 def test_endpoint_lookup():
