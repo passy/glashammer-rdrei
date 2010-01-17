@@ -1,6 +1,21 @@
 
+{% extends "_base.jinja" %}
+
+{% block title %}
+    {% if page %}Editing{% else %}Creating{% endif %} {{ page_name }}
+{% endblock %}
+
+{% block body %}
 <form method="post">
-    <textarea name="text">{{ page.revisions[-1].text }}</textarea>
+    <textarea name="text" cols="60" rows="20">
+        {%- if page -%}
+            {{- page.revisions[-1].text -}}
+        {%- else -%}
+            This page has no content yet.
+        {%- endif -%}
+    </textarea>
     <br />
     <input type="submit" />
 </form>
+{% endblock %}
+

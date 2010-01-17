@@ -1,4 +1,31 @@
 
+# Glashammer Declaration File
+
+
+# Load any plugins for Glashammer, we want SQLAlchemy db support/
+
+bundles:
+    - sqlalchdb
+
+
+# Where to look for templates.Relative paths are taken relative to the path
+# that this configuration file lives in.
+
+template_searchpaths:
+    - templates
+
+
+# Template filters to be imported and registered. Any importable Python
+# callable can be a filter really, for example creoleparser for generating
+# HTML from wiki text can be used without any glue code.
+
+template_filters:
+    - name: text2html
+      filter: creoleparser.text2html
+
+
+# Set up the urls for the application. The view is any importable Python callable.
+# Urls are the Werkzeug rule
 
 urls:
 
@@ -14,13 +41,9 @@ urls:
    endpoint: edit
    view: views.view_edit
 
-template_searchpaths:
-    - templates
+ - url: /new
+   endpoint: new
+   view: views.view_new
 
-template_filters:
-    - name: text2html
-      filter: creoleparser.text2html
-
-bundles:
-    - sqlalchdb
+# Um, that's it, really.
 

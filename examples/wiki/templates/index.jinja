@@ -1,5 +1,30 @@
 
-Hello World
 
-{{ "Some real **simple** mark-up"|text2html }}
+{% extends "_base.jinja" %}
+
+{% block title %}
+    Glashammer Simple Wiki
+{% endblock %}
+
+{% block body %}
+    <form action="{{ url_for('new') }}" method="get">
+        <input name="page_name" />
+        <input type="submit" value="Create New Page" />
+    </form>
+    <table>
+    <caption>List Of All Pages</caption>
+    <tr>
+        <th>Page Name</th>
+        <th></th>
+        <th>Revisions</th>
+    </tr>
+    {% for page in pages %}
+        <tr>
+            <td><a href="{{ url_for('show', page_name=page.name) }}">{{ page.name }}</a></td>
+            <td></td>
+            <td>{{ page.revisions|length }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+{% endblock %}
 
