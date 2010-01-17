@@ -47,6 +47,9 @@ For example::
         - name: foo
           import: foo.blah
 
+    bundles:
+        - glashammer.bundles.sqlalchdb.setup_sqlalchdb
+
 
 """
 
@@ -68,11 +71,16 @@ class Import(String):
         value = String.adapt(self, value)
         if value is not None:
             try:
-                value = import_string(value)
+                value = import_string(str(value))
             except ImportError, e:
                 raise AdaptationError(str(e))
             return value
 
+class Bundle(Import):
+
+    def adapt(self, value):
+        return Import.adapt(self,
+            'glashammer.bundles.%s.setup_%s' % (value, value))
 
 Url = Dict.of(
     String.named('url'),
@@ -88,6 +96,13 @@ Settings = Dict.of(Element)
 
 TemplateSearchPaths = List.of(String)
 
+TemplateFilter = Dict.of(
+    Import.named('filter'),
+    String.named('name'),
+)
+
+TemplateFilters = List.of(TemplateFilter)
+
 SharedPath = Dict.of(
     String.named('name'),
     String.named('path'),
@@ -101,6 +116,10 @@ Appliance = Dict.of(
 )
 
 Appliances = List.of(Appliance)
+
+Setups = List.of(Import)
+
+Bundles = List.of(Bundle)
 
 def yconfig_setup(config_file, setup_func):
 
@@ -121,6 +140,14 @@ def yconfig_setup(config_file, setup_func):
 
         # settings
 
+        for bundle in Bundles(config.get('bundles')):
+            if bundle.value is not None:
+                app.add_setup(bundle.value)
+            else:
+                print 'bad bundle %r' % bundle.u
+                # what to do if it is None?
+                # Warning?
+
         # urls
         urls = Urls()
         urls.set(config.get('urls', []))
@@ -132,6 +159,14 @@ def yconfig_setup(config_file, setup_func):
         else:
             print 'failed'
             print [g.error for g in urls.all_children]
+
+
+
+        for f in TemplateFilters(
+            config.get('template_filters', [])
+        ):
+            if f['filter'] is not None:
+                app.add_template_filter(f['name'].value, f['filter'].value)
 
 
         for searchpath in TemplateSearchPaths(
