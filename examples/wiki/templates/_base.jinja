@@ -1,0 +1,48 @@
+
+<html>
+    <head>
+        <style>
+            body {
+                font-family: "Trebuchet MS",sans;
+                background-color: #000;
+            }
+
+            .wrapper {
+                width: 800px;
+                margin: auto;
+                background-color: #fff;
+                padding: 32px;
+                -moz-border-radius: 8px;
+                -webkit-border-radius: 8px;
+            }
+
+            .banner {
+                background-color: #000;
+                color: #fff;
+                text-align: center;
+                padding: 4px;
+                font-size: 16px;
+            }
+
+            .banner a {
+                color: #fff;
+                text-decoration: none;
+            }
+
+            h2 {
+                margin-top: 0px;
+            }
+        </style>
+        <title>{% block title %}{% endblock %}</title>
+    </head>
+    <body>
+        <h1 class="banner"><a href="{{ url_for('index') }}">Glashammer Simple Wiki</a></h1>
+        <div class="wrapper">
+        <h2>{{ self.title() }}</h2>
+        <div class="content">
+        {% block body %}{% endblock %}
+        </div>
+        </div>
+    </body>
+</html>
+
