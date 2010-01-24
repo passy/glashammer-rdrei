@@ -243,7 +243,7 @@ class GlashammerApplication(object):
 
     def dispatch_request(self, environ, start_response):
         local.url_adapter = adapter = self.map.bind_to_environ(environ)
-        local.request = request = request_cls(self, environ)
+        local.request = request = self.request_cls(self, environ)
         emit_event('request-start', request)
         try:
             endpoint, values = adapter.match()
