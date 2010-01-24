@@ -104,7 +104,6 @@ def test_instance_dir():
     fn = _c(yaml)
     app = declare_app(fn)
     assert  app.instance_dir == '/tmp/instance'
-    assert 0
 
 
 
