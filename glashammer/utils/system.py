@@ -1,13 +1,27 @@
-import os, _ast, linecache, imp
+"""
+glashammer.utils.system
+~~~~~~~~~~~~~~~~~~~~~~~
+
+:copyright: 2008-2010 Glashammer Developers
+:license: MIT
+
+Various utilities for application running and event
+dispatching.
+"""
 
 from werkzeug import run_simple
+import os
+import _ast
+import linecache
+import imp
+
 
 def run_very_simple(app):
+    """Starts a debug server using the WSGI application ``app``."""
     from werkzeug.debug import DebuggedApplication
     app = DebuggedApplication(app, True)
     run_simple('localhost', 6060, app, use_reloader=True)
 
-# system utilities
 
 def build_eventmap(app):
     """Walk through all the builtins and plugins for an application and
@@ -20,11 +34,6 @@ def build_eventmap(app):
 
     textpress_root = os.path.realpath(os.path.dirname(glashammer.__file__))
     searchpath = [(textpress_root, '__builtin__')]
-
-    #for plugin in app.plugins.itervalues():
-    #    path = os.path.realpath(plugin.path)
-    #    if os.path.commonprefix([textpress_root, path]) != textpress_root:
-    #        searchpath.append((plugin.path, plugin.name))
 
     def walk_ast(ast):
         if isinstance(ast, _ast.Call) and \
@@ -81,9 +90,7 @@ def build_eventmap(app):
 
 
 def load_app_from_path(modulepath, factory_name='create_app'):
-    """
-    Load the module containg the application and create it.
-    """
+    """Load the module containg the application and create it."""
 
     modulepath = os.path.abspath(modulepath)
     filename = os.path.basename(modulepath)
@@ -91,9 +98,7 @@ def load_app_from_path(modulepath, factory_name='create_app'):
     dirpath = os.path.dirname(modulepath)
 
     mfile, mpath, mdesc = imp.find_module(modulename, [dirpath])
-
     mod = imp.load_module('gh_runner', mfile, mpath, mdesc)
-
     mfile.close()
 
     factory = getattr(mod, factory_name, None)
@@ -102,4 +107,3 @@ def load_app_from_path(modulepath, factory_name='create_app'):
                              factory_name)
     app = factory()
     return app
-

@@ -16,6 +16,8 @@ from werkzeug.routing import Map, Rule
 from werkzeug.exceptions import HTTPException, NotFound
 
 from glashammer.utils.config import Configuration
+from glashammer.utils.wrappers import Response
+from glashammer.utils.viewfinder import ViewFinder
 
 from glashammer.utils.templating import create_template_environment
 
@@ -72,6 +74,15 @@ class GlashammerApplication(object):
         template's global namespace. Additional variables added during
         application setup will be added to this map. If this is not provided
         a new dict will be created.
+
+    `request_cls`
+        The base class that is used for requests. Inherit from
+        glashammer.utils.Request to make your own. For more info on request and
+        response wrapper objects, see `here
+        <http://werkzeug.pocoo.org/documentation/dev/wrappers.html>`_.
+
+    `view_finder`
+        An instance of :class:`ViewFinder`. Defaults to a new instance.
     """
 
     default_setup = default_setup_func
@@ -83,11 +94,16 @@ class GlashammerApplication(object):
         template_searchpaths=None, template_filters=None, template_globals=None,
         template_tests=None,
         template_env_kw=None,
+        request_cls=None,
+        view_finder=None
         ):
         # just for playing in the shell
         local.application = self
 
         self.finalized = False
+
+        self.request_cls = request_cls or Request
+        self.view_finder = view_finder or ViewFinder()
 
         # Start the setup
         if instance_dir is None:
@@ -113,9 +129,7 @@ class GlashammerApplication(object):
             self.map = Map()
 
         if view_map:
-            self.views = view_map
-        else:
-            self.views = {}
+            self.view_finder.views = view_map
 
         self.controllers = {}
 
@@ -229,7 +243,7 @@ class GlashammerApplication(object):
 
     def dispatch_request(self, environ, start_response):
         local.url_adapter = adapter = self.map.bind_to_environ(environ)
-        local.request = request = Request(self, environ)
+        local.request = request = request_cls(self, environ)
         emit_event('request-start', request)
         try:
             endpoint, values = adapter.match()
@@ -259,25 +273,8 @@ class GlashammerApplication(object):
         Checks views first, then controllers.  Returns the callable,
         or None when no view is found.
         """
-        # try looking up by view first
-        view = self.views.get(endpoint)
-        if view:
-            emit_event('view-match', view)
-        elif '/' in endpoint or '.' in endpoint:
-            # fallback to controller->view
-            if '/' in endpoint:
-                base, target = endpoint.split('/', 1)
-            else:
-                base, target = endpoint.split('.', 1)
-            controller = self.controllers.get(base)
-            if controller is not None:
-                target_prefix = getattr(controller, 'target_prefix', '')
-                target = target_prefix + target
-                if hasattr(controller, target):
-                    emit_event('controller-match', controller, target)
-                    view = getattr(controller, target)
 
-        return view
+        return self.view_finder.find(endpoint)
 
     def _ensure_not_finalized(self):
         if self.finalized:
@@ -351,7 +348,7 @@ class GlashammerApplication(object):
 
         self.map.add(rule)
         if view is not None:
-            self.views[rule.endpoint] = view
+            self.view_finder.add(rule.endpoint, view)
 
     def add_url_rules(self, rules):
         """
@@ -368,7 +365,7 @@ class GlashammerApplication(object):
         """
         self._ensure_not_finalized()
 
-        self.views[endpoint] = view
+        self.view_finder.add(endpoint, view)
 
     def add_views_controller(self, endpoint_base, controller):
         """
@@ -403,7 +400,7 @@ class GlashammerApplication(object):
         """
         self._ensure_not_finalized()
 
-        self.controllers[endpoint_base] = controller
+        self.view_finder.add_controller(endpoint_base, controller)
 
     def add_template_searchpath(self, path):
         """
@@ -441,7 +438,7 @@ class GlashammerApplication(object):
         Add a template filter.
         """
         self._ensure_not_finalized()
-        
+
         self._template_tests[name] = f
 
     def connect_event(self, event, callback, position='after'):

@@ -11,8 +11,7 @@ The `Glashammer tip
 installable via ``easy_install Glashammer==dev``
 """
 
-from distutils.core import setup
-
+from setuptools import setup
 from glashammer.version import glashammer_version
 
 
@@ -23,9 +22,9 @@ setup(
     version=glashammer_version,
 
     # Scripts
-    scripts = ['bin/gh-admin'],
+    scripts=['bin/gh-admin'],
     # package information
-    packages = [
+    packages=[
         'glashammer',
         'glashammer.utils',
         'glashammer.tools',
@@ -40,32 +39,32 @@ setup(
         'glashammer.bundles.contrib.dev',
     ],
 
-    package_dir = {
+    package_dir={
         'glashammer': 'glashammer',
     },
 
-    package_data = {
+    package_data={
         'glashammer': [
             'shared/jquery/*',
             'templates/*'
         ],
-        'glashammer.bundles.depracated.auth' : [
+        'glashammer.bundles.depracated.auth': [
             'templates/*',
         ],
         'glashammer.bundles.jquery': [
             'templates/includes/*'
         ],
-        'glashammer.bundles.forms' : [
+        'glashammer.bundles.forms': [
             'templates/macros/*',
         ]
     },
 
     # Additional pypi metadata
-    description = 'Full stack web framework',
+    description='Full stack web framework',
 
-    long_description = __doc__,
+    long_description=__doc__,
 
-    url = 'http://glashammer.org',
+    url='http://glashammer.org',
 
     author='Ali Afshar',
     author_email='aafshar@gmail.com',
@@ -79,6 +78,4 @@ setup(
         'Topic :: Internet :: WWW/HTTP :: WSGI :: Middleware',
         'Topic :: Internet :: WWW/HTTP :: WSGI :: Server',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
-        'Topic :: Software Development',
-    ]
-)
+        'Topic :: Software Development'])

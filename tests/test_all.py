@@ -50,9 +50,14 @@ def test_app_no_instance():
 
 def test_app_missing_instance():
     """
-    Explicitly passed application directories must exist.
+    Explicitly passed application directories are created.
     """
-    assert_raises((RuntimeError,), make_app, _setup_empty, 'i_do_not_exist')
+    directory_name = 'i_do_not_exist'
+    make_app(_setup_empty, directory_name)
+
+    assert os.path.exists(directory_name), "make_app did not create the "\
+        "instance path"
+    os.rmdir(directory_name)
 
 
 def _test_finalized():
@@ -222,7 +227,7 @@ def test_add_prefixed_controller():
         ('edit', c.view_edit),
         ('inaccessible', None),
         ]:
-        found = app._find_view('foo/' + method)
+        found = app.view_finder.find('foo/' + method)
         assert found == expected, "%s: %s != %s" % (method, found, expected)
 
 def test_endpoint_lookup():
