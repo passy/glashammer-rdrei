@@ -5,7 +5,7 @@ SQLAlchemy Integration
 ======================
 
 .. seealso::
-   
+
    :ref:`external-references`
 
 Glashammer comes ready with SQLAlchemy integration.
@@ -31,6 +31,51 @@ and tables.
 
 The module also provides django-like database mappers, and these are explained
 more fully in the API documentation below.
+
+Using declarative database definitions
+--------------------------------------
+
+The SQLAlch bundle provides ready base-classes to use as declarative table
+definitions which are described in the SQLAlchemy documentation:
+http://www.sqlalchemy.org/docs/reference/ext/declarative.html.
+
+The base model class provided is available at
+`glashammer.bundles.sqlalchdb.ModelBase` and can be used as::
+
+    from sqlalchemy import Column, Integer, Unicode
+
+    from glashammer.bundles.sqlalchdb import ModelBase
+
+    class Customer(ModelBase):
+        __tablename__ = 'customers'
+        id = Column(Integer, primary_key=True)
+        name = Column(Unicode)
+
+This class can then be used as any mapped SQLAlchemy class, although it has
+some additional properties which are described later in this document.
+
+
+.. Note::
+    The only difference between glashammer's declarative use, and vanilla
+    SQLAlchemy use is that the Base model has already been created for
+    you, and bound correctly to the correct metadata instance, and has been
+    extended to provide some methods that are session bound (in the
+    thread-local context). If you wish to know how it does this, please review
+    the source code, it is all standard SQLAlchemy API usage.
+
+
+Getting the database session
+----------------------------
+
+Glashammer's database session is a sqlalchemy ScopedSession, so it can be used
+as a module-level global, but can be assured to be thread-local. It is
+automatically cleaned up at the end of each request.
+
+To retrieve the session, use it as so::
+
+    from glashammer.bundles.sqlalchdb import session
+    session.query(Bird).filter_by(name='goose')
+
 
 Getting the database engine
 ---------------------------
