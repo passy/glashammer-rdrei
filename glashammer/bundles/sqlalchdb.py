@@ -3,8 +3,7 @@
     glashammer.bundles.sqlalchdb
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    :copyright: 2008-2010 by Ali Afshar
-                2010 by Pascal Hartig
+    :copyright: 2008-2010 by Ali Afshar, Pascal Hartig
     :license: MIT
 """
 
@@ -77,6 +76,8 @@ class MetaModel(object):
         pass
 
     def save(self, **kwargs):
+        """Save this object in the database.
+        """
         self.pre_save(**kwargs)
 
         is_new = getattr(self, list(self.__class__.__table__.primary_key)[0].key) is None
@@ -91,6 +92,9 @@ class MetaModel(object):
         self.post_save(is_new=is_new, **kwargs)
 
     def delete(self):
+        """Remove this object from the database.
+        """
+
         is_new = getattr(self, list(self.__class__.__table__.primary_key)[0].key) is None
 
         if not is_new:
