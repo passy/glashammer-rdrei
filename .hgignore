@@ -4,6 +4,8 @@
 docs/build
 build
 dist
+Glashammer.egg-info/
 ^.+\.pyc$
 ^.+\.swp$
+^.+gh.sqlite$
 

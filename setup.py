@@ -11,7 +11,7 @@ The `Glashammer tip
 installable via ``easy_install Glashammer==dev``
 """
 
-from setuptools import setup
+from setuptools import setup, find_packages
 from glashammer.version import glashammer_version
 
 
@@ -24,25 +24,13 @@ setup(
     # Scripts
     scripts=['bin/gh-admin'],
     # package information
-    packages=[
-        'glashammer',
-        'glashammer.utils',
-        'glashammer.tools',
-        'glashammer.bundles',
-        'glashammer.bundles.forms',
-        'glashammer.bundles.i18n',
-        'glashammer.bundles.jquery',
-        'glashammer.bundles.deprecated',
-        'glashammer.bundles.deprecated.auth',
-        'glashammer.bundles.contrib.db',
-        'glashammer.bundles.contrib.auth',
-        'glashammer.bundles.contrib.dev',
-    ],
+    packages=find_packages(exclude=['tests']),
 
     package_dir={
         'glashammer': 'glashammer',
     },
 
+    # this is terrible
     package_data={
         'glashammer': [
             'shared/jquery/*',
@@ -59,6 +47,10 @@ setup(
         ]
     },
 
+    install_requires=[
+        'werkzeug', 'jinja2', 'flatland', 'sanescript',
+    ],
+
     # Additional pypi metadata
     description='Full stack web framework',
 
@@ -70,12 +62,12 @@ setup(
     author_email='aafshar@gmail.com',
 
     classifiers=[
-        'Development Status :: 3 - Alpha',
-        'License :: OSI Approved :: GNU General Public License (GPL)',
+        'License :: OSI Approved :: MIT',
         'Programming Language :: Python',
         'Topic :: Internet :: WWW/HTTP :: WSGI',
         'Topic :: Internet :: WWW/HTTP :: WSGI :: Application',
         'Topic :: Internet :: WWW/HTTP :: WSGI :: Middleware',
         'Topic :: Internet :: WWW/HTTP :: WSGI :: Server',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
-        'Topic :: Software Development'])
+        'Topic :: Software Development']
+    )
