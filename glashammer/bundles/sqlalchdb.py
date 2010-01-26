@@ -50,7 +50,7 @@ class Query(orm.Query):
 
 
 class ModelBaseMeta(DeclarativeMeta):
-    """Model Metadata to store a copy of all models."""
+    """Model Metadata to store a reference to all model types."""
 
     def __init__(cls, name, bases, dct):
         if '__tablename__' in dct:
@@ -104,16 +104,35 @@ ModelBase = declarative_base(metadata=metadata, name="ModelBase", cls=MetaModel,
 
 
 def get_engine():
-    """Get the SQLA DB Engine"""
+    """Get the SQLAlchemy DB Engine
+
+    This returns the global SQLALchemy engine, which is *usually* shared amongst all
+    threads.
+    """
     return get_app().sqla_db_engine
 
 
 def data_init(app):
+    """The default data init function.
+
+    The Sqlalch bundle automatically calls this data init function after the
+    application is first created. This ensures that all tables are created for
+    the metadata, so Metdata.create_all does not need to be called again.
+    """
     app.sqla_db_meta.create_all(bind=app.sqla_db_engine)
 
 
 def cleanup_sqla_session(arg):
+    """Clean the current session. Session is a thread-local scoped session, so
+    this can safely be used from within a request, knowing that it will not
+    affect sessions within other threads.
+
+    It is unlikely that this function will be called manually, the sqlalch
+    bundle connects the event `response-end` to call this function, which
+    takes care of cleaning up sessions after each request/response.
+    """
     session.remove()
+
 
 # XXX Replace this with real config options using YAML
 
