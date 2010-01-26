@@ -11,6 +11,8 @@
 import os
 
 from sqlalchemy import create_engine, orm, MetaData
+# easy access for API
+from sqlalchemy import Column, Table
 from sqlalchemy.ext.declarative import declarative_base, DeclarativeMeta
 from sqlalchemy.exc import InvalidRequestError
 
