@@ -73,8 +73,9 @@ class Import(String):
             try:
                 value = import_string(str(value))
             except ImportError, e:
-                print 'Warning, failed to import %r' % value
-                raise AdaptationError(str(e))
+                msg = 'Warning, failed to import %r, %s' % (value, e)
+                print msg
+                raise AdaptationError(msg)
             return value
 
 class Bundle(Import):
@@ -128,7 +129,7 @@ def yconfig_setup(config_file, setup_func):
     config = yaml.load(f)
     f.close()
 
-    sys.path.insert(0, os.path.dirname(config_file))
+    sys.path.insert(0, os.path.dirname(os.path.abspath(config_file)))
 
     def setup_app(app, config=config, setup_func=setup_func):
 
@@ -155,7 +156,6 @@ def yconfig_setup(config_file, setup_func):
 
         if urls.validate():
             for url in urls.value:
-                print url
                 app.add_url(url['url'], url['endpoint'], url.get('view'))
         else:
             print 'failed'
