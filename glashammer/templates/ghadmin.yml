@@ -12,6 +12,7 @@ __targets__:
                 "models.py": models
                 "views.py": views
                 "templates":
+                    "_base.jinja": base_jinja
                     "index.jinja": index_jinja
                 "shared":
                     "css":
@@ -57,7 +58,7 @@ views: |
     {% extends "module" %}
 
     {% block module_content %}
-    from glashammer.utils import render_response
+    from glashammer.utils import render_response, redirect_to
 
     def view_index(req):
         return render_response('index.jinja')
@@ -68,13 +69,14 @@ models: |
     from glashammer.bundles.sqlalchdb import ModelBase
 
 base_jinja: |
+    {% raw %}
     <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
                           "http://www.w3.org/TR/html4/loose.dtd">
     <html>
         <head>
             <link rel="stylesheet"
-                   href="{% raw %}{{ url_for('shared/main',
-                   filename='css/main.css') }}{% endraw %}"
+                   href="{{ url_for('shared/main',
+                   filename='css/main.css') }}"
             />
             {% block html_head %}{% endblock %}
         </head>
@@ -82,15 +84,16 @@ base_jinja: |
             {% block html_body %}{% endblock %}
         </body>
     </html>
+    {% endraw %}
 
 index_jinja: |
-    {% extends "base_jinja" %}
-    {% block html_body %}
+    {% raw %}{% extends "_base.jinja" %}{% endraw %}
+    {% raw %}{% block html_body %}{% endraw %}
         <h1>Welcome to {{ project_name }}</h1>
         <p>
             This is the default page for a new starter project.
         </p>
-    {% endblock %}
+    {% raw %}{% endblock %}{% endraw %}
 
 main_css: |
     /* Styles for {{ project_name }} */
