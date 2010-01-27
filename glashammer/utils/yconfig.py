@@ -182,6 +182,8 @@ def yconfig_setup(config_file, setup_func):
             config.get('shared', [])
         ):
             p = sharedpath.value
+            if not os.path.isabs(p['path']):
+                p['path'] = sibpath(config_file, p['path'])
             app.add_shared(p['name'], p['path'])
 
 
