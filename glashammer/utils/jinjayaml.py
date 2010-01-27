@@ -16,10 +16,8 @@ class JinjaYamlLoader(BaseLoader):
         stream = cStringIO.StringIO(data)
         stream.seek(0)
         self.templates = yaml.load(stream)
-        print self.templates
 
     def get_source(self, environment, name):
-        print ['geting', name]
         try:
             return self.templates[name], name, lambda: False
         except KeyError:

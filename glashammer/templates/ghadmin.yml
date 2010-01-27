@@ -104,23 +104,31 @@ main_css: |
 
 app: |
     # {{ project_name }}
-    #
     # Glashammer application declaration file
 
+    # URLs
     urls:
         - url: /
           endpoint: main/index
           view: views.view_index
 
+    # Template search paths
     template_searchpaths:
         - templates
 
+    # Shared media
     shared:
         - name: main
           path: shared
 
+    # Bundles
     bundles:
         - sqlalchdb
+
+    # Appliances
+    # appliances:
+    #    <Add appliances here>
+
 
 main: |
     {% extends "module" %}
