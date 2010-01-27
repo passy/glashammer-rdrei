@@ -2,7 +2,7 @@
 from sqlalchemy import *
 from sqlalchemy.orm import *
 
-from glashammer.bundles.sqlalchdb import ModelBase
+from glashammer.bundles.sqlalchdb import ModelBase, session
 
 
 class Page(ModelBase):
