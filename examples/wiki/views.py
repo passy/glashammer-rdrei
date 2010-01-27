@@ -5,12 +5,11 @@ from models import Page, Revision, session
 
 
 def _get_page(name):
-    return session.query(Page).get(name)
+    return Page.query.get(name)
 
 
 def view_index(req):
-    pages = session.query(Page)
-    return render_response('index.jinja', pages=pages)
+    return render_response('index.jinja', pages=Page.query)
 
 
 def view_show(req, page_name):
@@ -25,9 +24,9 @@ def view_edit(req, page_name):
     if req.method == 'POST':
         if page is None:
             page = Page(name=page_name)
-            session.add(page)
+            page.save()
         rev = Revision(page=page, text=req.form.get('text'))
-        session.add(rev)
+        rev.save()
         session.commit()
         return redirect_to('show', page_name=page.name)
     else:

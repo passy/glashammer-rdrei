@@ -1,0 +1,139 @@
+
+__targets__:
+    package:
+        "{{ package }}":
+            "__init__.py": init
+    quickstart:
+        "{{ project_name }}":
+            "setup.py": setup
+            "main.py": main
+            "{{ project_name|lower }}":
+                "__init__.py": init
+                "models.py": models
+                "views.py": views
+                "templates":
+                    "index.jinja": index_jinja
+                "shared":
+                    "css":
+                        "main.css": main_css
+                "app.yaml": app
+    quickstart_bare:
+        "{{ project_name }}":
+            "setup.py": setup
+            "{{ project_name|lower }}":
+                "__init__.py": init
+            "app.yaml": app
+
+encoding: |
+    # -*- coding: {{ encoding }} -*-
+
+docstring: |
+    """
+        {{ package }}
+        {{ '~' * package|count }}
+
+        {{ description }}
+    """
+
+module: |
+    {% block encoding %}{% include "encoding" %}{% endblock %}
+    {% block docstring %}{% include "docstring" %}{% endblock %}
+    {% block module_content %}{% endblock %}
+
+init: |
+    {% extends "module" %}
+
+setup: |
+    from setuptools import setup
+
+    setup(
+        name = "{{ project_name }}",
+        version = "{{ project_version }}",
+        packages = ["{{ package_name }}"],
+        description = "{{ package_description }}",
+    )
+
+views: |
+    {% extends "module" %}
+
+    {% block module_content %}
+    from glashammer.utils import render_response
+
+    def view_index(req):
+        return render_response('index.jinja')
+    {% endblock %}
+
+models: |
+    {% extends "module" %}
+    from glashammer.bundles.sqlalchdb import ModelBase
+
+base_jinja: |
+    <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                          "http://www.w3.org/TR/html4/loose.dtd">
+    <html>
+        <head>
+            <link rel="stylesheet"
+                   href="{% raw %}{{ url_for('shared/main',
+                   filename='css/main.css') }}{% endraw %}"
+            />
+            {% block html_head %}{% endblock %}
+        </head>
+        <body>
+            {% block html_body %}{% endblock %}
+        </body>
+    </html>
+
+index_jinja: |
+    {% extends "base_jinja" %}
+    {% block html_body %}
+        <h1>Welcome to {{ project_name }}</h1>
+        <p>
+            This is the default page for a new starter project.
+        </p>
+    {% endblock %}
+
+main_css: |
+    /* Styles for {{ project_name }} */
+
+    * {
+    }
+
+    body {
+    }
+
+
+app: |
+    # {{ project_name }}
+    #
+    # Glashammer application declaration file
+
+    urls:
+        - url: /
+          endpoint: main/index
+          view: views.view_index
+
+    template_searchpaths:
+        - templates
+
+    shared:
+        - name: main
+          path: shared
+
+    bundles:
+        - sqlalchdb
+
+main: |
+    {% extends "module" %}
+
+    {% block module_content %}
+    from glashammer.application import declare_app
+    from glashammer.utils import sibpath
+
+    application = declare_app(sibpath(__file__, '{{ project_name|lower }}/app.yaml'))
+
+    if __name__ == '__main__':
+        from glashammer.utils import run_very_simple
+        run_very_simple(application)
+
+    {% endblock %}
+

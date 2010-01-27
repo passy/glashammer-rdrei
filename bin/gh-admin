@@ -2,289 +2,73 @@
 
 # -*- coding: utf-8 -*-
 
-import os, sys, imp, xmlrpclib, shutil
+"""Control script for Glashammer."""
 
-from werkzeug import script
-from werkzeug.serving import run_simple
+
+
+from sanescript import Command, Option, register
 
 from glashammer.version import glashammer_version
-
-
-def _get_app(modulepath, application_factory_name):
-
-    if not modulepath:
-        script.fail('Must provide a module path')
-    else:
-        modulepath = os.path.abspath(modulepath)
-
-    filename = os.path.basename(modulepath)
-    modulename = os.path.splitext(filename)[0]
-    dirpath = os.path.dirname(modulepath)
-
-    mfile, mpath, mdesc = imp.find_module(modulename, [dirpath])
-
-    mod = imp.load_module('gh_runner', mfile, mpath, mdesc)
-
-    mfile.close()
-
-    if application_factory_name:
-        factory = getattr(mod, application_factory_name, None)
-        if factory is None:
-            script.fail('Application factory %s not found' %
-                        application_factory_name)
-        app = factory()
-        return app
-    else:
-        fail('Application factory name must be provided')
-
-
-
-
-def action_run(modulepath='',
-               application_factory_name='create_app',
-               hostname=('h', 'localhost'), port=('p', 6060),
-               reloader=True, debugger=True,
-               evalex=True, threaded=False, processes=1):
-    """
-    Run a WSGI Debug server with an application
-
-    gh-admin runserver <modulepath> [application_factory_name] [options]
-
-    Modulepath is the path to a Python module which contains the callable
-    named in the application_factory_name variable. This callable is called
-    and expects to receive a WSGI application (eg a GlashammerApplication)
-    instance.
-    """
-    app = _get_app(modulepath, application_factory_name)
-    run_simple(hostname, port, app, reloader, debugger, evalex,
-                None, 1, threaded, processes)
-
-
-def action_init(modulepath='', init_function_name='init_app'):
-    """
-    Run the application's initialization script. This is one time to "install"
-    the application.
-    """
-    _get_app(modulepath, init_function_name)
-
-
-def action_staticaliases(modulepath='',
-                         application_factory_name='create_app'):
-    """
-    Generate a list of static aliases for insertion into your web server
-    config.
-
-    gh-admin staticaliases <modulepath> [application_factory_name]
-
-    Modulepath is the path to a Python module which contains the callable
-    named in the application_factory_name variable. This callable is called
-    and expects to receive a WSGI application (eg a GlashammerApplication)
-    instance.
-    """
-    app = _get_app(modulepath, application_factory_name)
-    for url, path in app.shared_export_map.items():
-        print 'Alias %s %s' % (url, path)
-
-
-def action_endpoints(modulepath='',
-                     application_factory_name='create_app'):
-    """
-    Generate a list of endpoints and urls for the application.
-
-    Modulepath is the path to a Python module which contains the callable
-    named in the application_factory_name variable. This callable is called
-    and expects to receive a WSGI application (eg a GlashammerApplication)
-    instance.
-    """
-    print
-    print 'Generating list of endpoints and urls...'
-    print
-    app = _get_app(modulepath, application_factory_name)
-    print 'Endpoint'.ljust(30) + 'URL Rule'
-    print '-' * 75
-    for rule in app.map.iter_rules():
-        print rule.endpoint.ljust(30) + rule.rule
-    print '-' * 75
-
-
-def action_version():
-    """
-    Print the version of Glashammer and exit.
-    """
-    print 'Glashammer, version %s' % glashammer_version
-
-
-def action_checkversion(upgrade=False):
-    """
-    Check the installed version against the latest at PyPi.
-
-    If --upgrade is passed, glashammer will attempt to upgrade
-    from PyPi.
-    """
-    server = xmlrpclib.Server('http://pypi.python.org/pypi')
-    latest = server.package_releases('Glashammer')[0]
-    print 'Installed version:\t\t%s' % glashammer_version
-    print 'Latest PyPi version:\t\t%s' % latest
-    print '--------'
-    if latest == glashammer_version:
-        print 'The latest version of Glashammer is installed.'
-    else:
-        if upgrade:
-            print 'Upgrading...'
-            os.system('easy_install Glashammer==%s' % latest)
-        else:
-            print 'Update available. "easy_install -U Glashammer" to upgrade.'
-
-
-def action_quickstart():
-    """
-    Create a quickstart application
-    """
-    name = raw_input('Name of project directory? ').strip()
-    if not name:
-        print 'Must give a project name.'
-        exit(1)
-    module = raw_input('Name of main module? (main.py) ').strip()
-    if not module:
-        module = 'main.py'
-
-    os.mkdir(name)
-    os.mkdir(os.path.join(name, 'templates'))
-    os.mkdir(os.path.join(name, 'shared'))
-
-    module_content = """# -*- coding: utf-8 -*-
-
-from os.path import dirname
-
-from glashammer.application import make_app
 from glashammer.utils import run_very_simple, sibpath
+from glashammer.utils.jinjayaml import GHAdminTemplateCommand
+from glashammer.application import declare_app
 
-TEMPLATES_DIRECTORY = sibpath(__file__, 'templates')
-SHARED_DIRECTORY = sibpath(__file__, 'shared')
 
-# Main application setup
-def setup(app):
-    app.add_template_searchpath(TEMPLATES_DIRECTORY)
-    app.add_shared('main', SHARED_DIRECTORY)
+class VersionCommand(Command):
+    """Return the current version of Glashammer."""
 
-def create_app():
-    return make_app(setup)
+    name = 'version'
 
-def main():
-    run_very_simple(create_app())
+    def __call__(self, config):
+        print 'Glashammer, version: %s' % glashammer_version
+        return 0
+
+
+register(VersionCommand)
+
+
+class DebugCommand(Command):
+    """Start a debug server for the given application declaration file."""
+
+    name = 'debug'
+
+    options = [
+        Option('application_file', help='The application file to run',
+                positional=True, required=True),
+    ]
+
+    def __call__(self, config):
+       app = declare_app(config.application_file)
+       run_very_simple(app)
+       return 0
+
+
+register(DebugCommand)
+
+
+class QuickstartCommand(GHAdminTemplateCommand):
+
+    name = 'quickstart'
+
+    options = GHAdminTemplateCommand.base_options + [
+        Option('project_name', help='The project name', positional=True,
+                required=True),
+        Option('version', help='Initial project version',
+                short_name='V', default='0.1'),
+        Option('encoding', help='Source code encoding',
+                short_name='e', default='utf-8'),
+        Option('description', help='Project description',
+                default='Enter your project description')
+    ]
+
+    target = 'quickstart'
+
+    include_interactive = ['project_name', 'version', 'package', 'encoding',
+                           'description']
+
+register(QuickstartCommand)
+
 
 if __name__ == '__main__':
+    from sanescript import main
     main()
-
-"""
-    f = open(os.path.join(name, module), 'w')
-    f.write(module_content)
-    f.close()
-
-def action_quickstart_gae(create_deps_zip=True):
-    """
-    Create a quickstart application
-    """
-    name = raw_input('Name of project directory? ').strip()
-    if not name:
-        print 'Must give a project name.'
-        exit(1)
-    module = 'main.py'
-
-    os.mkdir(name)
-    os.mkdir(os.path.join(name, 'templates'))
-    os.mkdir(os.path.join(name, 'shared'))
-
-    module_content = """# -*- coding: utf-8 -*-
-
-from glashammer import make_app
-from glashammer.bundles import gae
-
-TEMPLATES_DIRECTORY = 'templates'
-
-# Main application setup
-def setup(app):
-    # add the gae init function
-    app.add_setup(gae.setup_gae)
-
-    # setup templates
-    app.add_template_searchpath(TEMPLATES_DIRECTORY)
-
-def main():
-    gae.make_and_run_gae_app(setup)
-
-if __name__ == '__main__':
-    main()
-"""
-    f = open(os.path.join(name, module), 'w')
-    f.write(module_content)
-    f.close()
-
-    app_yaml = """
-application: %s
-version: 1
-runtime: python
-api_version: 1
-
-
-handlers:
-
-- url: /static
-  static_dir: static
-
-- url: .*
-  script: main.py
-    """ % name
-
-    f = open(os.path.join(name, 'app.yaml'), 'w')
-    f.write(app_yaml)
-    f.close()
-
-    if create_deps_zip:
-        from glashammer.tools.depzipcreator import main
-        main()
-        shutil.move('glashammer_deps.zip', name)
-        os.chdir(name)
-        os.system('unzip glashammer_deps.zip; rm glashammer_deps.zip')
-
-
-def action_dependencies():
-    """
-    Check the required dependencies are available
-    """
-    print 'Checking dependencies'
-
-    print 'Werkzeug...\t\t',
-
-    try:
-        import werkzeug
-        print 'Installed'
-    except ImportError:
-        print 'Missing! "easy_install Werkzeug" to fix.'
-
-    print 'Jinja2...\t\t',
-    try:
-        import jinja2
-        print 'Installed'
-    except ImportError:
-        print 'Missing! "easy_install Jinja2" to fix.'
-
-    print 'WTForms...\t\t',
-    try:
-        import wtforms
-        print 'Installed'
-    except ImportError:
-        print 'Missing! "easy_install WTForms" to fix.'
-
-    print 'Simplejson...\t\t',
-    try:
-        import simplejson
-        print 'Installed'
-    except ImportError:
-        print 'Missing! "easy_install simplejson" to fix.'
-
-
-
-if __name__ == '__main__':
-    exit(script.run())
-
