@@ -277,6 +277,13 @@ class TestTemplating(object):
     def teardown(self):
         shutil.rmtree('test_output/templates')
 
+    def test_add_template_loader(self):
+        from jinja2 import FileSystemLoader
+        def _add_template_loader(app):
+            app.add_template_loader(FileSystemLoader('test_output/templates'))
+        app = make_app(_add_template_loader, 'test_output')
+        assert app.template_env.get_template('hello.html').render() == 'hello'
+
     def test_add_template_searchpath(self):
         """
         Add a template search path
