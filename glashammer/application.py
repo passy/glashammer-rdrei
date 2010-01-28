@@ -9,7 +9,7 @@ glashammer.application
 The Glashammer Application.
 """
 
-import os
+import os, sys
 
 from werkzeug import ClosingIterator, SharedDataMiddleware
 from werkzeug.routing import Map, Rule
@@ -257,9 +257,28 @@ class GlashammerApplication(object):
             request.endpoint_values = values
             emit_event('request-end', request)
             response = self.get_view(request, endpoint, values)
-        except HTTPException, e:
-            emit_event('request-error', e)
-            response = e.get_response(environ)
+        except HTTPException, err:
+            emit_event('request-error', request, err)
+            response = err.get_response(environ)
+        except KeyboardInterrupt, err:
+            # Are there more special cases?
+            raise
+        except Exception:
+            # All non http-related errors
+            exc_info = sys.exc_info()
+            err = {
+                'type': exc_info[0],
+                'value': exc_info[1],
+                'traceback': exc_info[2],
+                'response': None
+            }
+            emit_event('request-fatal', request, err)
+
+            if err['response'] is not None:
+                response = err['response']
+            else:
+                raise
+
         emit_event('response-start', response)
         resp = response(environ, start_response)
         emit_event('response-end', resp)
