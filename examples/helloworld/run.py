@@ -17,6 +17,10 @@ def create_app():
     return make_app(setup, dirname(__file__))
 
 
+# Used for gh-admin
+def create_app():
+    return make_app(setup)
+
 if __name__ == '__main__':
     app = make_app(setup)
     run_very_simple(app)

@@ -465,6 +465,30 @@ def test_local_processor():
     assert list(appiter)[0] == 'True'
 
 
+def test_custom_errors():
+
+    error_text = "A fatal error occured: %s"
+
+    def _failing_view(req):
+        """A view that certainly will fail."""
+        1/0
+
+    def _fatal_handler(req, err):
+        """Error handler"""
+
+        err['response'] = Response(error_text % err['value'])
+
+    def _setup_app(app):
+        app.connect_event('request-fatal', _fatal_handler)
+        app.add_url('/', '', view=_failing_view)
+
+    app = make_app(_setup_app, 'test_output')
+
+    c = Client(app)
+    appiter, status, headers = c.open()
+    assert list(appiter)[0] == (error_text % "integer division or modulo by "
+                                "zero")
+
 
 # Sessions
 def _sessioned_view(req):
