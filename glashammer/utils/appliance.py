@@ -13,7 +13,7 @@ import sys, os
 
 from werkzeug.routing import Rule, Submount, EndpointPrefix
 
-from glashammer.utils import sibpath
+from glashammer.utils import sibpath, render_response, url_for
 
 
 def expose(url, endpoint=None, **rule_kw):
@@ -84,6 +84,7 @@ class Appliance(object):
             self.get_package_path(self.templates_path))
         app.add_shared(self.name, self.get_package_path(self.shared_path))
         app.add_setup(self.setup_appliance)
+        print app._shared_exports
 
     def setup_appliance(self, app):
         pass
