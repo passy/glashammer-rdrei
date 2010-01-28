@@ -92,7 +92,7 @@ class GlashammerApplication(object):
         config_name='config.ini', config_factory=Configuration,
         url_map=None, view_map=None,
         template_searchpaths=None, template_filters=None, template_globals=None,
-        template_tests=None,
+        template_loaders=None, template_tests=None,
         template_env_kw=None,
         request_cls=None,
         view_finder=None
@@ -142,6 +142,11 @@ class GlashammerApplication(object):
             self._template_searchpaths = template_searchpaths
         else:
             self._template_searchpaths = []
+
+        if template_loaders:
+            self._template_loaders = template_loaders
+        else:
+            self._template_loaders = []
 
         if template_globals:
             self._template_globals = template_globals
@@ -207,6 +212,7 @@ class GlashammerApplication(object):
         # create the template environment
         self.template_env = create_template_environment(
             searchpaths=self._template_searchpaths,
+            loaders=self._template_loaders,
             globals=self._template_globals,
             filters=self._template_filters,
             tests=self._template_tests,
@@ -410,6 +416,15 @@ class GlashammerApplication(object):
 
         path = os.path.abspath(path)
         self._template_searchpaths.append(path)
+
+    def add_template_loader(self, loader):
+        """
+        Add a Jinja2 Loader to the list of loaders
+        """
+
+        self._ensure_not_finalized()
+
+        self._template_loaders.append(loader)
 
     def add_template_global(self, key, value):
         """

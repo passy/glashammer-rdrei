@@ -13,6 +13,8 @@ import sys, os
 
 from werkzeug.routing import Rule, Submount, EndpointPrefix
 
+from glashammer.utils import sibpath
+
 
 def expose(url, endpoint=None, **rule_kw):
     def view(f, endpoint=endpoint, rule_kw=rule_kw):
@@ -51,6 +53,8 @@ class Appliance(object):
         if self.endpoint_prefix is None:
             # I hat this crap too, but what are you going to do
             self.endpoint_prefix = self.__class__.__name__.lower()
+        self.name = self.endpoint_prefix
+        self.module = sys.modules[self.__module__]
 
         if self.mountpoint_path is None:
             self.mountpoint_path = '/%s' % self.endpoint_prefix
@@ -79,17 +83,34 @@ class Appliance(object):
         app.add_template_searchpath(
             self.get_package_path(self.templates_path))
         app.add_shared(self.name, self.get_package_path(self.shared_path))
+        app.add_setup(self.setup_appliance)
+
+    def setup_appliance(self, app):
+        pass
 
     @property
-    def name(self):
-        return self.__module__
-
-    @property
-    def module(self):
-        return sys.modules[self.name]
+    def _module(self):
+        return sys.modules[self.__module__]
 
     def get_package_path(self, path):
-        return os.path.join(sys.modules[self.__module__].__file__, path)
+        return sibpath(self.module.__file__, path)
+
+    def get_endpoint(self, endpoint_name):
+        return '/'.join([self.endpoint_prefix, endpoint_name])
+
+    def url_local(self, endpoint_name, **kw):
+        return url_for(self.get_endpoint(endpoint_name), **kw)
+
+    def url_shared(self, filename, **kw):
+        return url_for('shared/%s' % self.name, filename=filename, **kw)
+
+    def redirect_to(self, endpoint_name, **kw):
+        return redirect_to(self.get_endpoint(endpoint_name), **kw)
+
+    def render_response(self, template_name, **kw):
+        kw['url_local'] = self.url_local
+        kw['url_shared'] = self.url_shared
+        return render_response(template_name, **kw)
 
     def _find_urls(self):
         for name in dir(self):
