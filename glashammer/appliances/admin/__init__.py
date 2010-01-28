@@ -10,12 +10,11 @@ The Glashammer Admin Appliance. This is mostly ported from the Pylons version
 of FormAlchemy Admin application http://code.google.com/p/formalchemy/.
 """
 
-from werkzeug.exceptions import NotFound
-
 from glashammer.utils.appliance import Appliance, expose
 from glashammer.utils import render_response, redirect_to
 
 from glashammer.bundles.sqlalchdb import setup_sqlalchdb, session, models
+
 
 def modelled(f):
     def _decorated(self, model_name, *args, **kw):
@@ -43,16 +42,12 @@ class AdminAppliance(Appliance):
         return self.render_response('_admin/index.jinja')
 
     @modelled
-    @expose('/<string:model_name>')
+    @expose('/<string:model>')
     def list(req, model):
-        return render_response('_admin/list.jinja')
+        return self.render_response('_admin/index.jinja')
 
-    @expose('/<string:model_name>/<int:id>')
-    def edit(req, model, id):
-        pass
-
-    @expose('/<string:model_name>/new')
-    def new(req, model, id):
+    @expose('/<string:model>/<int:id>')
+    def view(req, model, id):
         pass
 
     def setup_appliance(self, app):
