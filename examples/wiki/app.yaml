@@ -46,4 +46,7 @@ urls:
    endpoint: new
    view: views.view_new
 
+appliances:
+    - import: glashammer.appliances.admin.appliance
+      mountpoint_path: /admin
 

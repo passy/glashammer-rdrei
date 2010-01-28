@@ -1,0 +1,18 @@
+
+<html>
+    <head>
+        <link type="stylesheet" rel="{{ url_for('shared/admin',
+        filename='admin.css') }}"></link>
+        <title>{% block title %}{% endblock %}</title>
+    </head>
+    <body>
+        <h1 class="banner"><a href="{{ url_for('index') }}">Glashammer Admin</a></h1>
+        <div class="wrapper">
+        <h2>{{ self.title() }}</h2>
+        <div class="content">
+        {% block content %}{% endblock %}
+        </div>
+        </div>
+    </body>
+</html>
+

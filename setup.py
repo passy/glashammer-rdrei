@@ -44,6 +44,9 @@ setup(
         ],
         'glashammer.bundles.forms': [
             'templates/macros/*',
+        ],
+        'glashammer.appliances.admin': [
+            'templates/_admin/*', 'shared/*',
         ]
     },
 
