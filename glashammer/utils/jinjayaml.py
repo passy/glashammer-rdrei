@@ -1,5 +1,5 @@
 
-import os, sys, pkgutil, cStringIO
+import os, sys, pkgutil, cStringIO, string
 
 import yaml
 
@@ -8,6 +8,7 @@ from jinja2.loaders import BaseLoader
 from jinja2.exceptions import TemplateNotFound
 
 from sanescript import Command, Option, processors
+from sanescript.config import Unset
 
 
 class JinjaYamlLoader(BaseLoader):
@@ -22,6 +23,11 @@ class JinjaYamlLoader(BaseLoader):
             return self.templates[name], name, lambda: False
         except KeyError:
             raise TemplateNotFound(name)
+
+
+def _moduleify(name):
+    accept = set(string.letters)
+    return ''.join([c.lower() for c in name if c in accept])
 
 
 class TemplateCommand(Command):
@@ -50,6 +56,9 @@ class TemplateCommand(Command):
         self.target = self.targets.get(target_name)
 
     def __call__(self, config):
+        if not config.package_name:
+            config.grab_from_dict({'package_name':
+                              _moduleify(config.project_name)})
         self._create_env(config)
         for k, v in self.target.items():
             self._visit_target(config, k, v, config.output_directory)

@@ -53,6 +53,8 @@ class QuickstartCommand(GHAdminTemplateCommand):
     options = GHAdminTemplateCommand.base_options + [
         Option('project_name', help='The project name', positional=True,
                 required=True),
+        Option('package_name', help='The project name', short_name='p',
+                required=False),
         Option('version', help='Initial project version',
                 short_name='V', default='0.1'),
         Option('encoding', help='Source code encoding',
