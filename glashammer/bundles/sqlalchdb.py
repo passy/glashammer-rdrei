@@ -84,10 +84,10 @@ class MetaModel(object):
         session.add(self)
         is_new = self in session.new
         try:
-            session.flush([self])
+            session.flush()
         except InvalidRequestError:
             session.rollback()
-            session.flush([self])
+            session.flush()
 
         self.post_save(is_new=is_new, **kwargs)
 
