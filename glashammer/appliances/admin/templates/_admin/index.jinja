@@ -1,9 +1,14 @@
 {% extends "_admin/_base.jinja" %}
 
-{% block title %}
-    List of Objects.
-{% endblock %}
+{% block title %}List of Tables{% endblock %}
 
-{% block content %}
-    Hello World
-{% endblock %}
+{% block content -%}
+    <ul>
+        {% for model in models %}
+            <li>
+            <a href="{{ url_local('list', model_name=model.__tablename__)
+            }}">{{ model.__tablename__ }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+{%- endblock %}

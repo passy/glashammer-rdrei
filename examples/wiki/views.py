@@ -5,7 +5,7 @@ from models import Page, Revision, session
 
 
 def _get_page(name):
-    return Page.query.get(name)
+    return Page.query.filter_by(name=name).first()
 
 
 def view_index(req):

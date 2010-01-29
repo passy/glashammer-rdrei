@@ -1,11 +1,11 @@
 {% extends "_admin/_base.jinja" %}
 
 {% block title %}
-    List of {{ model_name }}.
+    New {{ model_name }}
 {% endblock %}
 
 {% block content %}
-<table>
-{{ grid.render() }}
-</table>
+<form method="post">
+{{ fs.render() }}
+</form>
 {% endblock %}

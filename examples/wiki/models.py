@@ -8,7 +8,8 @@ from glashammer.bundles.sqlalchdb import ModelBase, session
 class Page(ModelBase):
 
     __tablename__ = 'pages'
-    name = Column(String, primary_key=True)
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
 
 
 class Revision(ModelBase):
@@ -18,5 +19,8 @@ class Revision(ModelBase):
     page_name = Column(String, ForeignKey('pages.name'))
     page = relation(Page, backref='revisions')
     text = Column(UnicodeText)
+
+    def __str__(self):
+        return 'r%s' % self.id
 
 

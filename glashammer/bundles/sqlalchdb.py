@@ -3,7 +3,7 @@
     glashammer.bundles.sqlalchdb
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    :copyright: 2008-2010 by Ali Afshar, Pascal Hartig
+    :copyright: 2008-2010 by Ali Afshar, Pascal Hartig, Plurk Inc
     :license: MIT
 """
 

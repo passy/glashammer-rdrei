@@ -13,7 +13,7 @@ import sys, os
 
 from werkzeug.routing import Rule, Submount, EndpointPrefix
 
-from glashammer.utils import sibpath, render_response, url_for
+from glashammer.utils import sibpath, render_response, url_for, redirect_to
 
 
 def expose(url, endpoint=None, **rule_kw):
