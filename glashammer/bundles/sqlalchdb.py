@@ -81,16 +81,14 @@ class MetaModel(object):
         """Save this object in the database.
         """
         self.pre_save(**kwargs)
-
-        is_new = getattr(self, list(self.__class__.__table__.primary_key)[0].key) is None
+        session.add(self)
+        is_new = self in session.new
         try:
             session.flush([self])
         except InvalidRequestError:
             session.rollback()
-
             session.flush([self])
 
-        assert getattr(self, list(self.__class__.__table__.primary_key)[0].key) is not None
         self.post_save(is_new=is_new, **kwargs)
 
     def delete(self):
