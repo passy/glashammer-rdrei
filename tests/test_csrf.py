@@ -14,16 +14,19 @@ from glashammer.utils.wrappers import Response
 from glashammer.application import make_app
 from glashammer.bundles.csrf import setup_csrf_protection, require_csrf_token
 
+
 def simple_view(req):
     """A simple view that does a simple output."""
 
     return Response("Hello World!")
+
 
 @require_csrf_token
 def protected_view(req):
     """A view that requires a cookie and post csrf value to match."""
 
     return Response("Secure.")
+
 
 class TestCSRFBundle(object):
 
@@ -71,8 +74,7 @@ class TestCSRFBundle(object):
         self.client.get('/simple')
 
         response = self.client.post('/protected', data={
-            '_csrf_token': self._get_csrf_token()
-        })
+            '_csrf_token': self._get_csrf_token()})
 
         assert response.status_code == 200
         assert response.data == "Secure."
