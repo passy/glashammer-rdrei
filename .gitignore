@@ -1,0 +1,4 @@
+.pida-metadata/
+*.egg-info/
+build/
+dist/
