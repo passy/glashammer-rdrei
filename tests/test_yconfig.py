@@ -54,8 +54,8 @@ template_searchpaths:
     fn = _c(yaml)
     app = declare_app(fn)
 
-    assert '/foo' in app.template_env.loader.searchpath
-    assert '/blah' in app.template_env.loader.searchpath
+    assert '/foo' in app.template_env.loader.loaders[0].searchpath
+    assert '/blah' in app.template_env.loader.loaders[0].searchpath
 
 
 def test_shared():

@@ -1114,6 +1114,12 @@ class TestNotes(object):
         app = load_app_from_path('examples/notes/notes.py')
         self.c = Client(app)
 
+    def teardown(self):
+        try:
+            os.unlink('examples/notes/gh.sqlite')
+        except OSError:
+            pass
+
     def test_index(self):
         iter, status, headers = self.c.open()
         assert 'form action="/add" method="post"' in ''.join(iter)

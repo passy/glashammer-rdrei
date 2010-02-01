@@ -10,7 +10,8 @@ from werkzeug.test import Client
 
 from glashammer.application import make_app
 from glashammer.utils import get_app
-from glashammer.bundles.sqlalchdb import metadata, setup_sqlalchdb, session
+from glashammer.bundles.sqlalchdb import metadata, setup_sqlalchdb, session, \
+        refresh_engine
 
 
 class TestSQLA(object):
@@ -42,16 +43,12 @@ class TestSQLA(object):
         # Make a mapper which gives you the objects manager
         mapper(Note, notes)
 
-
-        def setup_db(app):
-            notes.create(app.sqla_db_engine)
-
         def setup_app(app):
             app.add_setup(setup_sqlalchdb, 'sqlite://')
-            app.add_data_func(setup_db)
 
         self._setup_app = setup_app
 
+        refresh_engine()
         self.app = make_app(setup_app, 'test_output')
         self.c = Client(self.app)
 
@@ -66,4 +63,3 @@ class TestSQLA(object):
             session.add(n)
         session.commit()
         assert session.query(self.Note).count() == 6
-

@@ -28,6 +28,7 @@ from glashammer.utils.config import config_overriding_val
 from glashammer.utils.lazysettings import LazySettings
 from glashammer.utils.local import local_manager, get_request
 from glashammer.utils import emit_event
+from werkzeug.exceptions import NotFound
 
 
 _engine = None
@@ -67,7 +68,8 @@ def get_engine():
             # and set up a mysql friendly pool
             if uri.drivername == 'mysql':
                 uri.query.setdefault('charset', 'utf8')
-                options['pool_recycle'] = settings['database/mysql_pool_recycle']
+                options['pool_recycle'] = \
+                        settings['database/mysql_pool_recycle']
             _engine = create_engine(uri, **options)
         return _engine
 
@@ -128,15 +130,17 @@ class ConnectionQueryTrackingProxy(ConnectionProxy):
 
     def cursor_execute(self, execute, cursor, statement, parameters,
                        context, executemany):
-        emit_event('before_cursor_executed', cursor=self, statement=statement,
+        emit_event('before-cursor-executed', cursor=self, statement=statement,
                                     parameters=parameters)
         start = _timer()
         try:
             return execute(cursor, statement, parameters, context)
         finally:
-            emit_event('after-cursor-executed', cursor=self, statement=statement,
-                                       parameters=parameters,
-                                       time=_timer() - start)
+            emit_event('after-cursor-executed',
+                       cursor=self,
+                       statement=statement,
+                       parameters=parameters,
+                       time=_timer() - start)
 
 
 class SignalTrackingMapperExtension(MapperExtension):
@@ -298,7 +302,7 @@ def data_init(app):
     metadata.create_all(bind=engine)
 
 
-def cleanup_sqla_session(arg):
+def cleanup_sqla_session(app):
     """Clean the current session. Session is a thread-local scoped session, so
     this can safely be used from within a request, knowing that it will not
     affect sessions within other threads.
@@ -343,6 +347,7 @@ def request_track_query(cursor, statement, parameters, time):
 
             request.sql_queries.append((statement, parameters, time))
 
+
 def setup_sqlalchdb(app, default_uri=None, metadata=metadata, initdb=True):
     """Database setup function. Use ``application.add_setup(setup_database)``
     to initialize database use.
@@ -378,4 +383,3 @@ def setup_sqlalchdb(app, default_uri=None, metadata=metadata, initdb=True):
 
     app.sqla_db_engine = get_engine()
     app.sqla_db_meta = metadata
-
