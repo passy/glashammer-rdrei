@@ -77,4 +77,30 @@ div#content {
 }
 
 
+# grids
 
+.row-actions {
+    padding: 0; margin: 0;
+}
+
+.row-actions li {
+    padding: 0; margin: 4px 0px;
+    list-style: none;
+    float: left;
+}
+
+.edit-form label {
+    width: 200px;
+    display: block;
+    color: #8C4119;
+    font-size: 0.9em;
+    margin-top: 4px;
+}
+
+.edit-form input {
+    width: 400px;
+}
+
+.edit-form select {
+    width: 400px;
+}

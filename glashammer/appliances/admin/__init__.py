@@ -16,11 +16,30 @@ from sqlalchemy.orm import *
 from werkzeug.exceptions import NotFound
 
 from formalchemy import Grid, FieldSet
+from formalchemy.templates import TemplateEngine
+from formalchemy import config as formalchemy_config
 
 from glashammer.utils.appliance import Appliance, expose
-from glashammer.utils import render_response, redirect_to
+from glashammer.utils import render_response, redirect_to, render_template
 from glashammer.bundles.sqlalchdb import setup_sqlalchdb, session, models,\
     ModelBase, get_engine
+
+
+class FormalchemyJinja2TemplateEngine(object):
+
+    def __init__(self, appliance, **kw):
+        self.appliance = appliance
+        self.template_kw = kw
+
+    def _get_template_name(self, name):
+        return '_admin/%s.jinja' % name
+
+    def __call__(self, name, **kw):
+        all_kw = self.template_kw.copy()
+        all_kw.update(kw)
+        return self.appliance.render_template(
+            self._get_template_name(name), **all_kw)
+
 
 
 class AdminUser(ModelBase):
@@ -61,6 +80,8 @@ class AdminAppliance(Appliance):
         model = self.model.get_model_or_404(model_name)
         grid = Grid(model, model.query.all())
         grid.configure(readonly=True)
+        grid.engine = self._create_fa_template_engine(model_name=model_name,
+                                                      model_type=model)
         return self.render_response('_admin/list.jinja',
             model_name=model_name, grid=grid)
 
@@ -78,7 +99,7 @@ class AdminAppliance(Appliance):
         else:
             fs = FieldSet(model, session=session)
         return self.render_response('_admin/new.jinja',
-            model_name=model_name, fs=fs)
+            item=None, model_name=model_name, fs=fs)
 
     @expose('/<string:model_name>/<int:id>/edit')
     def edit(self, req, model_name, id):
@@ -94,11 +115,13 @@ class AdminAppliance(Appliance):
         else:
             fs = FieldSet(item)
         return self.render_response('_admin/new.jinja',
-            model_name=model_name, fs=fs, crumbs=[model_name, 'Edit'])
+            item=item, model_name=model_name, fs=fs, crumbs=[model_name, 'Edit'])
 
     def setup_appliance(self, app):
         app.add_setup(setup_sqlalchdb)
 
+    def _create_fa_template_engine(self, **kw):
+        return FormalchemyJinja2TemplateEngine(self, **kw)
 
 
 appliance = AdminAppliance

@@ -1,0 +1,53 @@
+
+<thead>
+  <tr>
+    {% for field in collection.render_fields.itervalues() %}
+      <th>{{ field.lagel_text or collection.prettify(field.key)|e }}
+    {% endfor %}
+      <th>Actions</th>
+  </tr>
+</thead>
+
+<tbody>
+{% for row in collection.rows %}
+  {% do collection._set_active(row) %}
+  <tr class="{{ loop.cycle('odd', 'even') }}">
+  {% for field in collection.render_fields.itervalues() %}
+    <td>{{ field.render_readonly() }}</td>
+  {% endfor %}
+    <td>
+        <ul class="ui-widget row-actions">
+            <li class="ui-corner-left ui-state-default row-action">
+                <a class="ui-icon ui-icon-search"
+                   href="{{ url_local('edit', model_name=model_name, id=row.id) }}"></a>
+            </li>
+            <li class="ui-state-default row-action">
+                <a class="ui-icon ui-icon-pencil"
+                   href="{{ url_local('edit', model_name=model_name, id=row.id) }}"></a>
+            </li>
+            <li class="ui-corner-right ui-state-default">
+                <a class="ui-icon ui-icon-trash"
+                   href="{{ url_local('edit', model_name=model_name, id=row.id) }}"></a>
+            </li>
+        </ul>
+    </td>
+  </tr>
+{% endfor %}
+</tbody>
+
+
+<script>
+    $('.row-actions li').hover(
+        function() {
+            $(this).removeClass('ui-state-default');
+            $(this).addClass('ui-state-hover');
+        },
+        function() {
+            $(this).removeClass('ui-state-hover');
+            $(this).addClass('ui-state-default');
+        }
+    );
+</script>
+
+
+

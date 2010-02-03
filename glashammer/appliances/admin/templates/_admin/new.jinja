@@ -1,11 +1,36 @@
 {% extends "_admin/_base.jinja" %}
 
 {% block title %}
-    New {{ model_name }}
+    {% if item %}
+        Editing {{ item|e }}
+    {% else %}
+        Create new {{ model_name|capitalize }}
+    {% endif %}
 {% endblock %}
 
 {% block content %}
-<form method="post">
+<form class="edit-form" method="post">
 {{ fs.render() }}
 </form>
+<script>
+    function uify(selectors) {
+        for (var i in selectors) {
+            var sel = selectors[i];
+            $(sel).addClass('ui-widget ui-state-default ui-corner-all ');
+            $(sel).hover(
+                function() {
+                    $(this).removeClass('ui-state-default');
+                    $(this).addClass('ui-state-hover');
+                },
+                function() {
+                    $(this).removeClass('ui-state-hover');
+                    $(this).addClass('ui-state-default');
+                }
+            )
+
+        }
+    }
+    uify(['.edit-form input', '.edit-form select']);
+
+</script>
 {% endblock %}

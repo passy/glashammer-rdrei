@@ -13,7 +13,8 @@ import sys, os
 
 from werkzeug.routing import Rule, Submount, EndpointPrefix
 
-from glashammer.utils import sibpath, render_response, url_for, redirect_to
+from glashammer.utils import sibpath, render_response, url_for, redirect_to, \
+    render_template
 
 
 def expose(url, endpoint=None, **rule_kw):
@@ -107,6 +108,11 @@ class Appliance(object):
 
     def redirect_to(self, endpoint_name, **kw):
         return redirect_to(self.get_endpoint(endpoint_name), **kw)
+
+    def render_template(self, template_name, **kw):
+        kw['url_local'] = self.url_local
+        kw['url_shared'] = self.url_shared
+        return render_template(template_name, **kw)
 
     def render_response(self, template_name, **kw):
         kw['url_local'] = self.url_local
