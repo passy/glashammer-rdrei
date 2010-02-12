@@ -1161,6 +1161,3 @@ class TestJsonRest(object):
         iter, status, headers = self.c.post('/svc')
         d = loads(''.join(iter))
         assert d['type'] == 'POST'
-
-
-

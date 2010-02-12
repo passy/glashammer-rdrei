@@ -287,12 +287,14 @@ class MetaModel(object):
 ModelBase = declarative_base(metadata=metadata, name="ModelBase", cls=MetaModel, metaclass=ModelBaseMeta)
 
 
-def data_init(app):
+def data_init(app=None):
     """The default data init function.
 
     The Sqlalch bundle automatically calls this data init function after the
     application is first created. This ensures that all tables are created for
     the metadata, so Metdata.create_all does not need to be called again.
+
+    :param app: Kept for compability, but doesn't have any use.
     """
     engine = get_engine()
     if engine.name == 'mysql':
@@ -319,8 +321,10 @@ def drop_tables():
     metadata.drop_all(bind=get_engine())
 
 
-def add_query_debug_headers(request, response):
+def add_query_debug_headers(response):
     """Add headers with the SQL info."""
+    request = get_request()
+
     if settings['database/track_queries']:
         count = len(request.sql_queries)
         sql_time = 0.0
@@ -367,8 +371,7 @@ def setup_sqlalchdb(app, default_uri=None, metadata=metadata, initdb=True):
     app.add_config_var('database/mysql_engine', str, 'InnoDB')
     app.add_config_var('database/mysql_table_charset', str, 'utf8')
 
-    app.connect_event('response-end', lambda response:
-                      add_query_debug_headers(None, response))
+    app.connect_event('response-start', add_query_debug_headers)
     app.connect_event('response-end', cleanup_sqla_session)
     app.connect_event('app-setup', cleanup_sqla_session)
     app.connect_event('after-cursor-executed', request_track_query)
