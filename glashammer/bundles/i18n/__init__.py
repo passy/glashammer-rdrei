@@ -5,16 +5,17 @@
 
     i18n tools for Glashammer.
 
-    :copyright: Copyright 2008 by Armin Ronacher.
+    :copyright: Copyright 2008-2010, The Glashammer Authors
     :license: MIT
-    """
+"""
+
 import os
 from datetime import datetime
 from time import strptime
 from babel import Locale, dates, UnknownLocaleError
 from babel.support import Translations
-
 from glashammer.utils import get_app
+from glashammer.utils.lazystring import LazyString
 
 __all__ = ['_', 'gettext', 'ngettext']
 
@@ -48,100 +49,16 @@ def ngettext(singular, plural, n):
         return plrual
     return app.translations.ungettext(singular, plural, n)
 
-class _TranslationProxy(object):
-    """Class for proxy strings from gettext translations.  This is a helper
-    for the lazy_* functions from this module.
-
-    The proxy implementation attempts to be as complete as possible, so that
-    the lazy objects should mostly work as expected, for example for sorting.
-    """
-    __slots__ = ('_func', '_args')
-
-    def __init__(self, func, *args):
-        self._func = func
-        self._args = args
-
-    value = property(lambda x: x._func(*x._args))
-
-    def __contains__(self, key):
-        return key in self.value
-
-    def __nonzero__(self):
-        return bool(self.value)
-
-    def __dir__(self):
-        return dir(unicode)
-
-    def __iter__(self):
-        return iter(self.value)
-
-    def __len__(self):
-        return len(self.value)
-
-    def __str__(self):
-        return str(self.value)
-
-    def __unicode__(self):
-        return unicode(self.value)
-
-    def __add__(self, other):
-        return self.value + other
-
-    def __radd__(self, other):
-        return other + self.value
-
-    def __mod__(self, other):
-        return self.value % other
-
-    def __rmod__(self, other):
-        return other % self.value
-
-    def __mul__(self, other):
-        return self.value * other
-
-    def __rmul__(self, other):
-        return other * self.value
-
-    def __lt__(self, other):
-        return self.value < other
-
-    def __le__(self, other):
-        return self.value <= other
-
-    def __eq__(self, other):
-        return self.value == other
-
-    def __ne__(self, other):
-        return self.value != other
-
-    def __gt__(self, other):
-        return self.value > other
-
-    def __ge__(self, other):
-        return self.value >= other
-
-    def __getattr__(self, name):
-        if name == '__members__':
-            return self.__dir__()
-        return getattr(self.value, name)
-
-    def __getitem__(self, key):
-        return self.value[key]
-
-    def __repr__(self):
-        try:
-            return 'i' + repr(unicode(self.value))
-        except:
-            return '<%s broken>' % self.__class__.__name__
-
 
 def lazy_gettext(string):
     """A lazy version of `gettext`."""
-    return _TranslationProxy(gettext, string)
+    return Lazystring(gettext, string)
+
 
 def format_datetime(datetime=None, format='medium'):
     """Return a date formatted according to the given pattern."""
     return _date_format(dates.format_datetime, datetime, format)
+
 
 def format_system_datetime(datetime=None, rebase=True):
     """Formats a system datetime.  This is the format the admin
@@ -155,8 +72,8 @@ def format_system_datetime(datetime=None, rebase=True):
         datetime.month,
         datetime.day,
         datetime.hour,
-        datetime.minute
-    )
+        datetime.minute)
+
 
 def format_date(date=None, format='medium'):
     """Return the date formatted according to the pattern."""
@@ -273,15 +190,12 @@ def _date_format(formatter, obj, format):
     return formatter(obj, format, locale=locale)
 
 
-_ = gettext
-
-# Here beginneth the pluging in process
-
 def on_setup_complete(app):
     lang = app.conf['language']
     app.locale = Locale(app.cfg['language'])
     app.translations = load_translations(app.locale)
     app.template_env.install_gettext_translations(app.translations)
+
 
 def setup_i18n(app):
     app.add_config_var('language', str, 'en')
@@ -289,4 +203,5 @@ def setup_i18n(app):
     app.add_template_filter('formatdate', format_date)
     app.connect_event('app-setup', on_setup_complete)
 
+_ = gettext
 setup_app = setup_i18n
