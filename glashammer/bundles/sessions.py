@@ -17,6 +17,7 @@ def tag_session(req):
     cookie_name = app.conf['sessions/cookie_name']
     session = SecureCookie.load_cookie(req, cookie_name,
                                            app.conf['sessions/secret'])
+    req.session = session
     local.session = session
 
 def cleanup_sessions(response):
