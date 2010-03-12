@@ -20,12 +20,18 @@ from os.path import dirname, join
 
 
 def hello_view(req):
-    # NOTE: A comment for the translator.
-    message = _("Hello World!")
+    # NOTE: This is a translation comment.
+    message = _("Hello World")
     return Response('<h1>%s</h1>' % message)
 
+
+def welcome(req):
+    message = _("Welcome!")
+    return Response('<h1>%s</h1>' % message)
+
+
 # Add the i18n mixin
-class Request(_Request, I18NRequestMixin):
+class Request(I18NRequestMixin, _Request):
     pass
 
 def setup(app):
@@ -36,8 +42,9 @@ def setup(app):
 
 # Used by gh-admin
 def create_app():
-    return make_app(setup, dirname(__file__),
+    return make_app(setup, join(dirname(__file__), "instance"),
                    request_cls=Request)
+
 
 if __name__ == '__main__':
     app = create_app()

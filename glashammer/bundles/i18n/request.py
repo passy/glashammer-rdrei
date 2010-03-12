@@ -10,7 +10,7 @@ Adds i18n functionality to the request objects.
 """
 
 from glashammer.bundles.i18n import select_locale, load_translations, \
-        has_section
+        has_section, Locale
 from werkzeug.utils import cached_property
 
 

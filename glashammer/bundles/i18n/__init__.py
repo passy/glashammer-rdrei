@@ -11,6 +11,7 @@
 
 import os
 from datetime import datetime
+from cgi import escape
 from time import strptime
 from babel import Locale, dates, UnknownLocaleError, numbers
 from babel.support import Translations
@@ -58,7 +59,7 @@ def get_js_translations(locale):
     rv = _js_translations.get(key)
     if rv is not None:
         return rv
-    fn = os.path.join(settings['path'], key, 'LC_MESSAGES', LOCALE_DOMAIN + '.js')
+    fn = os.path.join(_settings['path'], key, 'LC_MESSAGES', _settings['domain'] + '.js')
     if not os.path.isfile(fn):
         return None
     f = open(fn)
@@ -88,7 +89,7 @@ def find_catalog(locale):
     filename of the .mo file if found, otherwise `None` is returned.
     """
     catalog = os.path.join(_settings['path'], str(Locale.parse(locale)),
-                             'LC_MESSAGES', _settings['path'] + '.mo')
+                             'LC_MESSAGES', _settings['domain'] + '.mo')
     if os.path.isfile(catalog):
         return catalog
 
@@ -120,41 +121,12 @@ def lazy_gettext(string):
     """A lazy version of `gettext`."""
     if is_lazy_string(string):
         return string
-    return Lazystring(gettext, string)
+    return LazyString(gettext, string)
 
 
 def format_datetime(datetime=None, format='medium'):
     """Return a date formatted according to the given pattern."""
     return _date_format(dates.format_datetime, datetime, format)
-
-
-def format_timedelta(datetime_or_timedelta, granularity='second'):
-    """Format the elapsed time from the given date to now of the given
-    timedelta.
-    """
-    if isinstance(datetime_or_timedelta, datetime):
-        datetime_or_timedelta = datetime.utcnow() - datetime_or_timedelta
-    return dates.format_timedelta(datetime_or_timedelta, granularity,
-                                  locale=get_locale())
-
-
-def format_system_datetime(datetime=None, rebase=True):
-    """Formats a system datetime.  This is the format the admin
-    panel uses by default.  (Format: YYYY-MM-DD hh:mm and in the
-    user timezone unless rebase is disabled)
-    """
-    if rebase:
-        datetime = to_blog_timezone(datetime)
-    return u'%d-%02d-%02d %02d:%02d' % (
-        datetime.year,
-        datetime.month,
-        datetime.day,
-        datetime.hour,
-        datetime.minute)
-
-
-def format_number(number):
-    return numbers.format_decimal(number, locale=get_locale())
 
 
 def format_date(date=None, format='medium'):
@@ -188,7 +160,7 @@ def list_languages():
     """
     found = set(['en'])
     languages = [('en', Locale('en'))]
-    sections = dict(list_sections(sorted=False))
+    sections = set(_settings['sections'])
 
     for locale in os.listdir(_settings['path']):
         try:
@@ -248,7 +220,6 @@ def parse_datetime(string):
     if string.lower() == _('now'):
         return datetime.utcnow()
     convert = lambda fmt: datetime(*strptime(string, fmt)[:7])
-    cfg = get_app().cfg
 
     # first of all try the following format because a while ago it was
     # Texpress' default format
@@ -317,7 +288,6 @@ def setup_i18n(app, locale_path=None):
     app.add_template_global('ngettext', ngettext)
     app.add_template_filter('formatdatetime', format_datetime)
     app.add_template_filter('formatdate', format_date)
-    app.add_template_filter('numberformat', format_number)
     app.connect_event('app-setup', on_setup_complete)
 
     _settings['path'] = locale_path

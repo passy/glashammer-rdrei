@@ -1,4 +1,3 @@
-
 """
 glashammer.application
 ~~~~~~~~~~~~~~~~~~~~~~

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2010-02-13 19:53+0100\n"
+"POT-Creation-Date: 2010-03-12 21:42+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.4\n"
 
-#: helloworld_i18n/run.py:23
-msgid "Hello World!"
+#: run.py:24
+msgid "Hello World"
+msgstr ""
+
+#: run.py:30
+msgid "Welcome!"
 msgstr ""
 
