@@ -23,7 +23,7 @@ class LazyString(object):
     """
     __slots__ = ('_func', '_args')
 
-    def __init__(self, func, args):
+    def __init__(self, func, *args):
         self._func = func
         self._args = args
 
