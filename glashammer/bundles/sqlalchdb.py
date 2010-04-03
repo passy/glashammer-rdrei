@@ -346,10 +346,17 @@ def request_track_query(cursor, statement, parameters, time):
         else:
             # Users can use their own wrappers that does not necessarilly have
             # an sql_queries attribute. We create our own here, if this happens.
-            if not hasattr(request, 'sql_queries'):
-                request.sql_queries = list()
-
             request.sql_queries.append((statement, parameters, time))
+
+
+class QueryTrackRequestMixin(object):
+    """
+    Request mixins that holds the database queries.
+    """
+
+    def __init__(self, *args, **kwargs):
+        super(QueryTrackRequestMixin, self).__init__(*args, **kwargs)
+        self.sql_queries = list()
 
 
 def setup_sqlalchdb(app, default_uri=None, metadata=metadata, initdb=True):
@@ -374,7 +381,9 @@ def setup_sqlalchdb(app, default_uri=None, metadata=metadata, initdb=True):
     app.connect_event('response-start', add_query_debug_headers)
     app.connect_event('response-end', cleanup_sqla_session)
     app.connect_event('app-setup', cleanup_sqla_session)
-    app.connect_event('after-cursor-executed', request_track_query)
+    if app.cfg['database/track_queries']:
+        app.connect_event('after-cursor-executed', request_track_query)
+        app.add_request_mixin(QueryTrackRequestMixin)
 
     if initdb:
         app.add_data_func(data_init)

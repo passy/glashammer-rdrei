@@ -94,14 +94,14 @@ class GlashammerApplication(object):
         template_loaders=None, template_tests=None,
         template_env_kw=None,
         request_cls=None,
+        request_mixins=None,
         view_finder=None
         ):
         # just for playing in the shell
         local.application = self
 
         self.finalized = False
-
-        self.request_cls = request_cls or Request
+        self._request_mixins = request_mixins or []
         self.view_finder = view_finder or ViewFinder()
 
         # Start the setup
@@ -234,6 +234,10 @@ class GlashammerApplication(object):
 
         del self._shared_exports
 
+        # Create a new request type
+        self.request_cls = self._build_request_class(request_cls)
+        del self._request_mixins
+
         # finalize the setup
         self.finalized = True
         # create the template environment
@@ -299,6 +303,14 @@ class GlashammerApplication(object):
         """
 
         return self.view_finder.find(endpoint)
+
+    def _build_request_class(self, base, mixins=None):
+        """Creates a new Request type on the fly."""
+
+        base = base or Request
+        mixins = self._request_mixins or []
+        bases = tuple(mixins + [base])
+        return type('Request', bases, {})
 
     def _ensure_not_finalized(self):
         if self.finalized:
@@ -473,6 +485,14 @@ class GlashammerApplication(object):
         self._ensure_not_finalized()
 
         self._template_tests[name] = f
+
+    def add_request_mixin(self, mixin):
+        """
+        Add a request mixin.
+        """
+        self._ensure_not_finalized()
+
+        self._request_mixins.append(mixin)
 
     def connect_event(self, event, callback, position='after'):
         """

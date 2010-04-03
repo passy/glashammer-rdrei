@@ -278,6 +278,8 @@ def setup_i18n(app, locale_path=None):
     files.
     """
 
+    from glashammer.bundles.i18n.request import I18NRequestMixin
+
     global _settings
     app.add_config_var('i18n/default_language', str, 'en')
     app.add_config_var('i18n/language_sections', str, 'en,de')
@@ -288,6 +290,7 @@ def setup_i18n(app, locale_path=None):
     app.add_template_global('ngettext', ngettext)
     app.add_template_filter('formatdatetime', format_datetime)
     app.add_template_filter('formatdate', format_date)
+    app.add_request_mixin(I18NRequestMixin)
     app.connect_event('app-setup', on_setup_complete)
 
     _settings['path'] = locale_path
